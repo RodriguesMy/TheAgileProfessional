@@ -10,7 +10,7 @@ void main()
 	myEngine->StartWindowed();
 
 	// Add default folder for meshes and other media
-	myEngine->AddMediaFolder( "C:\\ProgramData\\TL-Engine\\Media" );
+	myEngine->AddMediaFolder( ".\media" );
 
 	/**** Set up your scene here ****/
 
