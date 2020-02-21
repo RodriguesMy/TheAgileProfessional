@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="ShadowsAndGold.cpp" />
+    <ClCompile Include="Level.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -10,5 +11,8 @@
     <Filter Include="Media">
       <UniqueIdentifier>{c5fe6c0c-06f1-441a-8864-5d8a087b0d3a}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Level.h" />
   </ItemGroup>
 </Project>
