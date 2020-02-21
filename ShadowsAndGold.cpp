@@ -2,7 +2,10 @@
 
 #include <TL-Engine.h>	// TL-Engine include file and namespace
 using namespace tle;
+#include <iostream>
+#include <time.h>
 
+#include "CThief.h"
 void main()
 {
 	// Create a 3D engine (using TLX engine here) and open a window for it
@@ -10,11 +13,18 @@ void main()
 	myEngine->StartWindowed();
 
 	// Add default folder for meshes and other media
-	myEngine->AddMediaFolder( ".\media" );
+	myEngine->AddMediaFolder( "./Media" );
 
 	/**** Set up your scene here ****/
-	IMesh* modelMesh = myEngine->LoadMesh("sierra.x");
-	IModel* model = modelMesh->CreateModel(0, 0.3, 0);
+	ICamera* camera = myEngine->CreateCamera(kManual, 0, 15, -25);
+	camera->RotateX(25);
+
+	//IMPORTANT VARIABLES
+	float dt;
+	float thiefMovementSpeed = 10;
+
+	//Create Thief
+	CThief* Thief = new CThief(myEngine);
 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -23,7 +33,20 @@ void main()
 		myEngine->DrawScene();
 
 		/**** Update your scene each frame here ****/
-
+		//thiefControls
+		dt = myEngine->Timer();
+		/*if (myEngine->KeyHeld(Key_W)) {
+			thief->MoveLocalZ(thiefMovementSpeed*dt);
+		}
+		if (myEngine->KeyHeld(Key_S)) {
+			thief->MoveLocalZ(-thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_D)) {
+			thief->MoveLocalX(thiefMovementSpeed*dt);
+		}
+		if (myEngine->KeyHeld(Key_A)) {
+			thief->MoveLocalX(-thiefMovementSpeed * dt);
+		}*/
 	}
 
 	// Delete the 3D engine now we are finished with it
