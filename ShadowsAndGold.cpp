@@ -3,15 +3,13 @@
 #include <TL-Engine.h>	// TL-Engine include file and namespace
 using namespace tle;
 #include <iostream>
-#include <time.h>
-
 #include "CThief.h"
+
 void main()
 {
 	// Create a 3D engine (using TLX engine here) and open a window for it
 	I3DEngine* myEngine = New3DEngine( kTLX );
 	myEngine->StartWindowed();
-
 	// Add default folder for meshes and other media
 	myEngine->AddMediaFolder( "./Media" );
 
