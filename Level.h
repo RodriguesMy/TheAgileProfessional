@@ -14,12 +14,14 @@ private:
 		"",
 		""
 	};
-	int m_MapIt;
+	int m_LevelIt;
 	IMesh* m_MWall;
 	IMesh* m_MDoor;
-	IMesh* m_MMainDoor;
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
 	bool NextLevel(vector<IModel*> Walls,vector<IModel*> Doors, IModel* MainDoor);
+private:
+	bool IncreaseLevelIt();
+	IModel* CreateModel(IMesh* mesh,string data);
 };
