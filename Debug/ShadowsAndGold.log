@@ -1,1 +1,6 @@
-﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.Cpp.Platform.targets(57,5): error MSB8020: The build tools for v141 (Platform Toolset = 'v141') cannot be found. To build using the v141 build tools, please install v141 build tools.  Alternatively, you may upgrade to the current Visual Studio tools by selecting the Project menu or right-click the solution, and then selecting "Retarget solution".
+﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  ShadowsAndGold.cpp
+c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+  Copying DLLs & shaders...
