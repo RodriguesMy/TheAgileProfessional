@@ -24,4 +24,5 @@ public:
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh,string data);
+	void ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* MainDoor);
 };
