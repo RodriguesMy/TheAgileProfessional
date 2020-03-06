@@ -71,14 +71,14 @@ void main()
 	vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	levels.NextLevel(walls, doors, maindoor);
+	levels.NextLevel(walls, doors,pillars, maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
 	float thiefMovementSpeed = 10;
 
 	//Create Thief
-	IMesh* pThieflMesh = myEngine->LoadMesh("sierra.x");
+	IMesh* pThieflMesh = myEngine->LoadMesh("BasicBanditBlend.x");
 	IModel* pThief = pThieflMesh->CreateModel();
 	
 	//Rotation of camera variables
@@ -105,6 +105,9 @@ void main()
 		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 		//UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
+		if (myEngine->KeyHit(Key_Escape)) {
+			myEngine->Stop();
+		}
 	}
 
 	// Delete the 3D engine now we are finished with it
