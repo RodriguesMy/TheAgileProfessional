@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Level"
   ],
-  "SelectedNode": "\\DiffuseTex.vsh",
+  "SelectedNode": "\\Level\\test.txt",
   "PreviewInSolutionExplorer": false
 }
