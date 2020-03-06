@@ -9,6 +9,7 @@
 *.db
 *.suo
 *.ipch
+/.vs/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
