@@ -6,8 +6,9 @@
 CLevel::CLevel(I3DEngine* myEngine)
 {
 	m_LevelIt = -1;
-	m_MDoor = myEngine->LoadMesh("");
+	m_MDoor = myEngine->LoadMesh("10057_wooden_door_v3_iterations-2.x");
 	m_MWall = myEngine->LoadMesh("");
+	m_MPillars = myEngine->LoadMesh("pillar.x");
 }
 
 
@@ -33,7 +34,7 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data) {
 	return output;
 }
 
-void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* MainDoor) {
+void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back());
 		Walls.pop_back();
@@ -45,14 +46,16 @@ void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* Ma
 	m_MDoor->RemoveModel(MainDoor);
 }
 
-bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* MainDoor) {
+bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
+			ClearLevel(Walls, Doors, Pillars, MainDoor);
 			enum EModelType {
 				wall,
 				door,
-				maindoor
+				maindoor,
+				pillar
 			};
 			EModelType Current=wall;
 			string input;
@@ -60,9 +63,9 @@ bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* Mai
 			{
 				input.erase(remove_if(input.begin(), input.end(), isspace));
 				if (!isalpha(input[0])) {
-					switch (Current){
+					switch (Current) {
 					case wall:
-						Walls.push_back(CreateModel(m_MWall,input));
+						Walls.push_back(CreateModel(m_MWall, input));
 						break;
 					case door:
 						Doors.push_back(CreateModel(m_MDoor, input));
@@ -70,6 +73,8 @@ bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* Mai
 					case maindoor:
 						MainDoor = CreateModel(m_MDoor, input);
 						break;
+					case pillar:
+						Pillars.push_back(CreateModel(m_MPillars, input));
 					}
 				}
 				else {
@@ -80,8 +85,10 @@ bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* Mai
 						Current = wall;
 					else if (input == "door")
 						Current = door;
-					else
+					else if (input == "pillar")
 						Current = maindoor;
+					else if (input == "maindoor")
+						Current = pillar;
 				}
 			}
 			return true;
