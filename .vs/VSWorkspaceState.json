@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Level"
+    "\\Level",
+    "\\Media"
   ],
-  "SelectedNode": "\\Level\\test.txt",
+  "SelectedNode": "\\.gitignore",
   "PreviewInSolutionExplorer": false
 }

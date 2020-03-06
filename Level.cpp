@@ -7,7 +7,7 @@ CLevel::CLevel(I3DEngine* myEngine)
 {
 	m_LevelIt = -1;
 	m_MDoor = myEngine->LoadMesh("10057_wooden_door_v3_iterations-2.x");
-	m_MWall = myEngine->LoadMesh("");
+	m_MWall = myEngine->LoadMesh("wall.x");
 	m_MPillars = myEngine->LoadMesh("pillar.x");
 }
 
