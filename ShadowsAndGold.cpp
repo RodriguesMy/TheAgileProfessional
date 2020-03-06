@@ -1,8 +1,10 @@
 // ShadowsAndGold.cpp: A program using the TL-Engine
 
 #include <TL-Engine.h>	// TL-Engine include file and namespace
-using namespace tle;
 #include <iostream>
+#include"Level.h"
+using namespace tle;
+
 
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
@@ -61,7 +63,16 @@ void main()
 	ICamera* camera = myEngine->CreateCamera();
 	camera->RotateX(25);
 
-	//IMPORTANT VARIABLES
+	CLevel levels(myEngine);
+
+	//Model Containers
+	vector<IModel*> walls;
+	vector<IModel*> doors;
+	IModel* maindoor = 0;
+
+	levels.NextLevel(walls, doors, maindoor);
+
+	//NON-IMPORTANT VARIABLES
 	float dt;
 	float thiefMovementSpeed = 10;
 
@@ -74,7 +85,7 @@ void main()
 	float cameraAngle = 25;
 	float minCameraRotation = 0;
 
-	//END OF IMPORTANT VARIABLES 
+	//END OF NON-IMPORTANT VARIABLES 
 
 	//Setting Position & Attaching models
 	camera->SetPosition(pThief->GetX(), pThief->GetY() + 3, pThief->GetZ() - 3);
