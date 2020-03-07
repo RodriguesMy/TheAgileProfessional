@@ -10,7 +10,7 @@ class CLevel
 {
 private:
 	string m_Levels[3] = {
-		"",
+		"test",
 		"",
 		""
 	};
@@ -21,9 +21,9 @@ private:
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	bool NextLevel(vector<IModel*> Walls,vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor);
+	bool NextLevel(vector<IModel*> Walls,vector<IModel*> Doors/*,vector<IModel*> Pillars*/, IModel* MainDoor);
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh,string data);
-	void ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor);
+	void ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,/*vector<IModel*> Pillars,*/ IModel* MainDoor);
 };

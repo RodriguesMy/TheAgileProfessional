@@ -1,2 +1,7 @@
-﻿  ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  Level.cpp
+c:\users\chris\source\repos\rodriguesmy\theagileprofessional\level.cpp(82): warning C4018: '<': signed/unsigned mismatch
+c:\users\chris\source\repos\rodriguesmy\theagileprofessional\level.cpp(108): warning C4018: '>=': signed/unsigned mismatch
+c:\users\chris\source\repos\rodriguesmy\theagileprofessional\level.cpp(104): warning C4715: 'CLevel::NextLevel': not all control paths return a value
+  ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

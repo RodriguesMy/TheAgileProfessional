@@ -68,19 +68,20 @@ void main()
 	//Model Containers
 	vector<IModel*> walls;
 	vector<IModel*> doors;
-	vector<IModel*> pillars;
+	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	levels.NextLevel(walls, doors,pillars, maindoor);
+	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
-	float thiefMovementSpeed = 10;
+	float thiefMovementSpeed = 5;
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
-	
+	pThief->Scale(5);
+
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
 	float cameraAngle = 25;
