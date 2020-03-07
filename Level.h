@@ -10,7 +10,7 @@ class CLevel
 {
 private:
 	string m_Levels[3] = {
-		"test",
+		"",
 		"",
 		""
 	};
