@@ -5,8 +5,9 @@
 #include"Level.h"
 using namespace tle;
 
-#define LEVEL 1
-#define FINAL_CUTSCENE 4
+#define MENU 1
+#define LEVEL 2
+#define FINAL_CUTSCENE 3
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
 	if (myEngine->KeyHeld(Key_W)) {
@@ -112,16 +113,14 @@ void main()
 	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	int STATE = LEVEL;
+	int STATE = MENU;
 	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
 	float thiefMovementSpeed = 5;
 
-	//Message Displaying variables
-	IFont* DisplayQuest = myEngine->LoadFont("Ariel", 24U);
-	IFont* InteractionMessage = myEngine->LoadFont("Ariel", 20U);
+	
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
@@ -130,6 +129,15 @@ void main()
 
 	ICamera* camera = myEngine->CreateCamera(kManual);
 	camera->RotateX(25);
+
+	//IFONT Variables
+	IFont* DisplayGameName = myEngine->LoadFont("Cambria", 120U);
+	IFont* DisplayMenu = myEngine->LoadFont("Cambria", 70U);
+	//Message Displaying variables
+	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
+	IFont* InteractionMessage = myEngine->LoadFont("Cambria", 24U);
+
+	//END OF IFONT Variables
 
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
@@ -158,13 +166,26 @@ void main()
 		dt = myEngine->Timer();
 
 		/**** Update your scene each frame here ****/
-		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
 		switch (STATE)
 		{
+		case MENU:
+		{
+			DisplayGameName->Draw("Shadows & Gold", 300, 300);
+			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
+
+			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
+			if (myEngine->KeyHit(Key_Space))
+			{
+				STATE = LEVEL;
+			}
+			break;
+		}
 		case LEVEL:
 		{
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
+			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
+		
 			UpdateLevel(keyFound,DisplayQuest,simpleDoorNearby,InteractionMessage,myEngine,mainDoorNearby,mainDoorUnlocked,levels,walls,doors,maindoor,STATE);			
 			break;
 		}
