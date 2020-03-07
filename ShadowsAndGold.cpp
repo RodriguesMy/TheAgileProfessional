@@ -5,9 +5,7 @@
 #include"Level.h"
 using namespace tle;
 
-#define LEVEL1 1
-#define LEVEL2 2
-#define LEVEL3 3
+#define LEVEL 1
 #define FINAL_CUTSCENE 4
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
@@ -88,7 +86,7 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 		keyFound = false;
 		mainDoorUnlocked = false;
 		levels.NextLevel(walls, doors, maindoor);
-		currentLevel = LEVEL2;
+		mainDoorUnlocked = false;
 	}
 }
 void main()
@@ -114,7 +112,7 @@ void main()
 	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	int currentLevel = LEVEL1;
+	int STATE = LEVEL;
 	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
@@ -163,22 +161,11 @@ void main()
 		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
-		switch (currentLevel)
+		switch (STATE)
 		{
-		case LEVEL1:
+		case LEVEL:
 		{
-			UpdateLevel(keyFound,DisplayQuest,simpleDoorNearby,InteractionMessage,myEngine,mainDoorNearby,mainDoorUnlocked,levels,walls,doors,maindoor,currentLevel);			
-			break;
-		}
-		case LEVEL2:
-		{
-			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, maindoor, currentLevel);
-			break;
-
-		}
-		case LEVEL3:
-		{
-			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, maindoor, currentLevel);
+			UpdateLevel(keyFound,DisplayQuest,simpleDoorNearby,InteractionMessage,myEngine,mainDoorNearby,mainDoorUnlocked,levels,walls,doors,maindoor,STATE);			
 			break;
 		}
 		case FINAL_CUTSCENE:
