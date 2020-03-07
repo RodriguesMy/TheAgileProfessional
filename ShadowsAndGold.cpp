@@ -196,10 +196,6 @@ void main()
 		}
 		}
 
-		/*if (myEngine->KeyHit(Key_P)) {
-			levels.NextLevel(walls, doors, maindoor);
-		}*/
-
 		if (myEngine->KeyHit(Key_Escape)) {
 			myEngine->Stop();
 		}
