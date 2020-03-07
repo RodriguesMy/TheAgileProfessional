@@ -78,7 +78,7 @@ void main()
 	float thiefMovementSpeed = 10;
 
 	//Create Thief
-	IMesh* pThieflMesh = myEngine->LoadMesh("BasicBanditBlend.x");
+	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
 	
 	//Rotation of camera variables
