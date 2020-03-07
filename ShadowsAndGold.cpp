@@ -59,9 +59,7 @@ void main()
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
-
-	ICamera* camera = myEngine->CreateCamera(kFPS,0,12,-30);
-	camera->RotateX(25);
+	
 
 	CLevel levels(myEngine);
 
@@ -80,7 +78,13 @@ void main()
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
-	
+	pThief->RotateY(10);
+	//pThief->Scale(5);
+
+	ICamera* camera = myEngine->CreateCamera(kManual,pThief->GetX(), pThief->GetY()+2,pThief->GetZ()-5);
+	camera->RotateX(25);
+	camera->AttachToParent(pThief);
+
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
 	float cameraAngle = 25;
@@ -100,7 +104,7 @@ void main()
 
 		/**** Update your scene each frame here ****/
 		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-		//UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
+		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
 		if (myEngine->KeyHit(Key_Escape)) {
 			myEngine->Stop();
