@@ -10,9 +10,9 @@ class CLevel
 {
 private:
 	string m_Levels[3] = {
-		"test",
-		"",
-		""
+		"Level1",
+		"Level2",
+		"Level3"
 	};
 	int m_LevelIt;
 	IMesh* m_MWall;

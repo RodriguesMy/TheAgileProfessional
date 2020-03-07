@@ -104,6 +104,10 @@ void main()
 		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
+		if (myEngine->KeyHit(Key_P)) {
+			levels.NextLevel(walls, doors, maindoor);
+		}
+
 		if (myEngine->KeyHit(Key_Escape)) {
 			myEngine->Stop();
 		}
