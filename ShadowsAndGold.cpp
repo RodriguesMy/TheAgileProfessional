@@ -60,7 +60,7 @@ void main()
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
 
-	ICamera* camera = myEngine->CreateCamera();
+	ICamera* camera = myEngine->CreateCamera(kFPS,0,12,-30);
 	camera->RotateX(25);
 
 	CLevel levels(myEngine);
@@ -68,16 +68,17 @@ void main()
 	//Model Containers
 	vector<IModel*> walls;
 	vector<IModel*> doors;
+	vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	levels.NextLevel(walls, doors, maindoor);
+	levels.NextLevel(walls, doors,pillars, maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
 	float thiefMovementSpeed = 10;
 
 	//Create Thief
-	IMesh* pThieflMesh = myEngine->LoadMesh("sierra.x");
+	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
 	
 	//Rotation of camera variables
@@ -87,10 +88,7 @@ void main()
 
 	//END OF NON-IMPORTANT VARIABLES 
 
-	//Setting Position & Attaching models
-	camera->SetPosition(pThief->GetX(), pThief->GetY() + 3, pThief->GetZ() - 3);
-
-	camera->AttachToParent(pCameraDummy);
+	//camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
 
 	// The main game loop, repeat until engine is stopped
@@ -102,8 +100,11 @@ void main()
 
 		/**** Update your scene each frame here ****/
 		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
+		//UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
+		if (myEngine->KeyHit(Key_Escape)) {
+			myEngine->Stop();
+		}
 	}
 
 	// Delete the 3D engine now we are finished with it

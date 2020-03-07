@@ -17,12 +17,13 @@ private:
 	int m_LevelIt;
 	IMesh* m_MWall;
 	IMesh* m_MDoor;
+	IMesh* m_MPillars;
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	bool NextLevel(vector<IModel*> Walls,vector<IModel*> Doors, IModel* MainDoor);
+	bool NextLevel(vector<IModel*> Walls,vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor);
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh,string data);
-	void ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors, IModel* MainDoor);
+	void ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor);
 };
