@@ -69,7 +69,7 @@ void main()
 	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
+	//levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
@@ -79,7 +79,7 @@ void main()
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
 	pCameraDummy->RotateY(180);
-	pThief->Scale(15);
+	pThief->Scale(10);
 
 	ICamera* camera = myEngine->CreateCamera(kManual,pThief->GetX(), pThief->GetY()+2.5,pThief->GetZ()-2);
 	camera->RotateX(25);
