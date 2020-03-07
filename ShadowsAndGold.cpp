@@ -69,7 +69,7 @@ void main()
 	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	//levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
+	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
