@@ -180,7 +180,6 @@ void main()
 		{
 			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, maindoor, currentLevel);
 			break;
-
 		}
 		case FINAL_CUTSCENE:
 		{
