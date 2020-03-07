@@ -2,5 +2,6 @@
   ShadowsAndGold.cpp
 c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(84): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
   ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

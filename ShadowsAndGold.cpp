@@ -9,16 +9,16 @@ using namespace tle;
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
 	if (myEngine->KeyHeld(Key_W)) {
-		pThief->MoveLocalZ(thiefMovementSpeed*dt);
+		pThief->MoveLocalZ(-thiefMovementSpeed*dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
-		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+		pThief->MoveLocalZ(thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_D)) {
-		pThief->MoveLocalX(thiefMovementSpeed*dt);
+		pThief->MoveLocalX(-thiefMovementSpeed*dt);
 	}
 	if (myEngine->KeyHeld(Key_A)) {
-		pThief->MoveLocalX(-thiefMovementSpeed * dt);
+		pThief->MoveLocalX(thiefMovementSpeed * dt);
 	}
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
@@ -78,12 +78,12 @@ void main()
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
-	pThief->RotateY(10);
-	//pThief->Scale(5);
+	pCameraDummy->RotateY(180);
+	pThief->Scale(15);
 
-	ICamera* camera = myEngine->CreateCamera(kManual,pThief->GetX(), pThief->GetY()+2,pThief->GetZ()-5);
+	ICamera* camera = myEngine->CreateCamera(kManual,pThief->GetX(), pThief->GetY()+2.5,pThief->GetZ()-2);
 	camera->RotateX(25);
-	camera->AttachToParent(pThief);
+	camera->AttachToParent(pCameraDummy);
 
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
