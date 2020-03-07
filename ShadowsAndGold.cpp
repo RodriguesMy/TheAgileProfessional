@@ -66,14 +66,14 @@ void main()
 	//Model Containers
 	vector<IModel*> walls;
 	vector<IModel*> doors;
-	vector<IModel*> pillars;
+	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
-	levels.NextLevel(walls, doors,pillars, maindoor);
+	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
-	float thiefMovementSpeed = 10;
+	float thiefMovementSpeed = 5;
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
@@ -91,9 +91,10 @@ void main()
 	float minCameraRotation = 0;
 
 	//END OF NON-IMPORTANT VARIABLES 
-
-	//camera->AttachToParent(pCameraDummy);
+	camera->SetPosition(pThief->GetX(), pThief->GetY(), pThief->GetZ());
+	camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
+	pCameraDummy->RotateY(180);
 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
