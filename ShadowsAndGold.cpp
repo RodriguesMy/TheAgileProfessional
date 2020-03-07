@@ -88,9 +88,6 @@ void main()
 
 	//END OF NON-IMPORTANT VARIABLES 
 
-	//Setting Position & Attaching models
-	camera->SetPosition(pThief->GetX(), pThief->GetY() + 3, pThief->GetZ() - 3);
-
 	//camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
 
