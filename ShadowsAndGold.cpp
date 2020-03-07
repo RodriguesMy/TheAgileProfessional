@@ -59,7 +59,6 @@ void main()
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
-	
 
 	CLevel levels(myEngine);
 
