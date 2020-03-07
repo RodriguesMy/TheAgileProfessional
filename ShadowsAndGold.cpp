@@ -9,16 +9,16 @@ using namespace tle;
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
 	if (myEngine->KeyHeld(Key_W)) {
-		pThief->MoveLocalZ(thiefMovementSpeed*dt);
+		pThief->MoveLocalZ(-thiefMovementSpeed*dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
-		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+		pThief->MoveLocalZ(thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_D)) {
-		pThief->MoveLocalX(thiefMovementSpeed*dt);
+		pThief->MoveLocalX(-thiefMovementSpeed*dt);
 	}
 	if (myEngine->KeyHeld(Key_A)) {
-		pThief->MoveLocalX(-thiefMovementSpeed * dt);
+		pThief->MoveLocalX(thiefMovementSpeed * dt);
 	}
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
@@ -59,9 +59,7 @@ void main()
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
-
-	ICamera* camera = myEngine->CreateCamera(kFPS, 0, 12, -30);
-	camera->RotateX(25);
+	
 
 	CLevel levels(myEngine);
 
@@ -80,16 +78,23 @@ void main()
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
-	pThief->Scale(5);
+	pCameraDummy->RotateY(180);
+	pThief->Scale(15);
+
+	ICamera* camera = myEngine->CreateCamera(kManual,pThief->GetX(), pThief->GetY()+2.5,pThief->GetZ()-2);
+	camera->RotateX(25);
+	camera->AttachToParent(pCameraDummy);
+
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
 	float cameraAngle = 25;
 	float minCameraRotation = 0;
 
 	//END OF NON-IMPORTANT VARIABLES 
-	//camera->AttachToParent(pCameraDummy);
+	camera->SetPosition(pThief->GetX(), pThief->GetY(), pThief->GetZ());
+	camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
-	//pCameraDummy->RotateY(180);
+	pCameraDummy->RotateY(180);
 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -100,7 +105,7 @@ void main()
 
 		/**** Update your scene each frame here ****/
 		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-		//UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
+		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
 		if (myEngine->KeyHit(Key_Escape)) {
 			myEngine->Stop();
