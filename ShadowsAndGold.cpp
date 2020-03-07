@@ -78,12 +78,10 @@ void main()
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
-	pCameraDummy->RotateY(180);
-	pThief->Scale(15);
+	pThief->Scale(5);
 
-	ICamera* camera = myEngine->CreateCamera(kManual,pThief->GetX(), pThief->GetY()+2.5,pThief->GetZ()-2);
+	ICamera* camera = myEngine->CreateCamera(kManual);
 	camera->RotateX(25);
-	camera->AttachToParent(pCameraDummy);
 
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
@@ -91,7 +89,7 @@ void main()
 	float minCameraRotation = 0;
 
 	//END OF NON-IMPORTANT VARIABLES 
-	camera->SetPosition(pThief->GetX(), pThief->GetY(), pThief->GetZ());
+	camera->SetPosition(pThief->GetX(), pThief->GetY()+2.5, pThief->GetZ()-2);
 	camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
 	pCameraDummy->RotateY(180);
