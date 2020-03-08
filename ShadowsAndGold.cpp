@@ -166,7 +166,9 @@ void main()
 		dt = myEngine->Timer();
 
 		/**** Update your scene each frame here ****/
-		
+
+		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
+
 		switch (STATE)
 		{
 		case MENU:
