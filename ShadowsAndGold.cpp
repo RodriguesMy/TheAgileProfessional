@@ -5,7 +5,9 @@
 #include"Level.h"
 using namespace tle;
 
-
+#define MENU 1
+#define LEVEL 2
+#define FINAL_CUTSCENE 3
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
 	if (myEngine->KeyHeld(Key_W)) {
@@ -45,6 +47,49 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 		}
 	}
 }
+void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
+	CLevel &levels, vector<IModel*> walls, vector<IModel*> doors,IModel* maindoor,int &currentLevel) {
+	
+	//Update the Quests Fonts
+	if (keyFound)
+	{
+		DisplayQuest->Draw("You Found the Key! Find the Door to Go to the Next Floor.", 0, 0);
+	}
+	else
+	{
+		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.", 0, 0);
+	}
+
+	//If door is nearby there should be a message displaying the interaction 
+	if (simpleDoorNearby/*implement collision detection to change this value*/)
+	{
+		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
+
+		if (myEngine->KeyHit(Key_E))
+		{
+			//open door (implement doors opening/sliding)
+		}
+	}
+
+	if (mainDoorNearby/*implement collision detection to change this value*/)
+	{
+		InteractionMessage->Draw("Press 'E' to Unlock Next Floor.", 530, 550);
+		if (myEngine->KeyHit(Key_E))
+		{
+			//open door (implement doors opening/sliding)
+			mainDoorUnlocked = true; //this will cause the transition 
+		}
+	}
+
+	//Transition
+	if (mainDoorUnlocked)
+	{
+		keyFound = false;
+		mainDoorUnlocked = false;
+		levels.NextLevel(walls, doors, maindoor);
+		mainDoorUnlocked = false;
+	}
+}
 void main()
 {
 	// Create a 3D engine (using TLX engine here) and open a window for it
@@ -59,7 +104,6 @@ void main()
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
-	
 
 	CLevel levels(myEngine);
 
@@ -69,11 +113,14 @@ void main()
 	//vector<IModel*> pillars;
 	IModel* maindoor = 0;
 
+	int STATE = MENU;
 	levels.NextLevel(walls, doors,/*pillars,*/ maindoor);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
 	float thiefMovementSpeed = 5;
+
+	
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
@@ -83,10 +130,27 @@ void main()
 	ICamera* camera = myEngine->CreateCamera(kManual);
 	camera->RotateX(25);
 
+	//IFONT Variables
+	IFont* DisplayGameName = myEngine->LoadFont("Cambria", 120U);
+	IFont* DisplayMenu = myEngine->LoadFont("Cambria", 70U);
+	//Message Displaying variables
+	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
+	IFont* InteractionMessage = myEngine->LoadFont("Cambria", 24U);
+
+	//END OF IFONT Variables
+
 	//Rotation of camera variables
 	float maxCameraRotation = 40;
 	float cameraAngle = 25;
 	float minCameraRotation = 0;
+
+	//Key related variables
+	bool keyFound = false;
+
+	//Door variables
+	bool mainDoorUnlocked = false;
+	bool simpleDoorNearby = false;
+	bool mainDoorNearby = false;
 
 	//END OF NON-IMPORTANT VARIABLES 
 	camera->SetPosition(pThief->GetX(), pThief->GetY()+2.5, pThief->GetZ()-2);
@@ -102,11 +166,36 @@ void main()
 		dt = myEngine->Timer();
 
 		/**** Update your scene each frame here ****/
-		UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-		UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
+
+		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
+
+		switch (STATE)
+		{
+		case MENU:
+		{
+			DisplayGameName->Draw("Shadows & Gold", 300, 300);
+			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
+
+			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
+			if (myEngine->KeyHit(Key_Space))
+			{
+				STATE = LEVEL;
+			}
+			break;
+		}
+		case LEVEL:
+		{
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
+			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
-		if (myEngine->KeyHit(Key_P)) {
-			levels.NextLevel(walls, doors, maindoor);
+			UpdateLevel(keyFound,DisplayQuest,simpleDoorNearby,InteractionMessage,myEngine,mainDoorNearby,mainDoorUnlocked,levels,walls,doors,maindoor,STATE);			
+			break;
+		}
+		case FINAL_CUTSCENE:
+		{
+			//implement movement of models in the terrace
+			break;
+		}
 		}
 
 		if (myEngine->KeyHit(Key_Escape)) {
