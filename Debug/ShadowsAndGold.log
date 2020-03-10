@@ -1,7 +1,2 @@
-﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  ShadowsAndGold.cpp
-c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(29): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\rodri\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(154): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+﻿  ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
