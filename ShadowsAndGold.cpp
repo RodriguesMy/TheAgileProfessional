@@ -101,7 +101,7 @@ void main()
 	/**** Set up your scene here ****/
 	IMesh* pFloorMesh = myEngine->LoadMesh("Floor.x");
 	IModel* pFloor = pFloorMesh->CreateModel(0,-0.3,0);
-
+	
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
 
@@ -120,13 +120,11 @@ void main()
 	float dt;
 	float thiefMovementSpeed = 5;
 
-	
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
 	pThief->Scale(5);
-
 	ICamera* camera = myEngine->CreateCamera(kManual);
 	camera->RotateX(25);
 
@@ -168,6 +166,7 @@ void main()
 		/**** Update your scene each frame here ****/
 
 		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
+		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
 
 		switch (STATE)
 		{
