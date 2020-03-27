@@ -128,7 +128,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
 
    TextureFilename {
-    "wood2.jpg";
+    "CinderblockSloppy0005_1_S.jpg";
    }
   }
  }
