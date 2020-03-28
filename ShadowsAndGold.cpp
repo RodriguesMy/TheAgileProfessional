@@ -90,6 +90,48 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 		mainDoorUnlocked = false;
 	}
 }
+//bool SphereToBoxCD(IModel* pThief, vector<IModel*> walls,float wallsXLength, float wallsYLength,float wallsZLength) 
+//{
+//	vector<IModel*>::iterator wall;
+//	wall = walls.begin();
+//	while(wall!=walls.end())
+//	{
+//		if (pThief->GetX()<(*wall)->GetX()+ wallsXLength && pThief->GetX() > (*wall)->GetX() - wallsXLength &&
+//			pThief->GetY() <(*wall)->GetY()+ wallsYLength && pThief->GetY>(*wall)->GetY() - wallsYLength &&
+//			pThief->GetZ() < (*wall)->GetZ() + wallsZLength && pThief->GetZ > (*wall)->GetZ() - wallsZLength
+//			/*player.CarGetX() < model2[i]->GetX() + modelXLength && player.CarGetX() > model2[i]->GetX() - modelXLength &&
+//			player.CarGetY() < model2[i]->GetY() + modelYLength && player.CarGetY() > model2[i]->GetY() - modelYLength &&
+//			player.CarGetZ() < model2[i]->GetZ() + modelZLength && player.CarGetZ() > model2[i]->GetZ() - modelZLength*/) {
+//			return true;
+//		}
+//	}
+//	return false;
+//}
+bool SphereToBoxCD(IModel* pThief, vector<IModel*> walls, int numberOfModels, float wallsXLength, float wallsYLength, float wallsZLength) {
+	for (int i = 0; i < numberOfModels; i++) {
+		if (pThief->GetX() < walls[i]->GetX() + wallsXLength && pThief->GetX() > walls[i]->GetX() - wallsXLength &&
+			pThief->GetY() < walls[i]->GetY() + wallsYLength && pThief->GetY() > walls[i]->GetY() - wallsYLength &&
+			pThief->GetZ() < walls[i]->GetZ() + wallsZLength && pThief->GetZ() > walls[i]->GetZ() - wallsZLength) {
+			return true;
+		}
+	}
+	return false;
+}
+//bool SphereToSphereCD(CCar player, IModel* model2[], float R1, float R2, int numberOfModels) {
+//
+//	for (int i = 0; i < numberOfModels; i++) {
+//		float x = player.CarGetX() - model2[i]->GetX();
+//		float y = player.CarGetY() - model2[i]->GetY();
+//		float z = player.CarGetZ() - model2[i]->GetZ();
+//
+//
+//		if (sqrt(x*x + y * y + z * z) < R1 + R2) {
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}
 void main()
 {
 	// Create a 3D engine (using TLX engine here) and open a window for it
@@ -102,6 +144,10 @@ void main()
 	IMesh* pFloorMesh = myEngine->LoadMesh("Floor.x");
 	IModel* pFloor = pFloorMesh->CreateModel(0,-0.3,0);
 	
+	IMesh* pRoofMesh = myEngine->LoadMesh("Floor.x");
+	IModel* pRoof = pFloorMesh->CreateModel(0, 16, 0);
+	pRoof->RotateZ(180);
+
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel();
 
@@ -150,6 +196,11 @@ void main()
 	bool simpleDoorNearby = false;
 	bool mainDoorNearby = false;
 
+	//Wall variables
+	float wallXLength = 15;
+	float wallYLength = 20;
+	float wallZLength = 0.1;
+	int numberOfWalls=0;
 	//END OF NON-IMPORTANT VARIABLES 
 	camera->SetPosition(pThief->GetX(), pThief->GetY()+2.5, pThief->GetZ()-2);
 	camera->AttachToParent(pCameraDummy);
@@ -162,7 +213,8 @@ void main()
 		// Draw the scene
 		myEngine->DrawScene();
 		dt = myEngine->Timer();
-
+		//i need the number of walls 
+		//SphereToBoxCD(pThief, walls, numberOfWalls, wallXLength, wallYLength, wallZLength);
 		/**** Update your scene each frame here ****/
 
 		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
