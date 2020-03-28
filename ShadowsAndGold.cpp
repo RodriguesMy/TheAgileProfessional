@@ -166,7 +166,6 @@ void main()
 	float dt;
 	float thiefMovementSpeed = 5;
 
-
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel();
