@@ -11,7 +11,6 @@ CLevel::CLevel(I3DEngine* myEngine)
 	//m_MPillars = myEngine->LoadMesh("pillar.x");
 }
 
-
 CLevel::~CLevel()
 {
 }
