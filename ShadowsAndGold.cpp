@@ -213,7 +213,7 @@ void main()
 		myEngine->DrawScene();
 		dt = myEngine->Timer();
 		//i need the number of walls 
-		//SphereToBoxCD(pThief, walls, numberOfWalls, wallXLength, wallYLength, wallZLength);
+		SphereToBoxCD(pThief, walls, numberOfWalls, wallXLength, wallYLength, wallZLength);
 		/**** Update your scene each frame here ****/
 
 		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
