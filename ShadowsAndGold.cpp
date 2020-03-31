@@ -35,7 +35,6 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 	{
 		if (cameraAngle < maxCameraRotation)
 		{
-
 			pCameraDummy->RotateLocalX(cameraMovementY);
 			cameraAngle += cameraMovementY;
 		}
