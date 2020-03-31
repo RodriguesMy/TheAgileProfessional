@@ -10,6 +10,7 @@ CLevel::CLevel(I3DEngine* myEngine)
 	m_MWall = myEngine->LoadMesh("wall.x");
 	m_MPillars = myEngine->LoadMesh("Pillar.x");
 	m_MPedestal = myEngine->LoadMesh("Pedestal.x");
+	m_MKey = myEngine->LoadMesh("Key.x");
 }
 
 CLevel::~CLevel()
@@ -32,7 +33,7 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data) {
 	return output;
 }
 
-void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars,IModel* MainDoor) {
+void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars,IModel* MainDoor,IModel* Key) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back());
 		Walls.pop_back();
@@ -41,25 +42,29 @@ void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IMod
 		m_MDoor->RemoveModel(Doors.back());
 		Doors.pop_back();
 	}
-	if (MainDoor != 0) {
+	if (MainDoor != NULL) {
 		m_MDoor->RemoveModel(MainDoor);
 	}
 	while (!Pillars.empty()) {
 		m_MPillars->RemoveModel(Pillars.back());
 	}
+	if (Key != NULL) {
+		m_MKey->RemoveModel(Key);
+	}
 }
 
-bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor) {
+bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor,IModel* Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
-			ClearLevel(Walls, Doors, Pillars, MainDoor);
+			ClearLevel(Walls, Doors, Pillars, MainDoor,Key);
 			enum EModelType {
 				wall,
 				door,
 				maindoor,
 				pillar,
-				pedestal
+				pedestal,
+				key
 			};
 			EModelType Current=wall;
 			string input;
@@ -75,6 +80,8 @@ bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IMode
 						Doors.push_back(CreateModel(m_MDoor, input));
 						break;
 					case maindoor:
+						if (MainDoor != NULL)
+							m_MDoor->RemoveModel(MainDoor);
 						MainDoor = CreateModel(m_MDoor, input);
 						break;
 					case pillar:
@@ -83,6 +90,10 @@ bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IMode
 					case pedestal:
 						Pillars.push_back(CreateModel(m_MPedestal, input));
 						break;
+					case key:
+						if (Key != NULL)
+							m_MKey->RemoveModel(Key);
+						Key = CreateModel(m_MKey, input);
 					}
 				}
 				else {

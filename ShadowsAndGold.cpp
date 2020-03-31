@@ -48,7 +48,7 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 	}
 }
 void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
-	CLevel &levels, vector<IModel*> walls, vector<IModel*> doors,vector<IModel*> pillars, IModel* maindoor,int &currentLevel) {
+	CLevel &levels, vector<IModel*> walls, vector<IModel*> doors,vector<IModel*> pillars, IModel* maindoor, IModel* Key, int &currentLevel) {
 	
 	//Update the Quests Fonts
 	if (keyFound)
@@ -86,7 +86,7 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 	{
 		keyFound = false;
 		mainDoorUnlocked = false;
-		levels.NextLevel(walls, doors, pillars, maindoor);
+		levels.NextLevel(walls, doors, pillars, maindoor,Key);
 		mainDoorUnlocked = false;
 	}
 }
@@ -157,11 +157,11 @@ void main()
 	vector<IModel*> walls;
 	vector<IModel*> doors;
 	vector<IModel*> pillars;
-	//vector<IModel*> pillars;
-	IModel* maindoor = 0;
+	IModel* maindoor=0;
+	IModel* key=0;
 
 	int STATE = MENU;
-	levels.NextLevel(walls, doors,pillars, maindoor);
+	levels.NextLevel(walls, doors,pillars, maindoor,key);
 
 	//NON-IMPORTANT VARIABLES
 	float dt;
@@ -239,7 +239,7 @@ void main()
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 		
-			UpdateLevel(keyFound,DisplayQuest,simpleDoorNearby,InteractionMessage,myEngine,mainDoorNearby,mainDoorUnlocked,levels,walls,doors,pillars,maindoor,STATE);			
+			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, maindoor, key, STATE);
 			break;
 		}
 		case FINAL_CUTSCENE:
