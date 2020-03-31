@@ -10,18 +10,20 @@ using namespace tle;
 #define FINAL_CUTSCENE 3
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
+
 	if (myEngine->KeyHeld(Key_W)) {
-		pThief->MoveLocalZ(-thiefMovementSpeed*dt);
+		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
 		pThief->MoveLocalZ(thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_D)) {
-		pThief->MoveLocalX(-thiefMovementSpeed*dt);
+		pThief->MoveLocalX(-thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_A)) {
 		pThief->MoveLocalX(thiefMovementSpeed * dt);
 	}
+	
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
 {
@@ -89,48 +91,32 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 		mainDoorUnlocked = false;
 	}
 }
-//bool SphereToBoxCD(IModel* pThief, vector<IModel*> walls,float wallsXLength, float wallsYLength,float wallsZLength) 
-//{
-//	vector<IModel*>::iterator wall;
-//	wall = walls.begin();
-//	while(wall!=walls.end())
-//	{
-//		if (pThief->GetX()<(*wall)->GetX()+ wallsXLength && pThief->GetX() > (*wall)->GetX() - wallsXLength &&
-//			pThief->GetY() <(*wall)->GetY()+ wallsYLength && pThief->GetY>(*wall)->GetY() - wallsYLength &&
-//			pThief->GetZ() < (*wall)->GetZ() + wallsZLength && pThief->GetZ > (*wall)->GetZ() - wallsZLength
-//			/*player.CarGetX() < model2[i]->GetX() + modelXLength && player.CarGetX() > model2[i]->GetX() - modelXLength &&
-//			player.CarGetY() < model2[i]->GetY() + modelYLength && player.CarGetY() > model2[i]->GetY() - modelYLength &&
-//			player.CarGetZ() < model2[i]->GetZ() + modelZLength && player.CarGetZ() > model2[i]->GetZ() - modelZLength*/) {
-//			return true;
-//		}
-//	}
-//	return false;
-//}
-bool SphereToBoxCD(IModel* pThief, vector<IModel*> walls, int numberOfModels, float wallsXLength, float wallsYLength, float wallsZLength) {
-	for (int i = 0; i < numberOfModels; i++) {
+//Collision detection with walls
+bool SphereToBoxCD(IModel* pThief, vector<IModel*> walls, float wallsXLength, float wallsZLength) {
+	for (int i = 0; i < walls.size(); i++) {
+		
 		if (pThief->GetX() < walls[i]->GetX() + wallsXLength && pThief->GetX() > walls[i]->GetX() - wallsXLength &&
-			pThief->GetY() < walls[i]->GetY() + wallsYLength && pThief->GetY() > walls[i]->GetY() - wallsYLength &&
-			pThief->GetZ() < walls[i]->GetZ() + wallsZLength && pThief->GetZ() > walls[i]->GetZ() - wallsZLength) {
+			/*pThief->GetY() < walls[i]->GetY() + wallsYLength && pThief->GetY() > walls[i]->GetY() - wallsYLength &&*/
+			pThief->GetZ() < walls[i]->GetZ() + wallsZLength && pThief->GetZ() > walls[i]->GetZ() - wallsZLength){
+			cout << "wall" << endl;
 			return true;
 		}
 	}
 	return false;
 }
-//bool SphereToSphereCD(CCar player, IModel* model2[], float R1, float R2, int numberOfModels) {
-//
-//	for (int i = 0; i < numberOfModels; i++) {
-//		float x = player.CarGetX() - model2[i]->GetX();
-//		float y = player.CarGetY() - model2[i]->GetY();
-//		float z = player.CarGetZ() - model2[i]->GetZ();
-//
-//
-//		if (sqrt(x*x + y * y + z * z) < R1 + R2) {
-//			return true;
-//		}
-//	}
-//
-//	return false;
-//}
+//Collision detection for key
+bool SphereToSphereCD(IModel* pThief, IModel* key, float R1, float R2) {
+
+	float x = pThief->GetX() - key->GetX();
+	float y = pThief->GetY() - key->GetY();
+	float z = pThief->GetZ() - key->GetZ();
+
+	if (sqrt(x * x + y * y + z * z) < R1 + R2) {
+		return true;
+	}
+
+	return false;
+}
 void main()
 {
 	// Create a 3D engine (using TLX engine here) and open a window for it
@@ -148,7 +134,7 @@ void main()
 	pRoof->RotateZ(180);
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
-	IModel* pCameraDummy = pDummyMesh->CreateModel();
+	IModel* pCameraDummy = pDummyMesh->CreateModel(0, 0, -5);
 
 	CLevel levels(myEngine);
 
@@ -156,6 +142,7 @@ void main()
 	vector<IModel*> walls;
 	vector<IModel*> doors;
 	vector<IModel*> pillars;
+
 	IModel* maindoor=0;
 	IModel* key=0;
 
@@ -163,12 +150,12 @@ void main()
 	levels.NextLevel(walls, doors,pillars, maindoor,key);
 
 	//NON-IMPORTANT VARIABLES
-	float dt;
-	float thiefMovementSpeed = 5;
+	float dt=myEngine->Timer();
+	float const thiefMovementSpeed = 5;
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
-	IModel* pThief = pThieflMesh->CreateModel();
+	IModel* pThief = pThieflMesh->CreateModel(0, 0, -5);
 	pThief->Scale(5);
 	ICamera* camera = myEngine->CreateCamera(kManual);
 	camera->RotateX(25);
@@ -179,13 +166,12 @@ void main()
 	//Message Displaying variables
 	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
 	IFont* InteractionMessage = myEngine->LoadFont("Cambria", 24U);
-
 	//END OF IFONT Variables
 
 	//Rotation of camera variables
-	float maxCameraRotation = 40;
+	float const maxCameraRotation = 30;
 	float cameraAngle = 25;
-	float minCameraRotation = 0;
+	float const minCameraRotation = 20;
 
 	//Key related variables
 	bool keyFound = false;
@@ -196,10 +182,10 @@ void main()
 	bool mainDoorNearby = false;
 
 	//Wall variables
-	float wallXLength = 15;
-	float wallYLength = 20;
-	float wallZLength = 0.1;
-	int numberOfWalls=0;
+	float const wallXLength = 0.3;
+	/*float const wallYLength = 10;*/
+	float const wallZLength = 5;
+
 	//END OF NON-IMPORTANT VARIABLES 
 	camera->SetPosition(pThief->GetX(), pThief->GetY()+2.5, pThief->GetZ()-2);
 	camera->AttachToParent(pCameraDummy);
@@ -213,9 +199,8 @@ void main()
 		myEngine->DrawScene();
 		dt = myEngine->Timer();
 		//i need the number of walls 
-		SphereToBoxCD(pThief, walls, numberOfWalls, wallXLength, wallYLength, wallZLength);
-		/**** Update your scene each frame here ****/
 
+		/**** Update your scene each frame here ****/
 		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
 		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
 
@@ -235,6 +220,11 @@ void main()
 		}
 		case LEVEL:
 		{
+			//Myriam, testing
+			if (myEngine->KeyHeld(Key_W) && !SphereToBoxCD(pThief, walls, wallXLength,wallZLength)) {
+				pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+			}
+			//end of Myriam testing
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 			if (myEngine->KeyHit(Key_P))
