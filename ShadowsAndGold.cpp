@@ -8,6 +8,13 @@ using namespace tle;
 #define MENU 1
 #define LEVEL 2
 #define FINAL_CUTSCENE 3
+
+//Door variables
+#define DOOR_OPENING 0
+#define DOOR_CLOSING 1
+#define DOOR_CLOSED 3
+#define DOOR_OPEN 4
+
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
 
@@ -92,13 +99,69 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 	}
 }
 //Collision detection with walls
-bool SphereToBoxCD(IModel* pThief, vector<IModel*> walls, float wallsXLength, float wallsZLength) {
+bool CollisionWithWalls(IModel* pThief, vector<IModel*> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
 	for (int i = 0; i < walls.size(); i++) {
 		
 		if (pThief->GetX() < walls[i]->GetX() + wallsXLength && pThief->GetX() > walls[i]->GetX() - wallsXLength &&
-			/*pThief->GetY() < walls[i]->GetY() + wallsYLength && pThief->GetY() > walls[i]->GetY() - wallsYLength &&*/
+			pThief->GetY() < walls[i]->GetY() + wallsYLength && pThief->GetY() > walls[i]->GetY() - wallsYLength &&
 			pThief->GetZ() < walls[i]->GetZ() + wallsZLength && pThief->GetZ() > walls[i]->GetZ() - wallsZLength){
 			cout << "wall" << endl;
+			return true;
+		}
+	}
+	return false;
+}
+//Collision detection with doors
+bool CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength, float doorYLength, float doorZLength,int &doorState,int maxLimit,float &currentLimit, IFont* InteractionMessage,
+	I3DEngine* myEngine,float doorMovementSpeed,float dt) {
+
+
+	for (int i = 0; i < door.size(); i++) {
+
+		if (pThief->GetX() < door[i]->GetX() + doorXLength && pThief->GetX() > door[i]->GetX() - doorXLength &&
+			pThief->GetY() < door[i]->GetY() + doorYLength && pThief->GetY() > door[i]->GetY() - doorYLength &&
+			pThief->GetZ() < door[i]->GetZ() + doorZLength && pThief->GetZ() > door[i]->GetZ() - doorZLength) {
+			
+			switch (doorState)
+			{
+			case DOOR_CLOSED:
+			{			
+				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{
+					doorState = DOOR_OPENING;
+				}
+			}break;
+			case DOOR_OPEN:
+			{
+				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{
+					doorState = DOOR_CLOSING;
+				}
+			}break;
+			case DOOR_CLOSING:
+			{
+				door[i]->MoveLocalZ(-doorMovementSpeed*dt);
+				currentLimit += 0.1;
+				if (currentLimit > maxLimit)
+				{
+					doorState = DOOR_CLOSED;
+					currentLimit = 0;
+				}
+				
+			}break;
+			case DOOR_OPENING:
+			{
+				door[i]->MoveLocalZ(doorMovementSpeed*dt);
+				currentLimit += 0.1;
+				if (currentLimit > maxLimit)
+				{
+					doorState = DOOR_OPEN;
+					currentLimit = 0;
+				}
+			}break;
+			}
 			return true;
 		}
 	}
@@ -180,11 +243,18 @@ void main()
 	bool mainDoorUnlocked = false;
 	bool simpleDoorNearby = false;
 	bool mainDoorNearby = false;
+	int doorState = DOOR_CLOSED;
+	float maxLimit = 30;
+	float currentLimit = 0;
+	float const doorXLength = 5;
+	float const doorYLength = 10;
+	float const doorZLength = 10;
+	float const doorMovementSpeed = 20;
 
 	//Wall variables
-	float const wallXLength = 0.3;
-	/*float const wallYLength = 10;*/
-	float const wallZLength = 5;
+	float const wallXLength = 0.5;
+	float const wallYLength = 10;
+	float const wallZLength = 10;
 
 	//END OF NON-IMPORTANT VARIABLES 
 	camera->SetPosition(pThief->GetX(), pThief->GetY()+2.5, pThief->GetZ()-2);
@@ -198,11 +268,9 @@ void main()
 		// Draw the scene
 		myEngine->DrawScene();
 		dt = myEngine->Timer();
-		//i need the number of walls 
 
 		/**** Update your scene each frame here ****/
 		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
-		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
 
 		switch (STATE)
 		{
@@ -220,17 +288,33 @@ void main()
 		}
 		case LEVEL:
 		{
-			//Myriam, testing
-			if (myEngine->KeyHeld(Key_W) && !SphereToBoxCD(pThief, walls, wallXLength,wallZLength)) {
-				pThief->MoveLocalZ(-thiefMovementSpeed * dt);
-			}
-			//end of Myriam testing
+			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,doorState,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt);
+			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
+			////Myriam, testing do not touch (trying to implement CD with walls) 
+			//if (!SphereToBoxCD(pThief, walls, wallXLength, wallYLength,wallZLength)) {
+			//	
+			//	if(myEngine->KeyHeld(Key_W))
+			//	{
+			//		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+			//	}				
+			//}
+			//if (myEngine->KeyHeld(Key_S)) {
+			//	pThief->MoveLocalZ(thiefMovementSpeed * dt);
+			//}
+			//if (myEngine->KeyHeld(Key_D) && !SphereToBoxCD(pThief, walls, wallXLength, wallYLength, wallZLength)) {
+			//	pThief->MoveLocalX(-thiefMovementSpeed * dt);
+			//}
+			//if (myEngine->KeyHeld(Key_A) && !SphereToBoxCD(pThief, walls, wallXLength, wallYLength, wallZLength)) {
+			//	pThief->MoveLocalX(thiefMovementSpeed * dt);
+			//}
+			////end of Myriam testing
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, maindoor, key))
 					cout << "no more levels" << endl;
 			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, maindoor, key, STATE);
+			
 			break;
 		}
 		case FINAL_CUTSCENE:
@@ -239,6 +323,7 @@ void main()
 			break;
 		}
 		}
+
 
 		if (myEngine->KeyHit(Key_Escape)) {
 			myEngine->Stop();
