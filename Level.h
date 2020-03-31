@@ -23,9 +23,9 @@ private:
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	bool NextLevel(vector<IModel*> Walls,vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor,IModel* Key);
+	bool NextLevel(vector<IModel*>& Walls,vector<IModel*>& Doors,vector<IModel*>& Pillars, IModel* MainDoor,IModel* Key);
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh,string data);
-	void ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor,IModel* Key);
+	void ClearLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IModel*>& Pillars, IModel* MainDoor,IModel* Key);
 };

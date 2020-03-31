@@ -33,7 +33,7 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data) {
 	return output;
 }
 
-void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars,IModel* MainDoor,IModel* Key) {
+void CLevel::ClearLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IModel*>& Pillars,IModel* MainDoor,IModel* Key) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back());
 		Walls.pop_back();
@@ -53,7 +53,7 @@ void CLevel::ClearLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IMod
 	}
 }
 
-bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IModel*> Pillars, IModel* MainDoor,IModel* Key) {
+bool CLevel::NextLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IModel*>& Pillars, IModel* MainDoor,IModel* Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {

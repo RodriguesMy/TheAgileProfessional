@@ -238,7 +238,9 @@ void main()
 		{
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
-		
+			if (myEngine->KeyHit(Key_P))
+				if (levels.NextLevel(walls, doors, pillars, maindoor, key))
+					cout << "no more levels" << endl;
 			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, maindoor, key, STATE);
 			break;
 		}

@@ -1,6 +1,7 @@
-﻿  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+﻿cl : Command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  ShadowsAndGold.cpp
+c:\users\chris\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\chris\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(29): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\chris\source\repos\rodriguesmy\theagileprofessional\shadowsandgold.cpp(205): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: The command "copy "C:\ProgramData\TL-Engine\3rd Party\Irrlicht-0.7\bin\VisualStudio\IrrlichtDebug.dll" "C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\" > NUL
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: copy "C:\ProgramData\TL-Engine\3rd Party\TL-Xtreme\shader\*.*" "C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\" > NUL
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: 
-C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppCommon.targets(138,5): error MSB3073: :VCEnd" exited with code 1.
