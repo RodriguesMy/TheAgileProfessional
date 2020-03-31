@@ -111,8 +111,51 @@ bool CollisionWithWalls(IModel* pThief, vector<IModel*> walls, float wallsXLengt
 	}
 	return false;
 }
+void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt)
+{
+	switch (doorState)
+	{
+	case DOOR_CLOSED:
+	{
+		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
+		if (myEngine->KeyHit(Key_E))
+		{
+			doorState = DOOR_OPENING;
+		}
+	}break;
+	case DOOR_OPEN:
+	{
+		InteractionMessage->Draw("Press 'E' to close.", 565, 550);
+		if (myEngine->KeyHit(Key_E))
+		{
+			doorState = DOOR_CLOSING;
+		}
+	}break;
+	case DOOR_CLOSING:
+	{
+		door->MoveLocalZ(-doorMovementSpeed * dt);
+		currentLimit += 0.1;
+		if (currentLimit > maxLimit)
+		{
+			doorState = DOOR_CLOSED;
+			currentLimit = 0;
+		}
+
+	}break;
+	case DOOR_OPENING:
+	{
+		door->MoveLocalZ(doorMovementSpeed * dt);
+		currentLimit += 0.1;
+		if (currentLimit > maxLimit)
+		{
+			doorState = DOOR_OPEN;
+			currentLimit = 0;
+		}
+	}break;
+	}
+}
 //Collision detection with doors
-bool CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength, float doorYLength, float doorZLength,int &doorState,int maxLimit,float &currentLimit, IFont* InteractionMessage,
+void CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength, float doorYLength, float doorZLength,int &doorState,int maxLimit,float &currentLimit, IFont* InteractionMessage,
 	I3DEngine* myEngine,float doorMovementSpeed,float dt) {
 
 
@@ -121,52 +164,13 @@ bool CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength,
 		if (pThief->GetX() < door[i]->GetX() + doorXLength && pThief->GetX() > door[i]->GetX() - doorXLength &&
 			pThief->GetY() < door[i]->GetY() + doorYLength && pThief->GetY() > door[i]->GetY() - doorYLength &&
 			pThief->GetZ() < door[i]->GetZ() + doorZLength && pThief->GetZ() > door[i]->GetZ() - doorZLength) {
+			UpdateWall(doorState, door[i], maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
 			
-			switch (doorState)
-			{
-			case DOOR_CLOSED:
-			{			
-				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
-				if (myEngine->KeyHit(Key_E))
-				{
-					doorState = DOOR_OPENING;
-				}
-			}break;
-			case DOOR_OPEN:
-			{
-				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
-				if (myEngine->KeyHit(Key_E))
-				{
-					doorState = DOOR_CLOSING;
-				}
-			}break;
-			case DOOR_CLOSING:
-			{
-				door[i]->MoveLocalZ(-doorMovementSpeed*dt);
-				currentLimit += 0.1;
-				if (currentLimit > maxLimit)
-				{
-					doorState = DOOR_CLOSED;
-					currentLimit = 0;
-				}
-				
-			}break;
-			case DOOR_OPENING:
-			{
-				door[i]->MoveLocalZ(doorMovementSpeed*dt);
-				currentLimit += 0.1;
-				if (currentLimit > maxLimit)
-				{
-					doorState = DOOR_OPEN;
-					currentLimit = 0;
-				}
-			}break;
 			}
-			return true;
+			
 		}
 	}
-	return false;
-}
+
 //Collision detection for key
 bool SphereToSphereCD(IModel* pThief, IModel* key, float R1, float R2) {
 
