@@ -110,6 +110,8 @@ bool CLevel::NextLevel(vector<IModel*> Walls, vector<IModel*> Doors,vector<IMode
 						Current = pedestal;
 					else if (input == "maindoor")
 						Current = maindoor;
+					else if (input == "key")
+						Current = key;
 				}
 			}
 			return true;
