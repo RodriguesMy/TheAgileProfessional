@@ -270,12 +270,11 @@ void main()
 		dt = myEngine->Timer();
 
 		/**** Update your scene each frame here ****/
-		myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
-
+		
 		switch (STATE)
 		{
 		case MENU:
-		{
+		{	myEngine->StopMouseCapture();
 			DisplayGameName->Draw("Shadows & Gold", 300, 300);
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
 
@@ -288,6 +287,8 @@ void main()
 		}
 		case LEVEL:
 		{
+			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
+
 			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,doorState,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
 			////Myriam, testing do not touch (trying to implement CD with walls) 
