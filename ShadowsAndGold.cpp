@@ -203,7 +203,7 @@ void main()
 	pRoof->RotateZ(180);
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
-	IModel* pCameraDummy = pDummyMesh->CreateModel(0, 0, -5);
+	IModel* pCameraDummy = pDummyMesh->CreateModel(0,0.8, 0);
 
 	CLevel levels(myEngine);
 
@@ -225,7 +225,7 @@ void main()
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel(0, 0, -5);
 	pThief->Scale(5);
-	ICamera* camera = myEngine->CreateCamera(kManual);
+	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-3);
 	camera->RotateX(25);
 
 	//IFONT Variables
@@ -237,9 +237,9 @@ void main()
 	//END OF IFONT Variables
 
 	//Rotation of camera variables
-	float const maxCameraRotation = 30;
+	float const maxCameraRotation = 35;
 	float cameraAngle = 25;
-	float const minCameraRotation = 20;
+	float const minCameraRotation = 10;
 
 	//Key related variables
 	bool keyFound = false;
@@ -265,7 +265,6 @@ void main()
 	float const wallZLength = 10;
 
 	//END OF NON-IMPORTANT VARIABLES 
-	camera->SetPosition(pThief->GetX(), pThief->GetY()+2.5, pThief->GetZ()-2);
 	camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
 	pCameraDummy->RotateY(180);
