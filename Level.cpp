@@ -169,3 +169,13 @@ void CLevel::RemoveKey() {
 IModel* CLevel::getKey() {
 	return m_Key;
 }
+
+void CLevel::UpdateKey(float keyMovingSpeed,float dt,bool keyFound) {
+	if(!keyFound)
+	m_Key->RotateY(keyMovingSpeed*dt);
+}
+
+void CLevel::SetUpKey() {
+	m_Key->RotateX(90);
+	m_Key->SetY(7);
+}

@@ -49,7 +49,7 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 		}
 	}
 }
-void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
+void UpdateQuests(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
 	CLevel &levels, vector<WallStruct> walls, vector<DoorStruct>& doors,vector<IModel*> pillars, IModel* Key, int &currentLevel) {
 	
 	//Update the Quests Fonts
@@ -81,16 +81,17 @@ bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLe
 	}
 	return false;
 }
-bool CDDoorsBoolean(IModel* pThief,IModel* door,float doorXLength,float doorYLength,float doorZLength)
+bool BooleanCD(IModel* pThief,IModel* model,float modelXLength,float modelYLength,float modelZLength)
 {
-	return ((pThief->GetX() < door->GetX() + doorXLength && pThief->GetX() > door->GetX() - doorXLength &&
-		pThief->GetY() < door->GetY() + doorYLength && pThief->GetY() > door->GetY() - doorYLength &&
-		pThief->GetZ() < door->GetZ() + doorZLength && pThief->GetZ() > door->GetZ() - doorZLength));
+	return ((pThief->GetX() < model->GetX() + modelXLength && pThief->GetX() > model->GetX() - modelXLength &&
+		pThief->GetY() < model->GetY() + modelYLength && pThief->GetY() > model->GetY() - modelYLength &&
+		pThief->GetZ() < model->GetZ() + modelZLength && pThief->GetZ() > model->GetZ() - modelZLength));
 }
 void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
+	-Each door has its own state
 	DOOR_CLOSED:
 	1. Checks for collision detection with the current door sent by a parameter
 	2. If there is collision, it checks the door type so it can act accordingly.
@@ -116,7 +117,7 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 	{
 	case DOOR_CLOSED:
 	{
-		if (CDDoorsBoolean(pThief,door,doorXLength,doorYLength,doorZLength)) {
+		if (BooleanCD(pThief,door,doorXLength,doorYLength,doorZLength)) {
 
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
@@ -143,7 +144,7 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 	}break;
 	case DOOR_OPEN:
 	{
-		if (CDDoorsBoolean(pThief, door, doorXLength, doorYLength, doorZLength)) {
+		if (BooleanCD(pThief, door, doorXLength, doorYLength, doorZLength)) {
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
@@ -162,7 +163,6 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 			doorState = DOOR_CLOSED;
 			currentLimit = 0;
 		}
-
 
 	}break;
 	case DOOR_OPENING:
@@ -285,9 +285,10 @@ void main()
 	pCameraDummy->RotateY(180);
 
 	//Key variables
-	float R1 = 1;
-	float R2 = 5;
-
+	levels.SetUpKey();
+	float R1 = 5;
+	float R2 = 7;
+	float keyMovementSpeed = 150;
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
 	{
@@ -317,6 +318,7 @@ void main()
 
 			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt,keyFound);
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);
+			levels.UpdateKey(keyMovementSpeed,dt,keyFound);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
 			////Myriam, testing do not touch (trying to implement CD with walls) 
 			//if (!SphereToBoxCD(pThief, walls, wallXLength, wallYLength,wallZLength)) {
@@ -341,7 +343,7 @@ void main()
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;
-			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, key, STATE);
+			UpdateQuests(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, key, STATE);
 			
 			break;
 		}

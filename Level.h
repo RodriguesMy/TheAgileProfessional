@@ -53,6 +53,8 @@ public:
 	int GetLevelNumber() { return m_LevelIt; }
 	void RemoveKey();
 	IModel* getKey();
+	void SetUpKey();
+	void UpdateKey(float keyMovingSpeed, float dt,bool keyFound);
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh, string data, float rot = 0);
