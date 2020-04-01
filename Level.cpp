@@ -71,7 +71,8 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 			while (getline(File,input))
 			{
 				input.erase(remove_if(input.begin(), input.end(), isspace));
-				if (!isalpha(input[0])) {
+				if (input[0] == '/');
+				else if (!isalpha(input[0])) {
 					switch (Current) {
 					case wall:
 						WallStruct wall;
