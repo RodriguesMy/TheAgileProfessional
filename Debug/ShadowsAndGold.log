@@ -1,10 +1,9 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  Level.cpp
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(90,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(103,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(128,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(160,16): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(156): warning C4715: 'CLevel::NextLevel': not all control paths return a value
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(79): warning C4700: uninitialized local variable 'wall' used
+  ShadowsAndGold.cpp
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(31,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(32,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(74,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(182,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(318,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

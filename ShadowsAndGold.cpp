@@ -7,7 +7,8 @@ using namespace tle;
 
 #define MENU 1
 #define LEVEL 2
-#define FINAL_CUTSCENE 3
+#define PLAYER_LOST 3
+#define LOADING_NEXT_LEVEL 4
 
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
@@ -247,7 +248,7 @@ void main()
 	camera->RotateX(25);
 
 	//IFONT Variables
-	IFont* DisplayGameName = myEngine->LoadFont("Cambria", 120U);
+	IFont* DisplayBigMessage = myEngine->LoadFont("Cambria", 120U);
 	IFont* DisplayMenu = myEngine->LoadFont("Cambria", 70U);
 	//Message Displaying variables
 	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
@@ -288,6 +289,7 @@ void main()
 	float R1 = 5;
 	float R2 = 7;
 	float keyMovementSpeed = 150;
+
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
 	{
@@ -301,7 +303,7 @@ void main()
 		{
 		case MENU:
 		{	myEngine->StopMouseCapture();
-			DisplayGameName->Draw("Shadows & Gold", 300, 300);
+			DisplayBigMessage->Draw("Shadows & Gold", 300, 300);
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
 
 			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
@@ -346,11 +348,35 @@ void main()
 			
 			break;
 		}
-		case FINAL_CUTSCENE:
+		case PLAYER_LOST:
 		{
-			//implement movement of models in the terrace
+			DisplayBigMessage->Draw("You Lost!", 300, 300);
+			DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
+			if (myEngine->KeyHit(Key_Space))
+			{
+				STATE = LEVEL;
+				//reset variables
+			}
 			break;
 		}
+		case LOADING_NEXT_LEVEL:
+		{
+			// This state could execute when we want to render the next level smoothly
+
+			DisplayBigMessage->Draw("Loading . . .", 300, 300);
+
+			//I thought of maybe putting a wall in front of the camera (as a black screen) and changing the level here
+			//Resetting the player's and guard's position
+			//Having the starting place of the player and the guard inside each level (get them from level.txt) is a good idea
+			//for having checkpoints
+
+			if (1/*loading map finished*/)
+			{
+				STATE = LEVEL;
+
+			}
+		}
+		break;
 		}
 
 
