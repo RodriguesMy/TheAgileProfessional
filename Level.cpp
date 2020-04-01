@@ -71,7 +71,8 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 			while (getline(File,input))
 			{
 				input.erase(remove_if(input.begin(), input.end(), isspace));
-				if (!isalpha(input[0])) {
+				if (input[0] == '/');
+				else if (!isalpha(input[0])) {
 					switch (Current) {
 					case wall:
 						WallStruct wall;
@@ -87,7 +88,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case endingdoor:
 						for (int i = 0; i < Doors.size(); i++) {
-							if (Doors[i].type = ending) {
+							if (Doors[i].type == ending) {
 								m_MDoor->RemoveModel(Doors.at(i).model);
 								Doors.erase(Doors.begin()+i);
 							}
@@ -100,7 +101,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case startingdoor:
 						for (int i = 0; i < Doors.size(); i++) {
-							if (Doors[i].type = starting) {
+							if (Doors[i].type == starting) {
 								m_MDoor->RemoveModel(Doors.at(i).model);
 								Doors.erase(Doors.begin() + i);
 							}
