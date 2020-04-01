@@ -90,6 +90,28 @@ bool CDDoorsBoolean(IModel* pThief,IModel* door,float doorXLength,float doorYLen
 void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
 {
+	/*MAIN SWITCH STATEMENT FOR DOORS
+	DOOR_CLOSED:
+	1. Checks for collision detection with the current door sent by a parameter
+	2. If there is collision, it checks the door type so it can act accordingly.
+		Simple Door: You can simply open the door.
+		Starting Door: You can not open the starting door. 
+		Ending Door: You can open the ending door only if you have the key,
+					otherwise, a message is displayed saying that the player has to find the key.
+
+	DOOR_OPEN:
+	1. Checks for collision detection with the current door sent by a parameter
+	2. If there is a collision, it checks the door type so it can act accordingly.
+		Simple Door: You can simply close the door
+		Starting Door: This door can not be opened, therefore it can not be closed    //MIGHT CHANGE LATER
+		Ending Door:                                                                  //ADD LATER
+
+	DOOR_OPENING:
+	1. Simply moves the door's local Z to a maximum limit
+
+	DOOR_CLOSING:
+	1. Simply moves the door's local Z to a maximum limit
+	*/
 	switch (doorState)
 	{
 	case DOOR_CLOSED:
