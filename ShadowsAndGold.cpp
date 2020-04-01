@@ -9,12 +9,6 @@ using namespace tle;
 #define LEVEL 2
 #define FINAL_CUTSCENE 3
 
-//Door variables
-#define DOOR_OPENING 0
-#define DOOR_CLOSING 1
-#define DOOR_CLOSED 3
-#define DOOR_OPEN 4
-
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
 {
 
@@ -55,7 +49,7 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 		}
 	}
 }
-void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
+void UpdateQuests(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
 	CLevel &levels, vector<WallStruct> walls, vector<DoorStruct>& doors,vector<IModel*> pillars, IModel* Key, int &currentLevel) {
 	
 	//Update the Quests Fonts
@@ -67,68 +61,97 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 	{
 		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.", 0, 0);
 	}
-
-	//If door is nearby there should be a message displaying the interaction 
-	if (simpleDoorNearby/*implement collision detection to change this value*/)
-	{
-		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
-
-		if (myEngine->KeyHit(Key_E))
-		{
-			//open door (implement doors opening/sliding)
-		}
-	}
-
-	if (mainDoorNearby/*implement collision detection to change this value*/)
-	{
-		InteractionMessage->Draw("Press 'E' to Unlock Next Floor.", 530, 550);
-		if (myEngine->KeyHit(Key_E))
-		{
-			//open door (implement doors opening/sliding)
-			mainDoorUnlocked = true; //this will cause the transition 
-		}
-	}
-
-	//Transition
-	if (mainDoorUnlocked)
-	{
-		keyFound = false;
-		mainDoorUnlocked = false;
-		levels.NextLevel(walls, doors, pillars,Key);
-		mainDoorUnlocked = false;
-	}
+	////Transition
+	//if (mainDoorUnlocked)
+	//{
+	//	keyFound = false;
+	//	mainDoorUnlocked = false;
+	//	levels.NextLevel(walls, doors, pillars,Key);
+	//	mainDoorUnlocked = false;
+	//}
 }
-//Collision detection with walls
 bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
 	for (int i = 0; i < walls.size(); i++) {
 		
 		if (pThief->GetX() < walls[i].model->GetX() + wallsXLength && pThief->GetX() > walls[i].model->GetX() - wallsXLength &&
 			pThief->GetY() < walls[i].model->GetY() + wallsYLength && pThief->GetY() > walls[i].model->GetY() - wallsYLength &&
 			pThief->GetZ() < walls[i].model->GetZ() + wallsZLength && pThief->GetZ() > walls[i].model->GetZ() - wallsZLength){
-			cout << "wall" << endl;
 			return true;
 		}
 	}
 	return false;
 }
-void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt)
+bool BooleanCD(IModel* pThief,IModel* model,float modelXLength,float modelYLength,float modelZLength)
 {
+	return ((pThief->GetX() < model->GetX() + modelXLength && pThief->GetX() > model->GetX() - modelXLength &&
+		pThief->GetY() < model->GetY() + modelYLength && pThief->GetY() > model->GetY() - modelYLength &&
+		pThief->GetZ() < model->GetZ() + modelZLength && pThief->GetZ() > model->GetZ() - modelZLength));
+}
+void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
+	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
+{
+	/*MAIN SWITCH STATEMENT FOR DOORS
+	-Each door has its own state
+	DOOR_CLOSED:
+	1. Checks for collision detection with the current door sent by a parameter
+	2. If there is collision, it checks the door type so it can act accordingly.
+		Simple Door: You can simply open the door.
+		Starting Door: You can not open the starting door. 
+		Ending Door: You can open the ending door only if you have the key,
+					otherwise, a message is displayed saying that the player has to find the key.
+
+	DOOR_OPEN:
+	1. Checks for collision detection with the current door sent by a parameter
+	2. If there is a collision, it checks the door type so it can act accordingly.
+		Simple Door: You can simply close the door
+		Starting Door: This door can not be opened, therefore it can not be closed    //MIGHT CHANGE LATER
+		Ending Door:                                                                  //ADD LATER
+
+	DOOR_OPENING:
+	1. Simply moves the door's local Z to a maximum limit
+
+	DOOR_CLOSING:
+	1. Simply moves the door's local Z to a maximum limit
+	*/
 	switch (doorState)
 	{
 	case DOOR_CLOSED:
 	{
-		InteractionMessage->Draw("Press 'E' to open.", 565, 550);
-		if (myEngine->KeyHit(Key_E))
-		{
-			doorState = DOOR_OPENING;
+		if (BooleanCD(pThief,door,doorXLength,doorYLength,doorZLength)) {
+
+			if (doorType == simple) {
+				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{
+					doorState = DOOR_OPENING;
+				}
+			}
+
+			if (doorType == ending && keyFound) {
+				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{
+					doorState = DOOR_OPENING;
+					//progress to the next level
+				}
+			}
+
+			if (doorType == ending && !keyFound) {
+				InteractionMessage->Draw("You have to find the key first.", 565, 550);
+			}
 		}
+		
 	}break;
 	case DOOR_OPEN:
 	{
-		InteractionMessage->Draw("Press 'E' to close.", 565, 550);
-		if (myEngine->KeyHit(Key_E))
-		{
-			doorState = DOOR_CLOSING;
+		if (BooleanCD(pThief, door, doorXLength, doorYLength, doorZLength)) {
+			if (doorType == simple) {
+				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{
+					doorState = DOOR_CLOSING;
+				}
+			}
 		}
 	}break;
 	case DOOR_CLOSING:
@@ -154,35 +177,33 @@ void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 	}break;
 	}
 }
-//Collision detection with doors
 void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
-	I3DEngine* myEngine,float doorMovementSpeed,float dt) {
-
-
+	I3DEngine* myEngine,float doorMovementSpeed,float dt,bool keyFound) {	
 	for (int i = 0; i < door.size(); i++) {
+		UpdateDoor(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt, 
+			keyFound, door[i].type,pThief,doorXLength,doorYLength,doorZLength);
+	}
+}
+void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound) {
 
-		if (pThief->GetX() < door[i].model->GetX() + doorXLength && pThief->GetX() > door[i].model->GetX() - doorXLength &&
-			pThief->GetY() < door[i].model->GetY() + doorYLength && pThief->GetY() > door[i].model->GetY() - doorYLength &&
-			pThief->GetZ() < door[i].model->GetZ() + doorZLength && pThief->GetZ() > door[i].model->GetZ() - doorZLength) {
-			UpdateWall(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
-			
-			}
-			
-		}
+	float KeyX=0;
+	float KeyY=0;
+	float KeyZ=0;
+	
+	if (!keyFound) {
+		KeyX = level.getKey()->GetX();
+		KeyY = level.getKey()->GetY();
+		KeyZ = level.getKey()->GetZ();
 	}
 
-//Collision detection for key
-bool SphereToSphereCD(IModel* pThief, IModel* key, float R1, float R2) {
-
-	float x = pThief->GetX() - key->GetX();
-	float y = pThief->GetY() - key->GetY();
-	float z = pThief->GetZ() - key->GetZ();
-
+	float x= pThief->GetX() - KeyX;
+	float y = pThief->GetY() - KeyY;
+	float z= pThief->GetZ() - KeyZ;
+	
 	if (sqrt(x * x + y * y + z * z) < R1 + R2) {
-		return true;
+		keyFound = true;
+		level.RemoveKey();
 	}
-
-	return false;
 }
 void main()
 {
@@ -191,7 +212,7 @@ void main()
 	myEngine->StartWindowed();
 	// Add default folder for meshes and other media
 	myEngine->AddMediaFolder( "./Media" );
-
+	//90, 5, -43, 0, 5
 	/**** Set up your scene here ****/
 	IMesh* pFloorMesh = myEngine->LoadMesh("Floor.x");
 	IModel* pFloor = pFloorMesh->CreateModel(0,-0.3,0);
@@ -221,7 +242,7 @@ void main()
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
-	IModel* pThief = pThieflMesh->CreateModel(0, 0, -5);
+	IModel* pThief = pThieflMesh->CreateModel(0, 0, -10);
 	pThief->Scale(5);
 	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-3);
 	camera->RotateX(25);
@@ -263,6 +284,11 @@ void main()
 	pCameraDummy->AttachToParent(pThief);
 	pCameraDummy->RotateY(180);
 
+	//Key variables
+	levels.SetUpKey();
+	float R1 = 5;
+	float R2 = 7;
+	float keyMovementSpeed = 150;
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
 	{
@@ -290,7 +316,9 @@ void main()
 		{
 			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
 
-			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt);
+			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt,keyFound);
+			CollisionWithKey(pThief, R1, R2, levels, keyFound);
+			levels.UpdateKey(keyMovementSpeed,dt,keyFound);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
 			////Myriam, testing do not touch (trying to implement CD with walls) 
 			//if (!SphereToBoxCD(pThief, walls, wallXLength, wallYLength,wallZLength)) {
@@ -315,7 +343,7 @@ void main()
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;
-			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, key, STATE);
+			UpdateQuests(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, key, STATE);
 			
 			break;
 		}
