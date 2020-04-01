@@ -169,7 +169,6 @@ void CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength,
 			
 		}
 	}
-
 //Collision detection for key
 bool SphereToSphereCD(IModel* pThief, IModel* key, float R1, float R2) {
 
