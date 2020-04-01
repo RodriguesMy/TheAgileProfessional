@@ -220,7 +220,9 @@ void main()
 	IMesh* pRoofMesh = myEngine->LoadMesh("Floor.x");
 	IModel* pRoof = pFloorMesh->CreateModel(0, 16, 0);
 	pRoof->RotateZ(180);
-
+	/*wall
+		53, 5, -142.35, 0, 5
+		73, 5, -142.35, 0, 5*/
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel(0,0.8, 0);
 
