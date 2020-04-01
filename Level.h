@@ -15,9 +15,9 @@ enum EDoortype {
 enum EDoorState
 {
 DOOR_OPENING,
- DOOR_CLOSING,
+DOOR_CLOSING,
 DOOR_CLOSED,
- DOOR_OPEN
+DOOR_OPEN
 };
 
 struct DoorStruct {

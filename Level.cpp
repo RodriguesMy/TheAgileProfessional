@@ -81,7 +81,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case door:
 						DoorStruct Sdoor;
 						Sdoor.model = CreateModel(m_MDoor, input);
-						Sdoor.state = 3;
+						Sdoor.state = DOOR_CLOSED;
 						Sdoor.type = simple;
 						Doors.push_back(Sdoor);
 						break;
