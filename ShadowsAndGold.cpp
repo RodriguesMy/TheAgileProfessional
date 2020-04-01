@@ -38,7 +38,6 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 	float cameraMovementX = myEngine->GetMouseMovementX();
 
 	pThief->RotateY(cameraMovementX);
-	//pCameraDummy->RotateY(cameraMovementX);
 
 	if (cameraMovementY > 0)
 	{
@@ -111,7 +110,7 @@ bool CollisionWithWalls(IModel* pThief, vector<IModel*> walls, float wallsXLengt
 	}
 	return false;
 }
-void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt)
+void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt)
 {
 	switch (doorState)
 	{
@@ -164,7 +163,7 @@ void CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength,
 		if (pThief->GetX() < door[i]->GetX() + doorXLength && pThief->GetX() > door[i]->GetX() - doorXLength &&
 			pThief->GetY() < door[i]->GetY() + doorYLength && pThief->GetY() > door[i]->GetY() - doorYLength &&
 			pThief->GetZ() < door[i]->GetZ() + doorZLength && pThief->GetZ() > door[i]->GetZ() - doorZLength) {
-			UpdateWall(doorState, door[i], maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
+			UpdateDoor(doorState, door[i], maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
 			
 			}
 			
@@ -184,6 +183,38 @@ bool SphereToSphereCD(IModel* pThief, IModel* key, float R1, float R2) {
 
 	return false;
 }
+//Collision with camera
+//I have to figure our the exact collision detection with the walls 
+/*
+Basically when the camera collides with the wall, i want to change the position of the camera
+to basically not go further inside the wall but get closed to the pThief. 
+*/
+void CollisionWithCamera(ICamera* camera, IModel* pThief, vector<IModel*> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
+	for (int i = 0; i < walls.size(); i++) {
+
+		if (/*camera->GetX() < walls[i]->GetX() + wallsXLength && camera->GetX() > walls[i]->GetX() - wallsXLength &&*/
+			/*camera->GetY() < walls[i]->GetY() + wallsYLength && camera->GetY() > walls[i]->GetY() - wallsYLength &&*/
+			camera->GetZ() < walls[i]->GetZ() + wallsZLength && camera->GetZ() > walls[i]->GetZ() - wallsZLength) {
+			//int cameraState = 0;
+
+			//switch (cameraState)
+			//{
+			//case 0:
+			//{
+			//	//camera steady
+			//}
+			//case 1:
+			//{
+			//	//collision behind
+			//}
+			//}
+			//camera->SetZ(camera->GetZ() - 0.01);
+			/*camera->SetX(walls[i]->GetX());
+			camera->SetZ(pThief->GetZ());*/
+
+		}
+	}
+}
 void main()
 {
 	// Create a 3D engine (using TLX engine here) and open a window for it
@@ -201,7 +232,7 @@ void main()
 	pRoof->RotateZ(180);
 
 	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
-	IModel* pCameraDummy = pDummyMesh->CreateModel(0, 0, -5);
+	IModel* pCameraDummy = pDummyMesh->CreateModel(0, 0, -7);
 
 	CLevel levels(myEngine);
 
@@ -222,7 +253,7 @@ void main()
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
-	IModel* pThief = pThieflMesh->CreateModel(0, 0, -5);
+	IModel* pThief = pThieflMesh->CreateModel(0, 0, -7);
 	pThief->Scale(5);
 	ICamera* camera = myEngine->CreateCamera(kManual);
 	camera->RotateX(25);
@@ -292,7 +323,7 @@ void main()
 		case LEVEL:
 		{
 			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
-
+			CollisionWithCamera(camera, pThief, walls, wallXLength, wallYLength, wallZLength);
 			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,doorState,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
 			////Myriam, testing do not touch (trying to implement CD with walls) 
