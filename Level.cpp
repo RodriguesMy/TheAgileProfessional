@@ -60,8 +60,8 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 			enum EModelType {
 				wall,
 				door,
-				maindoor,
-				startdoor,
+				endingdoor,
+				startingdoor,
 				pillar,
 				pedestal,
 				key
@@ -85,7 +85,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Sdoor.type = simple;
 						Doors.push_back(Sdoor);
 						break;
-					case maindoor:
+					case endingdoor:
 						for (int i = 0; i < Doors.size(); i++) {
 							if (Doors[i].type = ending) {
 								m_MDoor->RemoveModel(Doors.at(i).model);
@@ -98,7 +98,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Mdoor.type = ending;
 						Doors.push_back(Mdoor);
 						break;
-					case startdoor:
+					case startingdoor:
 						for (int i = 0; i < Doors.size(); i++) {
 							if (Doors[i].type = starting) {
 								m_MDoor->RemoveModel(Doors.at(i).model);
@@ -135,9 +135,9 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Current = pillar;
 					else if (input == "pedestal")
 						Current = pedestal;
-					else if (input == "maindoor")
-						Current = maindoor;
-					else if (input == "startdoor")
+					else if (input == "endingdoor")
+						Current = endingdoor;
+					else if (input == "startingdoor")
 						Current = startdoor;
 					else if (input == "key")
 						Current = key;
