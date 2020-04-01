@@ -76,7 +76,6 @@ bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLe
 		if (pThief->GetX() < walls[i].model->GetX() + wallsXLength && pThief->GetX() > walls[i].model->GetX() - wallsXLength &&
 			pThief->GetY() < walls[i].model->GetY() + wallsYLength && pThief->GetY() > walls[i].model->GetY() - wallsYLength &&
 			pThief->GetZ() < walls[i].model->GetZ() + wallsZLength && pThief->GetZ() > walls[i].model->GetZ() - wallsZLength){
-			cout << "wall" << endl;
 			return true;
 		}
 	}
@@ -148,17 +147,22 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 }
 void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
 	I3DEngine* myEngine,float doorMovementSpeed,float dt,bool keyFound,int &selectedDoor) {
-
+	
+	if (selectedDoor!=-1)
+	{		
+		UpdateDoor(door[selectedDoor].state, door[selectedDoor].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt, 
+					keyFound, door[selectedDoor].type,selectedDoor);
+	}
+	else
+	{
 	for (int i = 0; i < door.size(); i++) {
-		if (pThief->GetX() < door[i].model->GetX() + doorXLength && pThief->GetX() > door[i].model->GetX() - doorXLength &&
+		if ((pThief->GetX() < door[i].model->GetX() + doorXLength && pThief->GetX() > door[i].model->GetX() - doorXLength &&
 			pThief->GetY() < door[i].model->GetY() + doorYLength && pThief->GetY() > door[i].model->GetY() - doorYLength &&
-			pThief->GetZ() < door[i].model->GetZ() + doorZLength && pThief->GetZ() > door[i].model->GetZ() - doorZLength) {			
+			pThief->GetZ() < door[i].model->GetZ() + doorZLength && pThief->GetZ() > door[i].model->GetZ() - doorZLength) ) {						
 			selectedDoor = i;
 		}
 	}
-	if (selectedDoor!=-1)
-	{		
-		UpdateDoor(door[selectedDoor].state, door[selectedDoor].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt, keyFound, door[selectedDoor].type,selectedDoor);
+
 	}
 }
 void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound) {
