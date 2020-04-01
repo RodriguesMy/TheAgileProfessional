@@ -70,10 +70,6 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 	//	mainDoorUnlocked = false;
 	//}
 }
-bool SphereToBOXCD()
-{
-	return false;
-}
 bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
 	for (int i = 0; i < walls.size(); i++) {
 		
