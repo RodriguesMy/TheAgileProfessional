@@ -138,7 +138,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					else if (input == "endingdoor")
 						Current = endingdoor;
 					else if (input == "startingdoor")
-						Current = startdoor;
+						Current = startingdoor;
 					else if (input == "key")
 						Current = key;
 				}

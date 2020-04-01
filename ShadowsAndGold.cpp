@@ -223,7 +223,7 @@ void main()
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
-	IModel* pThief = pThieflMesh->CreateModel(0, 0, -5);
+	IModel* pThief = pThieflMesh->CreateModel(0, 0, -10);
 	pThief->Scale(5);
 	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-3);
 	camera->RotateX(25);
