@@ -86,6 +86,12 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.push_back(Sdoor);
 						break;
 					case maindoor:
+						for (int i = 0; i < Doors.size(); i++) {
+							if (Doors[i].type = ending) {
+								m_MDoor->RemoveModel(Doors.at(i).model);
+								Doors.erase(Doors.begin()+i);
+							}
+						}
 						DoorStruct Mdoor;
 						Mdoor.model = CreateModel(m_MDoor, input);
 						Mdoor.state = 3;
@@ -93,6 +99,12 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.push_back(Mdoor);
 						break;
 					case startdoor:
+						for (int i = 0; i < Doors.size(); i++) {
+							if (Doors[i].type = starting) {
+								m_MDoor->RemoveModel(Doors.at(i).model);
+								Doors.erase(Doors.begin() + i);
+							}
+						}
 						DoorStruct door;
 						door.model = CreateModel(m_MDoor, input);
 						door.state = 3;
