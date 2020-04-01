@@ -246,7 +246,6 @@ void main()
 	bool mainDoorUnlocked = false;
 	bool simpleDoorNearby = false;
 	bool mainDoorNearby = false;
-	int doorState = DOOR_CLOSED;
 	float maxLimit = 30;
 	float currentLimit = 0;
 	float const doorXLength = 5;
