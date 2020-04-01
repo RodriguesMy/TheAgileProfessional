@@ -12,6 +12,14 @@ enum EDoortype {
 	ending
 };
 
+enum EDoorState
+{
+DOOR_OPENING,
+ DOOR_CLOSING,
+DOOR_CLOSED,
+ DOOR_OPEN
+};
+
 struct DoorStruct {
 	IModel* model;
 	int state;
@@ -37,11 +45,14 @@ private:
 	IMesh* m_MPillars;
 	IMesh* m_MPedestal;
 	IMesh* m_MKey;
+	IModel* m_Key;
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
 	bool NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key);
 	int GetLevelNumber() { return m_LevelIt; }
+	void RemoveKey();
+	IModel* getKey();
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh, string data, float rot = 0);

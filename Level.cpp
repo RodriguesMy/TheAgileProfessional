@@ -94,7 +94,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						}
 						DoorStruct Mdoor;
 						Mdoor.model = CreateModel(m_MDoor, input);
-						Mdoor.state = 3;
+						Mdoor.state = DOOR_CLOSED;
 						Mdoor.type = ending;
 						Doors.push_back(Mdoor);
 						break;
@@ -120,7 +120,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case key:
 						if (Key != NULL)
 							m_MKey->RemoveModel(Key);
-						Key = CreateModel(m_MKey, input);
+						m_Key = CreateModel(m_MKey, input);
 					}
 				}
 				else {
@@ -160,4 +160,12 @@ bool CLevel::IncreaseLevelIt() {
 		return true;
 	else
 		return false;
+}
+
+void CLevel::RemoveKey() {
+	m_MKey->RemoveModel(m_Key);
+}
+
+IModel* CLevel::getKey() {
+	return m_Key;
 }
