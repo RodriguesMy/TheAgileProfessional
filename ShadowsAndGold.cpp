@@ -212,8 +212,6 @@ void main()
 	myEngine->StartWindowed();
 	// Add default folder for meshes and other media
 	myEngine->AddMediaFolder( "./Media" );
-	//90, 5, -43, 0, 5
-	//wall	89.75, 5, -5, 90, 5
 	/**** Set up your scene here ****/
 	IMesh* pFloorMesh = myEngine->LoadMesh("Floor.x");
 	IModel* pFloor = pFloorMesh->CreateModel(0,-0.3,0);
