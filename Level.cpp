@@ -17,7 +17,7 @@ CLevel::~CLevel()
 {
 }
 
-IModel* CLevel::CreateModel(IMesh* mesh,string data) {
+IModel* CLevel::CreateModel(IMesh* mesh,string data,float rot) {
 	IModel* output = mesh->CreateModel();
 	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
 	for (int i = 0; i < 5; i++) {
@@ -29,39 +29,39 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data) {
 	}
 	output->Scale(fdata[4]);
 	output->SetPosition(fdata[0], fdata[1], fdata[2]);
+	rot = fdata[3];
 	output->RotateY(fdata[3]);
 	return output;
 }
 
-void CLevel::ClearLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IModel*>& Pillars,IModel* MainDoor,IModel* Key) {
+void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key) {
 	while(!Walls.empty()){
-		m_MWall->RemoveModel(Walls.back());
+		m_MWall->RemoveModel(Walls.back().model);
 		Walls.pop_back();
 	}
 	while (!Doors.empty()) {
-		m_MDoor->RemoveModel(Doors.back());
+		m_MDoor->RemoveModel(Doors.back().model);
 		Doors.pop_back();
-	}
-	if (MainDoor != NULL) {
-		m_MDoor->RemoveModel(MainDoor);
 	}
 	while (!Pillars.empty()) {
 		m_MPillars->RemoveModel(Pillars.back());
 	}
 	if (Key != NULL) {
 		m_MKey->RemoveModel(Key);
+		Key = NULL;
 	}
 }
 
-bool CLevel::NextLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IModel*>& Pillars, IModel* MainDoor,IModel* Key) {
+bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
-			ClearLevel(Walls, Doors, Pillars, MainDoor,Key);
+			ClearLevel(Walls, Doors, Pillars,Key);
 			enum EModelType {
 				wall,
 				door,
 				maindoor,
+				startdoor,
 				pillar,
 				pedestal,
 				key
@@ -74,15 +74,30 @@ bool CLevel::NextLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IMo
 				if (!isalpha(input[0])) {
 					switch (Current) {
 					case wall:
-						Walls.push_back(CreateModel(m_MWall, input));
+						WallStruct wall;
+						wall.model = CreateModel(m_MWall, input, wall.rot);
+						Walls.push_back(wall);
 						break;
 					case door:
-						Doors.push_back(CreateModel(m_MDoor, input));
+						DoorStruct Sdoor;
+						Sdoor.model = CreateModel(m_MDoor, input);
+						Sdoor.state = 3;
+						Sdoor.type = simple;
+						Doors.push_back(Sdoor);
 						break;
 					case maindoor:
-						if (MainDoor != NULL)
-							m_MDoor->RemoveModel(MainDoor);
-						MainDoor = CreateModel(m_MDoor, input);
+						DoorStruct Mdoor;
+						Mdoor.model = CreateModel(m_MDoor, input);
+						Mdoor.state = 3;
+						Mdoor.type = ending;
+						Doors.push_back(Mdoor);
+						break;
+					case startdoor:
+						DoorStruct door;
+						door.model = CreateModel(m_MDoor, input);
+						door.state = 3;
+						door.type = starting;
+						Doors.push_back(door);
 						break;
 					case pillar:
 						Pillars.push_back(CreateModel(m_MPillars, input));
@@ -110,6 +125,8 @@ bool CLevel::NextLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IMo
 						Current = pedestal;
 					else if (input == "maindoor")
 						Current = maindoor;
+					else if (input == "startdoor")
+						Current = startdoor;
 					else if (input == "key")
 						Current = key;
 				}
@@ -127,8 +144,8 @@ bool CLevel::NextLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IMo
 
 bool CLevel::IncreaseLevelIt() {
 	m_LevelIt++;
-	if (m_LevelIt >= m_Levels->size())
-		return false;
-	else
+	if (m_LevelIt < m_Levels.size())
 		return true;
+	else
+		return false;
 }

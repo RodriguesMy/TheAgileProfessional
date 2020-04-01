@@ -1,10 +1,10 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   ShadowsAndGold.cpp
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(37,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(38,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(103,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(162,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(264,52): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(296,82): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(37,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(38,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(103,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(162,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(263,52): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(295,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

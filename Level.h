@@ -6,10 +6,27 @@
 using namespace std;
 using namespace tle;
 
+enum EDoortype {
+	simple,
+	starting,
+	ending
+};
+
+struct DoorStruct {
+	IModel* model;
+	int state;
+	EDoortype type;
+};
+
+struct WallStruct {
+	IModel* model;
+	float rot;
+};
+
 class CLevel
 {
 private:
-	string m_Levels[3] = {
+	vector<string> m_Levels = {
 		"Level1",
 		"Level2",
 		"Level3"
@@ -23,10 +40,10 @@ private:
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	bool NextLevel(vector<IModel*>& Walls,vector<IModel*>& Doors,vector<IModel*>& Pillars, IModel* MainDoor,IModel* Key);
+	bool NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key);
 	int GetLevelNumber() { return m_LevelIt; }
 private:
 	bool IncreaseLevelIt();
-	IModel* CreateModel(IMesh* mesh,string data);
-	void ClearLevel(vector<IModel*>& Walls, vector<IModel*>& Doors,vector<IModel*>& Pillars, IModel* MainDoor,IModel* Key);
+	IModel* CreateModel(IMesh* mesh, string data, float rot = 0);
+	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key);
 };

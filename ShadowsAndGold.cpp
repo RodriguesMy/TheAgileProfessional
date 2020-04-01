@@ -56,7 +56,7 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 	}
 }
 void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
-	CLevel &levels, vector<IModel*> walls, vector<IModel*> doors,vector<IModel*> pillars, IModel* maindoor, IModel* Key, int &currentLevel) {
+	CLevel &levels, vector<WallStruct> walls, vector<DoorStruct>& doors,vector<IModel*> pillars, IModel* Key, int &currentLevel) {
 	
 	//Update the Quests Fonts
 	if (keyFound)
@@ -94,17 +94,17 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 	{
 		keyFound = false;
 		mainDoorUnlocked = false;
-		levels.NextLevel(walls, doors, pillars, maindoor,Key);
+		levels.NextLevel(walls, doors, pillars,Key);
 		mainDoorUnlocked = false;
 	}
 }
 //Collision detection with walls
-bool CollisionWithWalls(IModel* pThief, vector<IModel*> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
+bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
 	for (int i = 0; i < walls.size(); i++) {
 		
-		if (pThief->GetX() < walls[i]->GetX() + wallsXLength && pThief->GetX() > walls[i]->GetX() - wallsXLength &&
-			pThief->GetY() < walls[i]->GetY() + wallsYLength && pThief->GetY() > walls[i]->GetY() - wallsYLength &&
-			pThief->GetZ() < walls[i]->GetZ() + wallsZLength && pThief->GetZ() > walls[i]->GetZ() - wallsZLength){
+		if (pThief->GetX() < walls[i].model->GetX() + wallsXLength && pThief->GetX() > walls[i].model->GetX() - wallsXLength &&
+			pThief->GetY() < walls[i].model->GetY() + wallsYLength && pThief->GetY() > walls[i].model->GetY() - wallsYLength &&
+			pThief->GetZ() < walls[i].model->GetZ() + wallsZLength && pThief->GetZ() > walls[i].model->GetZ() - wallsZLength){
 			cout << "wall" << endl;
 			return true;
 		}
@@ -155,16 +155,16 @@ void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 	}
 }
 //Collision detection with doors
-void CollisionWithDoors(IModel* pThief, vector<IModel*> door, float doorXLength, float doorYLength, float doorZLength,int &doorState,int maxLimit,float &currentLimit, IFont* InteractionMessage,
+void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
 	I3DEngine* myEngine,float doorMovementSpeed,float dt) {
 
 
 	for (int i = 0; i < door.size(); i++) {
 
-		if (pThief->GetX() < door[i]->GetX() + doorXLength && pThief->GetX() > door[i]->GetX() - doorXLength &&
-			pThief->GetY() < door[i]->GetY() + doorYLength && pThief->GetY() > door[i]->GetY() - doorYLength &&
-			pThief->GetZ() < door[i]->GetZ() + doorZLength && pThief->GetZ() > door[i]->GetZ() - doorZLength) {
-			UpdateWall(doorState, door[i], maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
+		if (pThief->GetX() < door[i].model->GetX() + doorXLength && pThief->GetX() > door[i].model->GetX() - doorXLength &&
+			pThief->GetY() < door[i].model->GetY() + doorYLength && pThief->GetY() > door[i].model->GetY() - doorYLength &&
+			pThief->GetZ() < door[i].model->GetZ() + doorZLength && pThief->GetZ() > door[i].model->GetZ() - doorZLength) {
+			UpdateWall(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
 			
 			}
 			
@@ -206,15 +206,14 @@ void main()
 	CLevel levels(myEngine);
 
 	//Model Containers
-	vector<IModel*> walls;
-	vector<IModel*> doors;
+	vector<WallStruct> walls;
+	vector<DoorStruct> doors;
 	vector<IModel*> pillars;
 
-	IModel* maindoor=0;
 	IModel* key=0;
 
 	int STATE = MENU;
-	levels.NextLevel(walls, doors,pillars, maindoor,key);
+	levels.NextLevel(walls, doors,pillars,key);
 
 	//NON-IMPORTANT VARIABLES
 	float dt=myEngine->Timer();
@@ -293,7 +292,7 @@ void main()
 		{
 			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
 
-			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,doorState,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt);
+			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
 			////Myriam, testing do not touch (trying to implement CD with walls) 
 			//if (!SphereToBoxCD(pThief, walls, wallXLength, wallYLength,wallZLength)) {
@@ -316,9 +315,9 @@ void main()
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 			if (myEngine->KeyHit(Key_P))
-				if (levels.NextLevel(walls, doors, pillars, maindoor, key))
+				if (levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;
-			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, maindoor, key, STATE);
+			UpdateLevel(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, key, STATE);
 			
 			break;
 		}
