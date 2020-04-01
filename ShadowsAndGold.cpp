@@ -98,7 +98,6 @@ void UpdateLevel(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont
 		mainDoorUnlocked = false;
 	}
 }
-//Collision detection with walls
 bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
 	for (int i = 0; i < walls.size(); i++) {
 		
@@ -111,7 +110,7 @@ bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLe
 	}
 	return false;
 }
-void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt)
+void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt)
 {
 	switch (doorState)
 	{
@@ -154,7 +153,6 @@ void UpdateWall(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 	}break;
 	}
 }
-//Collision detection with doors
 void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
 	I3DEngine* myEngine,float doorMovementSpeed,float dt) {
 
@@ -164,14 +162,12 @@ void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLen
 		if (pThief->GetX() < door[i].model->GetX() + doorXLength && pThief->GetX() > door[i].model->GetX() - doorXLength &&
 			pThief->GetY() < door[i].model->GetY() + doorYLength && pThief->GetY() > door[i].model->GetY() - doorYLength &&
 			pThief->GetZ() < door[i].model->GetZ() + doorZLength && pThief->GetZ() > door[i].model->GetZ() - doorZLength) {
-			UpdateWall(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
+			UpdateDoor(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt);
 			
 			}
 			
 		}
 	}
-
-//Collision detection for key
 bool SphereToSphereCD(IModel* pThief, IModel* key, float R1, float R2) {
 
 	float x = pThief->GetX() - key->GetX();
@@ -252,7 +248,11 @@ void main()
 	float const doorYLength = 10;
 	float const doorZLength = 10;
 	float const doorMovementSpeed = 20;
-
+	vector<int> doorState;
+	for (int i = 0; i < doors.size();i++)
+	{
+		doorState.push_back(DOOR_CLOSED);
+	}
 	//Wall variables
 	float const wallXLength = 0.5;
 	float const wallYLength = 10;
