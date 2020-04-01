@@ -81,15 +81,21 @@ bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLe
 	}
 	return false;
 }
-void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
-	bool keyFound, EDoortype doorType,int &selectedDoor,float& timeSinceCollisionWithDoor, float maxTimeSinceCollisionWithDoor)
+bool CDDoorsBoolean(IModel* pThief,IModel* door,float doorXLength,float doorYLength,float doorZLength)
 {
-	timeSinceCollisionWithDoor += dt;
+	return ((pThief->GetX() < door->GetX() + doorXLength && pThief->GetX() > door->GetX() - doorXLength &&
+		pThief->GetY() < door->GetY() + doorYLength && pThief->GetY() > door->GetY() - doorYLength &&
+		pThief->GetZ() < door->GetZ() + doorZLength && pThief->GetZ() > door->GetZ() - doorZLength));
+}
+void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
+	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
+{
 	switch (doorState)
 	{
 	case DOOR_CLOSED:
 	{
-		if (timeSinceCollisionWithDoor > maxTimeSinceCollisionWithDoor) {
+		if (CDDoorsBoolean(pThief,door,doorXLength,doorYLength,doorZLength)) {
+
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
@@ -110,12 +116,12 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
 			}
-			selectedDoor = -1;
 		}
+		
 	}break;
 	case DOOR_OPEN:
 	{
-		if (timeSinceCollisionWithDoor > maxTimeSinceCollisionWithDoor) {
+		if (CDDoorsBoolean(pThief, door, doorXLength, doorYLength, doorZLength)) {
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
@@ -123,7 +129,6 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 					doorState = DOOR_CLOSING;
 				}
 			}
-			selectedDoor = -1;
 		}
 	}break;
 	case DOOR_CLOSING:
@@ -134,7 +139,6 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 		{
 			doorState = DOOR_CLOSED;
 			currentLimit = 0;
-			timeSinceCollisionWithDoor = 0;
 		}
 
 
@@ -147,29 +151,15 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 		{
 			doorState = DOOR_OPEN;
 			currentLimit = 0;
-			timeSinceCollisionWithDoor = 0;
 		}
 	}break;
 	}
 }
 void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
-	I3DEngine* myEngine,float doorMovementSpeed,float dt,bool keyFound,int &selectedDoor,float &timeSinceCollisionWithDoor,float maxTimeSinceCollisionWithDoor) {
-	
-	
-	if (selectedDoor!=-1)
-	{		
-		UpdateDoor(door[selectedDoor].state, door[selectedDoor].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt, 
-			keyFound, door[selectedDoor].type,selectedDoor,timeSinceCollisionWithDoor, maxTimeSinceCollisionWithDoor);
-	}
-	else
-	{
+	I3DEngine* myEngine,float doorMovementSpeed,float dt,bool keyFound) {	
 	for (int i = 0; i < door.size(); i++) {
-		if ((pThief->GetX() < door[i].model->GetX() + doorXLength && pThief->GetX() > door[i].model->GetX() - doorXLength &&
-			pThief->GetY() < door[i].model->GetY() + doorYLength && pThief->GetY() > door[i].model->GetY() - doorYLength &&
-			pThief->GetZ() < door[i].model->GetZ() + doorZLength && pThief->GetZ() > door[i].model->GetZ() - doorZLength)) {						
-			selectedDoor = i;
-		}
-	}
+		UpdateDoor(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt, 
+			keyFound, door[i].type,pThief,doorXLength,doorYLength,doorZLength);
 	}
 }
 void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound) {
@@ -261,8 +251,6 @@ void main()
 	float const doorYLength = 10;
 	float const doorZLength = 10;
 	float const doorMovementSpeed = 20;
-	float timeSinceCollisionWithDoor=0;
-	float maxtimeSinceCollisionWithDoor = 0.3;
 
 	//Wall variables
 	float const wallXLength = 0.5;
@@ -277,7 +265,6 @@ void main()
 	//Key variables
 	float R1 = 1;
 	float R2 = 5;
-	int selectedDoor=-1;
 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -306,7 +293,7 @@ void main()
 		{
 			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
 
-			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt,keyFound,selectedDoor, timeSinceCollisionWithDoor,maxtimeSinceCollisionWithDoor);
+			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt,keyFound);
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
 			////Myriam, testing do not touch (trying to implement CD with walls) 
