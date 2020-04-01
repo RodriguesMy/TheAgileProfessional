@@ -3,7 +3,7 @@
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(37,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(38,24): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(80,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(136,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(284,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(152,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(300,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
