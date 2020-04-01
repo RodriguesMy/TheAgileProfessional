@@ -200,7 +200,7 @@ void main()
 	IModel* pRoof = pFloorMesh->CreateModel(0, 16, 0);
 	pRoof->RotateZ(180);
 
-	IMesh* pDummyMesh = myEngine->LoadMesh("Key.x");
+	IMesh* pDummyMesh = myEngine->LoadMesh("dummy.x");
 	IModel* pCameraDummy = pDummyMesh->CreateModel(0,0.8, 0);
 
 	CLevel levels(myEngine);
