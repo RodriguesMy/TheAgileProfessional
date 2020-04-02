@@ -1,2 +1,10 @@
-﻿  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  Level.cpp
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(90,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(103,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(131,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(163,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(159): warning C4715: 'CLevel::NextLevel': not all control paths return a value
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(79): warning C4700: uninitialized local variable 'wall' used
+  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
