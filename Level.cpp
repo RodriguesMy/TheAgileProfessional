@@ -83,6 +83,9 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case wall:
 						WallStruct wall;
 						wall.model = CreateModel(m_MWall, input, wall.rot);
+						wall.wallXLength = 0.5;
+						wall.wallYLength = 10;
+						wall.wallZLength = 10;
 						Walls.push_back(wall);
 						break;
 					case door:
@@ -90,6 +93,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Sdoor.model = CreateModel(m_MDoor, input);
 						Sdoor.state = DOOR_CLOSED;
 						Sdoor.type = simple;
+						Sdoor.doorXLengthArea = 5;
+						Sdoor.doorYLengthArea = 10;
+						Sdoor.doorZLengthArea = 10;
+						Sdoor.doorMovementSpeed = 20;
 						Doors.push_back(Sdoor);
 						break;
 					case endingdoor:
@@ -103,6 +110,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Mdoor.model = CreateModel(m_MDoor, input);
 						Mdoor.state = DOOR_CLOSED;
 						Mdoor.type = ending;
+						Mdoor.doorXLengthArea = 5;
+						Mdoor.doorYLengthArea = 10;
+						Mdoor.doorZLengthArea = 10;
+						Mdoor.doorMovementSpeed = 20;
 						Doors.push_back(Mdoor);
 						break;
 					case startingdoor:
@@ -116,6 +127,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						door.model = CreateModel(m_MDoor, input);
 						door.state = DOOR_CLOSED;
 						door.type = starting;
+						door.doorXLengthArea = 5;
+						door.doorYLengthArea = 10;
+						door.doorZLengthArea = 10;
+						door.doorMovementSpeed = 20;
 						m_PlayerSPos.x = door.model->GetX();
 						m_PlayerSPos.y = door.model->GetY();
 						m_PlayerSPos.z = door.model->GetZ() + 3;
@@ -125,6 +140,9 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						PillarStruct Spillar;
 						Spillar.model = CreateModel(m_MPillars, input);
 						Spillar.type = typePillar;
+						Spillar.pillarXLength = 1;
+						Spillar.pillarYLength = 10;
+						Spillar.pillarZLength = 1;
 						Pillars.push_back(Spillar);
 						break;
 					case pedestal:

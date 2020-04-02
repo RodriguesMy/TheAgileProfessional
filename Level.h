@@ -33,16 +33,26 @@ struct DoorStruct {
 	IModel* model;
 	EDoorState state;
 	EDoortype type;
+	float doorXLengthArea;
+	float doorYLengthArea;
+	float doorZLengthArea;
+	float doorMovementSpeed;
 };
 
 struct WallStruct {
 	IModel* model;
 	float rot;
+	float wallXLength;
+	float wallYLength;
+	float wallZLength;
 };
 
 struct PillarStruct {
 	IModel* model;
 	EPillarType type;
+	float pillarXLength;
+	float pillarYLength;
+	float pillarZLength;
 };
 
 class CLevel
