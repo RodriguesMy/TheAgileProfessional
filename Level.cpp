@@ -17,7 +17,7 @@ CLevel::~CLevel()
 {
 }
 
-IModel* CLevel::CreateModel(IMesh* mesh,string data,float rot) {
+IModel* CLevel::CreateModel(IMesh* mesh,string data,float& rot) {
 	IModel* output = mesh->CreateModel();
 	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
 	for (int i = 0; i < 5; i++) {
