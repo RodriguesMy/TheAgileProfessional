@@ -7,13 +7,14 @@ using namespace tle;
 
 #define MENU 1
 #define LEVEL 2
-#define FINAL_CUTSCENE 3
+#define PLAYER_LOST 3
+#define LOADING_NEXT_LEVEL 4
 
-void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
+void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt)
 {
 
-	if (myEngine->KeyHeld(Key_W)) {
-		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+	if (myEngine->KeyHeld(Key_W)) {		
+	pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
 		pThief->MoveLocalZ(thiefMovementSpeed * dt);
@@ -24,7 +25,14 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,flo
 	if (myEngine->KeyHeld(Key_A)) {
 		pThief->MoveLocalX(thiefMovementSpeed * dt);
 	}
-	
+	if (myEngine->KeyHeld(Key_Shift))
+	{
+		thiefMovementSpeed = 7;
+	}
+	else
+	{
+		thiefMovementSpeed = 5;
+	}
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
 {
@@ -81,11 +89,11 @@ bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLe
 	}
 	return false;
 }
-bool BooleanCD(IModel* pThief,IModel* model,float modelXLength,float modelYLength,float modelZLength)
+bool BooleanCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
 {
-	return ((pThief->GetX() < model->GetX() + modelXLength && pThief->GetX() > model->GetX() - modelXLength &&
-		pThief->GetY() < model->GetY() + modelYLength && pThief->GetY() > model->GetY() - modelYLength &&
-		pThief->GetZ() < model->GetZ() + modelZLength && pThief->GetZ() > model->GetZ() - modelZLength));
+	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
+		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
+		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
 }
 void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
@@ -186,24 +194,17 @@ void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLen
 }
 void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound) {
 
-	float KeyX=0;
-	float KeyY=0;
-	float KeyZ=0;
-	
 	if (!keyFound) {
-		KeyX = level.getKey()->GetX();
-		KeyY = level.getKey()->GetY();
-		KeyZ = level.getKey()->GetZ();
-	}
+		float x = pThief->GetX() -level.getKey()->GetX();
+		float y = pThief->GetY() - level.getKey()->GetY();
+		float z = pThief->GetZ() - level.getKey()->GetZ();
 
-	float x= pThief->GetX() - KeyX;
-	float y = pThief->GetY() - KeyY;
-	float z= pThief->GetZ() - KeyZ;
-	
-	if (sqrt(x * x + y * y + z * z) < R1 + R2) {
-		keyFound = true;
-		level.RemoveKey();
+		if (sqrt(x * x + y * y + z * z) < R1 + R2) {
+			keyFound = true;
+			level.RemoveKey();
+		}
 	}
+		
 }
 void main()
 {
@@ -212,7 +213,6 @@ void main()
 	myEngine->StartWindowed();
 	// Add default folder for meshes and other media
 	myEngine->AddMediaFolder( "./Media" );
-	//90, 5, -43, 0, 5
 	/**** Set up your scene here ****/
 	IMesh* pFloorMesh = myEngine->LoadMesh("Floor.x");
 	IModel* pFloor = pFloorMesh->CreateModel(0,-0.3,0);
@@ -238,7 +238,7 @@ void main()
 
 	//NON-IMPORTANT VARIABLES
 	float dt=myEngine->Timer();
-	float const thiefMovementSpeed = 5;
+	float thiefMovementSpeed = 5;
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
@@ -248,11 +248,12 @@ void main()
 	camera->RotateX(25);
 
 	//IFONT Variables
-	IFont* DisplayGameName = myEngine->LoadFont("Cambria", 120U);
+	IFont* DisplayBigMessage = myEngine->LoadFont("Cambria", 120U);
 	IFont* DisplayMenu = myEngine->LoadFont("Cambria", 70U);
 	//Message Displaying variables
 	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
 	IFont* InteractionMessage = myEngine->LoadFont("Cambria", 24U);
+	IFont* ControlsMessage = myEngine->LoadFont("Cambria", 24U);
 	//END OF IFONT Variables
 
 	//Rotation of camera variables
@@ -289,6 +290,7 @@ void main()
 	float R1 = 5;
 	float R2 = 7;
 	float keyMovementSpeed = 150;
+
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
 	{
@@ -302,7 +304,7 @@ void main()
 		{
 		case MENU:
 		{	myEngine->StopMouseCapture();
-			DisplayGameName->Draw("Shadows & Gold", 300, 300);
+			DisplayBigMessage->Draw("Shadows & Gold", 300, 300);
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
 
 			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
@@ -347,11 +349,35 @@ void main()
 			
 			break;
 		}
-		case FINAL_CUTSCENE:
+		case PLAYER_LOST:
 		{
-			//implement movement of models in the terrace
+			DisplayBigMessage->Draw("You Lost!", 300, 300);
+			DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
+			if (myEngine->KeyHit(Key_Space))
+			{
+				STATE = LEVEL;
+				//reset variables
+			}
 			break;
 		}
+		case LOADING_NEXT_LEVEL:
+		{
+			// This state could execute when we want to render the next level smoothly
+
+			DisplayBigMessage->Draw("Loading . . .", 300, 300);
+
+			//I thought of maybe putting a wall in front of the camera (as a black screen) and changing the level here
+			//Resetting the player's and guard's position
+			//Having the starting place of the player and the guard inside each level (get them from level.txt) is a good idea
+			//for having checkpoints
+
+			if (1/*loading map finished*/)
+			{
+				STATE = LEVEL;
+
+			}
+		}
+		break;
 		}
 
 

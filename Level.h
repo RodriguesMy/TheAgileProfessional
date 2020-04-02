@@ -19,7 +19,11 @@ DOOR_CLOSING,
 DOOR_CLOSED,
 DOOR_OPEN
 };
-
+struct Vector{
+	float x;
+	float y;
+	float z;
+};
 struct DoorStruct {
 	IModel* model;
 	int state;
@@ -46,6 +50,7 @@ private:
 	IMesh* m_MPedestal;
 	IMesh* m_MKey;
 	IModel* m_Key;
+	Vector m_PlayerSPos;
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
@@ -55,6 +60,7 @@ public:
 	IModel* getKey();
 	void SetUpKey();
 	void UpdateKey(float keyMovingSpeed, float dt,bool keyFound);
+	Vector GetPlayerSPos(){return m_PlayerSPos;}
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh, string data, float rot = 0);
