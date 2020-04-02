@@ -75,12 +75,12 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
+bool CollisionWithWalls(float modelX,float modelY, float modelZ, vector<WallStruct> walls) {
 	for (int i = 0; i < walls.size(); i++) {
 		
-		if (pThief->GetX() < walls[i].model->GetX() + wallsXLength && pThief->GetX() > walls[i].model->GetX() - wallsXLength &&
-			pThief->GetY() < walls[i].model->GetY() + wallsYLength && pThief->GetY() > walls[i].model->GetY() - wallsYLength &&
-			pThief->GetZ() < walls[i].model->GetZ() + wallsZLength && pThief->GetZ() > walls[i].model->GetZ() - wallsZLength){
+		if (modelX< walls[i].model->GetX() + walls[i].wallXLength && modelX > walls[i].model->GetX() - walls[i].wallXLength &&
+			modelY < walls[i].model->GetY() + walls[i].wallYLength && modelY > walls[i].model->GetY() - walls[i].wallYLength &&
+			modelZ < walls[i].model->GetZ() + walls[i].wallZLength && modelZ > walls[i].model->GetZ() - walls[i].wallZLength){
 			return true;
 		}
 	}
@@ -143,6 +143,9 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
+			}
+			if (doorType == starting && !keyFound) {
+				InteractionMessage->Draw("No turning back now.", 565, 550);
 			}
 		}
 		
@@ -265,7 +268,7 @@ void main()
 
 	//Door variables
 	float CurrentDoorLimit=0;
-	float MaxDoorLimit=30;
+	float MaxDoorLimit=25;
 
 	//END OF NON-IMPORTANT VARIABLES 
 	camera->AttachToParent(pCameraDummy);
@@ -315,13 +318,25 @@ void main()
 					cout << "no more levels" << endl;
 			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);		
 
-			//colision with pillars
-			for (int i = 0; i < pillars.size(); i++) {
-				/*if (BooleanCD(pThief, pillars[i].model, pillarXLength, pillarYLength, pillarZLength))
-				{
-					cout << 'g' << endl;
-				}*/
+			//WALL COLLISION DETECTION 
+			//if there is a wall in front of the thief we want him only to go back 
+			//if there is a wall behind the this he is only allowed to go front
+
+			if (CollisionWithWalls(pThief->GetX(), pThief->GetY(), pThief->GetZ() - 2, walls)) {
+				cout << "hello" << endl;
 			}
+			/*if (myEngine->KeyHeld(Key_W)) {
+				pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+			}
+			if (myEngine->KeyHeld(Key_S)) {
+				pThief->MoveLocalZ(thiefMovementSpeed * dt);
+			}
+			if (myEngine->KeyHeld(Key_D)) {
+				pThief->MoveLocalX(-thiefMovementSpeed * dt);
+			}
+			if (myEngine->KeyHeld(Key_A)) {
+				pThief->MoveLocalX(thiefMovementSpeed * dt);
+			}*/
 
 
 			break;

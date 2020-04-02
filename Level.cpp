@@ -83,9 +83,18 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case wall:
 						WallStruct wall;
 						wall.model = CreateModel(m_MWall, input, wall.rot);
-						wall.wallXLength = 0.5;
-						wall.wallYLength = 10;
-						wall.wallZLength = 10;
+						if (wall.rot == 0)
+						{
+							wall.wallXLength = 0.5;
+							wall.wallYLength = 10;
+							wall.wallZLength = 10;
+						}
+						if (wall.rot == 90)
+						{
+							wall.wallXLength = 10;
+							wall.wallYLength = 10;
+							wall.wallZLength = 0.5;
+						}
 						Walls.push_back(wall);
 						break;
 					case door:
