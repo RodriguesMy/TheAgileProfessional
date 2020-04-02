@@ -10,11 +10,11 @@ using namespace tle;
 #define PLAYER_LOST 3
 #define LOADING_NEXT_LEVEL 4
 
-void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,float &dt)
+void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt)
 {
 
-	if (myEngine->KeyHeld(Key_W)) {
-		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+	if (myEngine->KeyHeld(Key_W)) {		
+	pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
 		pThief->MoveLocalZ(thiefMovementSpeed * dt);
@@ -25,7 +25,14 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float thiefMovementSpeed,flo
 	if (myEngine->KeyHeld(Key_A)) {
 		pThief->MoveLocalX(thiefMovementSpeed * dt);
 	}
-	
+	if (myEngine->KeyHeld(Key_Shift))
+	{
+		thiefMovementSpeed = 7;
+	}
+	else
+	{
+		thiefMovementSpeed = 5;
+	}
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
 {
@@ -82,11 +89,11 @@ bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLe
 	}
 	return false;
 }
-bool BooleanCD(IModel* pThief,IModel* model,float modelXLength,float modelYLength,float modelZLength)
+bool BooleanCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
 {
-	return ((pThief->GetX() < model->GetX() + modelXLength && pThief->GetX() > model->GetX() - modelXLength &&
-		pThief->GetY() < model->GetY() + modelYLength && pThief->GetY() > model->GetY() - modelYLength &&
-		pThief->GetZ() < model->GetZ() + modelZLength && pThief->GetZ() > model->GetZ() - modelZLength));
+	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
+		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
+		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
 }
 void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
@@ -187,24 +194,17 @@ void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLen
 }
 void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound) {
 
-	float KeyX=0;
-	float KeyY=0;
-	float KeyZ=0;
-	
 	if (!keyFound) {
-		KeyX = level.getKey()->GetX();
-		KeyY = level.getKey()->GetY();
-		KeyZ = level.getKey()->GetZ();
-	}
+		float x = pThief->GetX() -level.getKey()->GetX();
+		float y = pThief->GetY() - level.getKey()->GetY();
+		float z = pThief->GetZ() - level.getKey()->GetZ();
 
-	float x= pThief->GetX() - KeyX;
-	float y = pThief->GetY() - KeyY;
-	float z= pThief->GetZ() - KeyZ;
-	
-	if (sqrt(x * x + y * y + z * z) < R1 + R2) {
-		keyFound = true;
-		level.RemoveKey();
+		if (sqrt(x * x + y * y + z * z) < R1 + R2) {
+			keyFound = true;
+			level.RemoveKey();
+		}
 	}
+		
 }
 void main()
 {
@@ -238,7 +238,7 @@ void main()
 
 	//NON-IMPORTANT VARIABLES
 	float dt=myEngine->Timer();
-	float const thiefMovementSpeed = 5;
+	float thiefMovementSpeed = 5;
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
@@ -253,6 +253,7 @@ void main()
 	//Message Displaying variables
 	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
 	IFont* InteractionMessage = myEngine->LoadFont("Cambria", 24U);
+	IFont* ControlsMessage = myEngine->LoadFont("Cambria", 24U);
 	//END OF IFONT Variables
 
 	//Rotation of camera variables
