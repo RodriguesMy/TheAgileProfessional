@@ -10,46 +10,51 @@ using namespace tle;
 #define PLAYER_LOST 3
 #define LOADING_NEXT_LEVEL 4
 #define RELOAD_CURRENT_LEVEL 5
-bool BooleanBoxCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
+
+bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
 {
 	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
 		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
 		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
 }
-bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
+
+bool ThiefCollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
 	for (int i = 0; i < walls.size(); i++) {
 		
-		if (BooleanBoxCD(pThief,walls[i].model,walls[i].wallXLength,walls[i].wallYLength,walls[i].wallZLength)){
+		if (BooleanBoxCDWithThief(pThief,walls[i].model,walls[i].wallXLength,walls[i].wallYLength,walls[i].wallZLength)){
 			return true;
 		}
 	}
 	return false;
 }
-bool CollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
+bool ThiefCollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
 
 	for (int i = 0; i < doors.size(); i++) {
 
-		if (BooleanBoxCD(pThief, doors[i].model, doors[i].doorXLength, doors[i].doorYLength, doors[i].doorZLength)) {
+		if (BooleanBoxCDWithThief(pThief, doors[i].model, doors[i].doorXLength, doors[i].doorYLength, doors[i].doorZLength)) {
 			return true;
 		}
 	}
 	return false; 
 }
-bool CollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
+bool ThiefCollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
 
 	for (int i = 0; i < pillars.size(); i++) {
 
-		if (BooleanBoxCD(pThief, pillars[i].model, pillars[i].pillarXLength, pillars[i].pillarYLength, pillars[i].pillarZLength)) {
+		if (BooleanBoxCDWithThief(pThief, pillars[i].model, pillars[i].pillarXLength, pillars[i].pillarYLength, pillars[i].pillarZLength)) {
 			return true;
 		}
 	}
 	return false;
 }
+
 void ThiefCollisionWithObjects(I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,IModel* pThief, float& thiefMovementSpeed, float& dt )
 {
 	//Movement depends on collision with:
 	//WALLS, DOORS, PILLARS
-	if (CollisionWithWalls(pThief, walls) || CollisionWithPillars(pThief, pillars) || CollisionWithDoors(pThief, doors)) {
+	if (ThiefCollisionWithWalls(pThief, walls) || ThiefCollisionWithPillars(pThief, pillars) || ThiefCollisionWithDoors(pThief, doors)) {
+		/*Reverse the movement in the previous state if a collision occurs
+		Basically the movement that the player was trying to do but reversed*/
 		if (myEngine->KeyHeld(Key_W)) {
 			pThief->MoveLocalZ(thiefMovementSpeed * dt);
 		}
@@ -64,6 +69,7 @@ void ThiefCollisionWithObjects(I3DEngine* myEngine, vector<WallStruct> walls, ve
 		}
 	}
 }
+
 void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed, float& dt)
 {
 
@@ -89,28 +95,51 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed, f
 		thiefMovementSpeed = 5;
 	}
 }
-void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
+
+bool BooleanBoxCDWithTCamera(ICamera* Camera, IModel* model2, float modelXLength, float modelYLength, float modelZLength)
 {
-	float cameraMovementY = myEngine->GetMouseMovementY();
-	float cameraMovementX = myEngine->GetMouseMovementX();
+	return ((Camera->GetX() < model2->GetX() + modelXLength && Camera->GetX() > model2->GetX() - modelXLength &&
+		Camera->GetY() < model2->GetY() + modelYLength && Camera->GetY() > model2->GetY() - modelYLength &&
+		Camera->GetZ() < model2->GetZ() + modelZLength && Camera->GetZ() > model2->GetZ() - modelZLength));
+}
 
-	pThief->RotateY(cameraMovementX);
-	//pCameraDummy->RotateY(cameraMovementX);
 
-	if (cameraMovementY > 0)
-	{
-		if (cameraAngle < maxCameraRotation)
+void CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel level)
+{
+	for (int i = 0; i < walls.size(); i++) {
+
+		if (BooleanBoxCDWithTCamera(Camera, walls[i].model, walls[i].wallXLength, walls[i].wallYLength, walls[i].wallZLength)) {
+				
+		}
+	}
+
+}
+void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation,ICamera* Camera,vector<WallStruct> walls)
+{
+		float cameraMovementY = myEngine->GetMouseMovementY();
+		float cameraMovementX = myEngine->GetMouseMovementX();
+
+		pThief->RotateY(cameraMovementX);
+
+		if (cameraMovementY > 0)
 		{
-			pCameraDummy->RotateLocalX(cameraMovementY);
-			cameraAngle += cameraMovementY;
+			if (cameraAngle < maxCameraRotation)
+			{
+				pCameraDummy->RotateLocalX(cameraMovementY);
+				cameraAngle += cameraMovementY;
+			}
 		}
-	}
-	else if (cameraMovementY < 0) {
-		if (cameraAngle > minCameraRotation) {
-			pCameraDummy->RotateLocalX(cameraMovementY);
-			cameraAngle += cameraMovementY;
+		else if (cameraMovementY < 0) {
+			if (cameraAngle > minCameraRotation) {
+				pCameraDummy->RotateLocalX(cameraMovementY);
+				cameraAngle += cameraMovementY;
+			}
 		}
-	}
+}
+void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,
+	float& cameraAngle, float maxCameraRotation, IModel* pCameraDummy, float minCameraRotation,CLevel levels)
+{
+	CameraCollisionWithWalls(Camera, walls,levels);
 }
 void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage, IFont* ControlsMessage,float &currentTime,float maxTimer,float dt) {
 	
@@ -163,7 +192,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	{
 	case DOOR_CLOSED:
 	{
-		if (BooleanBoxCD(pThief,door,doorXLength,doorYLength,doorZLength)) {
+		if (BooleanBoxCDWithThief(pThief,door,doorXLength,doorYLength,doorZLength)) {
 
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
@@ -193,7 +222,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	case DOOR_OPEN:
 	{
-		if (BooleanBoxCD(pThief, door, doorXLength, doorYLength, doorZLength)) {
+		if (BooleanBoxCDWithThief(pThief, door, doorXLength, doorYLength, doorZLength)) {
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
@@ -285,7 +314,7 @@ void main()
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel(0, 0, -10);
 	pThief->Scale(5);
-	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-3);
+	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-2);
 	camera->RotateX(25);
 
 	//IFONT Variables
@@ -386,10 +415,12 @@ void main()
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);//6			
 			levels.UpdateKey(keyMovementSpeed,dt,keyFound);	//7				
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
-			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);//9			
+			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation,camera,walls);//9			
 			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
 			
+			//testing
+			CameraCollisionDetectionWithObjects(camera,pThief, myEngine, walls, pillars, doors,cameraAngle,maxCameraRotation,pCameraDummy,minCameraRotation,levels);
 			//Transition
 			//Must remove later
 			if (myEngine->KeyHit(Key_P))

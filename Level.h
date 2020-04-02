@@ -85,6 +85,10 @@ public:
 	void SetUpKey();
 	void UpdateKey(float keyMovingSpeed, float dt,bool keyFound);
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
+	IMesh* getWallMesh()
+	{
+		return m_MWall;
+	}
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh, string data, float* rot = 0);
