@@ -9,7 +9,7 @@ using namespace tle;
 #define LEVEL 2
 #define PLAYER_LOST 3
 #define LOADING_NEXT_LEVEL 4
-
+#define RELOAD_CURRENT_LEVEL 5
 bool BooleanBoxCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
 {
 	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
@@ -123,9 +123,11 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 	{
 		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.", 0, 0);
 	}
+	//Only display the controls for a few seconds
 	currentTime += dt;
 	if (currentTime < maxTimer)
 	{
+		ControlsMessage->Draw("Use your mouse\nto look around", 0, 450);
 		ControlsMessage->Draw("Use WASD to move", 0, 550);
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
@@ -328,34 +330,68 @@ void main()
 		dt = myEngine->Timer();
 
 		/**** Update your scene each frame here ****/
-		
+		/*
+		MAIN GAME SWITCH
+		States: MENU, LEVEL, PLAYER_LOST, RELOAD_CURRENT_LEVEL, LOADING_NEXT_LEVEL
+
+		MENU:
+		1 Stops the mouse capture inserted by the player
+		1 Messages displayed on the screen 
+		2 Transitions to LEVEL after the player has hit Space
+
+		LEVEL:
+		4 Starts mouse capture that disables the mouse of the player to move around 
+			and centers it in the middle of the screen
+
+		5 Enables Collision between a larger scale of the doors and the player 
+			to enable him to open or close a door
+
+		6 Sphere to sphere collision between the player and the key
+
+		7 Update the animation of the key
+
+		8 Updates the movement of the model using WASD keys, also the player has the ability to
+			run faster by holding Left Shift
+
+		9 Captures the movement of the mouse and set some restrains some of the camera movement
+			by using a dummyCamera attached to the player 
+			(We dont want the camera to rotate without limits)
+
+		10 Checks for collision detection between the thief and the objects that exists in the level 
+			(pillars,walls,doors)
+
+		11 Displays the Quests on the screen. Also displays the controls for a few seconds after 
+			the player has started playing
+		*/
 		switch (STATE)
 		{
 		case MENU:
-		{	myEngine->StopMouseCapture();
+		{	myEngine->StopMouseCapture(); //1
+			//2
 			DisplayBigMessage->Draw("Shadows & Gold", 300, 300);
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
-
 			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
-			if (myEngine->KeyHit(Key_Space))
+			if (myEngine->KeyHit(Key_Space))//3
 			{
 				STATE = LEVEL;
 			}
 			break;
 		}
 		case LEVEL:
-		{
-			myEngine->StartMouseCapture(); // Disables mouse moving and centers it in the center of the screen 
-			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);
-			CollisionWithKey(pThief, R1, R2, levels, keyFound);
-			levels.UpdateKey(keyMovementSpeed,dt,keyFound);			
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
-			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);
+		{			
+			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
+			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);//5			
+			CollisionWithKey(pThief, R1, R2, levels, keyFound);//6			
+			levels.UpdateKey(keyMovementSpeed,dt,keyFound);	//7				
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
+			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);//9			
+			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
+			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
+			
+			//Must remove later
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
-					cout << "no more levels" << endl;
-			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);		
+					cout << "no more levels" << endl;		
 			break;
 		}
 		case PLAYER_LOST:
@@ -369,6 +405,12 @@ void main()
 			}
 			break;
 		}
+		case RELOAD_CURRENT_LEVEL:
+		{
+			//executes when the player has lost and the current level has to restart
+
+		}
+		break;
 		case LOADING_NEXT_LEVEL:
 		{
 			// This state could execute when we want to render the next level smoothly
