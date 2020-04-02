@@ -334,12 +334,13 @@ void main()
 		MAIN GAME SWITCH
 		States: MENU, LEVEL, PLAYER_LOST, RELOAD_CURRENT_LEVEL, LOADING_NEXT_LEVEL
 
-		MENU:
+		MENU:---------------------------------------------------------
 		1 Stops the mouse capture inserted by the player
 		1 Messages displayed on the screen 
 		2 Transitions to LEVEL after the player has hit Space
+		END OF MENU:---------------------------------------------------
 
-		LEVEL:
+		LEVEL:---------------------------------------------------------
 		4 Starts mouse capture that disables the mouse of the player to move around 
 			and centers it in the middle of the screen
 
@@ -362,6 +363,13 @@ void main()
 
 		11 Displays the Quests on the screen. Also displays the controls for a few seconds after 
 			the player has started playing
+		END OF LEVEL:--------------------------------------------------
+
+		PLAYER_LOST:--------------------------------------------------
+		//must fill later because we will add more things in the previous section
+		PLAYER_LOST:--------------------------------------------------
+
+		//fill the rest when the time comes 
 		*/
 		switch (STATE)
 		{
