@@ -45,7 +45,7 @@ bool CollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
 	}
 	return false;
 }
-void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt,vector<WallStruct> walls,vector<PillarStruct> pillars)
+void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt,vector<WallStruct> walls,vector<PillarStruct> pillars,vector<DoorStruct> doors)
 {
 
 	if (myEngine->KeyHeld(Key_W)) {
@@ -63,7 +63,7 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,fl
 
 	//Movement depends on collision with:
 	//WALLS, DOORS, PILLARS
-	if (CollisionWithWalls(pThief, walls) || CollisionWithPillars(pThief,pillars))/*|| CollisionWithDoor(pThief,doors)*/ {
+	if (CollisionWithWalls(pThief, walls) || CollisionWithPillars(pThief,pillars)|| CollisionWithDoors(pThief,doors)) {
 		if (myEngine->KeyHeld(Key_W)) {
 			pThief->MoveLocalZ(thiefMovementSpeed * dt);
 		}
@@ -346,7 +346,7 @@ void main()
 			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);
 			levels.UpdateKey(keyMovementSpeed,dt,keyFound);			
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,walls, pillars);
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,walls, pillars,doors);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))

@@ -108,10 +108,18 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Sdoor.doorYLengthArea = 10;
 						Sdoor.doorZLengthArea = 10;
 						Sdoor.doorMovementSpeed = 20;
-
-						Sdoor.doorXLength;
-						Sdoor.doorYLength;
-						Sdoor.doorZLength;
+						if (Sdoor.rot == 0 || Sdoor.rot==270)
+						{
+							Sdoor.doorXLength=3;
+							Sdoor.doorYLength=10;
+							Sdoor.doorZLength=2;
+						}
+						if (Sdoor.rot == 90)
+						{
+							Sdoor.doorXLength = 3;
+							Sdoor.doorYLength = 10;
+							Sdoor.doorZLength = 2;
+						}
 						Doors.push_back(Sdoor);
 						break;
 					case endingdoor:
