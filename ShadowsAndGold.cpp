@@ -386,7 +386,8 @@ void main()
 			break;
 		}
 		case LEVEL:
-		{			
+		{	
+			//Update
 			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
 			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);//5			
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);//6			
@@ -396,6 +397,7 @@ void main()
 			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
 			
+			//Transition
 			//Must remove later
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
