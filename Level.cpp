@@ -34,6 +34,22 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data,float& rot) {
 	return output;
 }
 
+IModel* CLevel::CreateModel(IMesh* mesh, string data) {
+	IModel* output = mesh->CreateModel();
+	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
+	for (int i = 0; i < 5; i++) {
+		int pos = data.find(",");
+		fdata[i] = stof(data.substr(0, pos));
+		if (data.find(",") == string::npos)
+			break;
+		data = data.substr(pos + 1);
+	}
+	output->Scale(fdata[4]);
+	output->SetPosition(fdata[0], fdata[1], fdata[2]);
+	output->RotateY(fdata[3]);
+	return output;
+}
+
 void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back().model);
