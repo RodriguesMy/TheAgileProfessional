@@ -110,6 +110,9 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						door.model = CreateModel(m_MDoor, input);
 						door.state = 3;
 						door.type = starting;
+						m_PlayerSPos.x = door.model->GetX();
+						m_PlayerSPos.y = door.model->GetY();
+						m_PlayerSPos.z = door.model->GetZ() + 3;
 						Doors.push_back(door);
 						break;
 					case pillar:
