@@ -17,7 +17,7 @@ CLevel::~CLevel()
 {
 }
 
-IModel* CLevel::CreateModel(IMesh* mesh,string data,float& rot) {
+IModel* CLevel::CreateModel(IMesh* mesh,string data,float* rot) {
 	IModel* output = mesh->CreateModel();
 	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
 	for (int i = 0; i < 5; i++) {
@@ -29,23 +29,9 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data,float& rot) {
 	}
 	output->Scale(fdata[4]);
 	output->SetPosition(fdata[0], fdata[1], fdata[2]);
-	rot = fdata[3];
-	output->RotateY(fdata[3]);
-	return output;
-}
-
-IModel* CLevel::CreateModel(IMesh* mesh, string data) {
-	IModel* output = mesh->CreateModel();
-	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
-	for (int i = 0; i < 5; i++) {
-		int pos = data.find(",");
-		fdata[i] = stof(data.substr(0, pos));
-		if (data.find(",") == string::npos)
-			break;
-		data = data.substr(pos + 1);
+	if (rot != 0) {
+		*rot = fdata[3];
 	}
-	output->Scale(fdata[4]);
-	output->SetPosition(fdata[0], fdata[1], fdata[2]);
 	output->RotateY(fdata[3]);
 	return output;
 }
@@ -98,7 +84,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					switch (Current) {
 					case wall:
 						WallStruct wall;
-						wall.model = CreateModel(m_MWall, input, wall.rot);
+						wall.model = CreateModel(m_MWall, input, &(wall.rot));
 						if (wall.rot == 0)
 						{
 							wall.wallXLength = 0.5;
