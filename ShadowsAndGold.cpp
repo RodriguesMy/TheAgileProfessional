@@ -57,8 +57,7 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float ma
 		}
 	}
 }
-void UpdateQuests(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFont* InteractionMessage,I3DEngine* myEngine, bool &mainDoorNearby,bool &mainDoorUnlocked,
-	CLevel &levels, vector<WallStruct> walls, vector<DoorStruct>& doors,vector<IModel*> pillars, IModel* Key, int &currentLevel) {
+void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage, IFont* ControlsMessage,float &currentTime,float maxTimer,float dt) {
 	
 	//Update the Quests Fonts
 	if (keyFound)
@@ -69,14 +68,12 @@ void UpdateQuests(bool &keyFound,IFont* DisplayQuest,bool &simpleDoorNearby,IFon
 	{
 		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.", 0, 0);
 	}
-	////Transition
-	//if (mainDoorUnlocked)
-	//{
-	//	keyFound = false;
-	//	mainDoorUnlocked = false;
-	//	levels.NextLevel(walls, doors, pillars,Key);
-	//	mainDoorUnlocked = false;
-	//}
+	currentTime += dt;
+	if (currentTime < maxTimer)
+	{
+		ControlsMessage->Draw("Use WASD to move", 0, 550);
+		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
+	}
 }
 bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls, float wallsXLength, float wallsYLength, float wallsZLength) {
 	for (int i = 0; i < walls.size(); i++) {
@@ -185,7 +182,7 @@ void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit,
 	}break;
 	}
 }
-void CollisionWithDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, float doorXLength, float doorYLength, float doorZLength,int maxLimit,float &currentLimit, IFont* InteractionMessage,
 	I3DEngine* myEngine,float doorMovementSpeed,float dt,bool keyFound) {	
 	for (int i = 0; i < door.size(); i++) {
 		UpdateDoor(door[i].state, door[i].model, maxLimit, currentLimit, InteractionMessage, myEngine, doorMovementSpeed, dt, 
@@ -254,6 +251,8 @@ void main()
 	IFont* DisplayQuest = myEngine->LoadFont("Cambria", 24U);
 	IFont* InteractionMessage = myEngine->LoadFont("Cambria", 24U);
 	IFont* ControlsMessage = myEngine->LoadFont("Cambria", 24U);
+	float currentTime = 0;
+	float const maxTimer = 10;
 	//END OF IFONT Variables
 
 	//Rotation of camera variables
@@ -265,9 +264,6 @@ void main()
 	bool keyFound = false;
 
 	//Door variables
-	bool mainDoorUnlocked = false;
-	bool simpleDoorNearby = false;
-	bool mainDoorNearby = false;
 	float maxLimit = 30;
 	float currentLimit = 0;
 	float const doorXLength = 5;
@@ -317,12 +313,11 @@ void main()
 		case LEVEL:
 		{
 			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
-
-			CollisionWithDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt,keyFound);
+			CollisionToHandleDoors(pThief,doors,doorXLength,doorYLength,doorZLength,maxLimit,currentLimit,InteractionMessage,myEngine, doorMovementSpeed,dt,keyFound);
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);
 			levels.UpdateKey(keyMovementSpeed,dt,keyFound);
 			//CollisionWithWalls(pThief, walls, wallXLength, wallYLength, wallZLength);
-			////Myriam, testing do not touch (trying to implement CD with walls) 
+			//Myriam, testing do not touch (trying to implement CD with walls) 
 			//if (!SphereToBoxCD(pThief, walls, wallXLength, wallYLength,wallZLength)) {
 			//	
 			//	if(myEngine->KeyHeld(Key_W))
@@ -339,14 +334,13 @@ void main()
 			//if (myEngine->KeyHeld(Key_A) && !SphereToBoxCD(pThief, walls, wallXLength, wallYLength, wallZLength)) {
 			//	pThief->MoveLocalX(thiefMovementSpeed * dt);
 			//}
-			////end of Myriam testing
+			//end of Myriam testing
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;
-			UpdateQuests(keyFound, DisplayQuest, simpleDoorNearby, InteractionMessage, myEngine, mainDoorNearby, mainDoorUnlocked, levels, walls, doors, pillars, key, STATE);
-			
+			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);			
 			break;
 		}
 		case PLAYER_LOST:
@@ -363,9 +357,7 @@ void main()
 		case LOADING_NEXT_LEVEL:
 		{
 			// This state could execute when we want to render the next level smoothly
-
 			DisplayBigMessage->Draw("Loading . . .", 300, 300);
-
 			//I thought of maybe putting a wall in front of the camera (as a black screen) and changing the level here
 			//Resetting the player's and guard's position
 			//Having the starting place of the player and the guard inside each level (get them from level.txt) is a good idea
@@ -374,7 +366,6 @@ void main()
 			if (1/*loading map finished*/)
 			{
 				STATE = LEVEL;
-
 			}
 		}
 		break;
