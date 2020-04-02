@@ -101,7 +101,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case door:
 						DoorStruct Sdoor;
-						Sdoor.model = CreateModel(m_MDoor, input);
+						Sdoor.model = CreateModel(m_MDoor, input,&(Sdoor.rot));
 						Sdoor.state = DOOR_CLOSED;
 						Sdoor.type = simple;
 						Sdoor.doorXLengthArea = 5;
@@ -118,7 +118,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 							}
 						}
 						DoorStruct Mdoor;
-						Mdoor.model = CreateModel(m_MDoor, input);
+						Mdoor.model = CreateModel(m_MDoor, input,&(Mdoor.rot));
 						Mdoor.state = DOOR_CLOSED;
 						Mdoor.type = ending;
 						Mdoor.doorXLengthArea = 5;
@@ -135,7 +135,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 							}
 						}
 						DoorStruct door;
-						door.model = CreateModel(m_MDoor, input);
+						door.model = CreateModel(m_MDoor, input,&(door.rot));
 						door.state = DOOR_CLOSED;
 						door.type = starting;
 						door.doorXLengthArea = 5;
