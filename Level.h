@@ -33,16 +33,26 @@ struct DoorStruct {
 	IModel* model;
 	EDoorState state;
 	EDoortype type;
+	float doorXLengthArea;
+	float doorYLengthArea;
+	float doorZLengthArea;
+	float doorMovementSpeed;
 };
 
 struct WallStruct {
 	IModel* model;
 	float rot;
+	float wallXLength;
+	float wallYLength;
+	float wallZLength;
 };
 
 struct PillarStruct {
 	IModel* model;
 	EPillarType type;
+	float pillarXLength;
+	float pillarYLength;
+	float pillarZLength;
 };
 
 class CLevel
@@ -73,6 +83,6 @@ public:
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 private:
 	bool IncreaseLevelIt();
-	IModel* CreateModel(IMesh* mesh, string data, float rot = 0);
+	IModel* CreateModel(IMesh* mesh, string data, float& rot = 0);
 	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
 };
