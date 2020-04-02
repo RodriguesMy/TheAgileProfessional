@@ -343,24 +343,17 @@ void main()
 		LEVEL:---------------------------------------------------------
 		4 Starts mouse capture that disables the mouse of the player to move around 
 			and centers it in the middle of the screen
-
 		5 Enables Collision between a larger scale of the doors and the player 
 			to enable him to open or close a door
-
 		6 Sphere to sphere collision between the player and the key
-
 		7 Update the animation of the key
-
 		8 Updates the movement of the model using WASD keys, also the player has the ability to
 			run faster by holding Left Shift
-
 		9 Captures the movement of the mouse and set some restrains some of the camera movement
 			by using a dummyCamera attached to the player 
 			(We dont want the camera to rotate without limits)
-
 		10 Checks for collision detection between the thief and the objects that exists in the level 
 			(pillars,walls,doors)
-
 		11 Displays the Quests on the screen. Also displays the controls for a few seconds after 
 			the player has started playing
 		END OF LEVEL:--------------------------------------------------
