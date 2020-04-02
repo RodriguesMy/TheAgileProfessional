@@ -33,6 +33,7 @@ struct DoorStruct {
 	IModel* model;
 	EDoorState state;
 	EDoortype type;
+	float rot;
 	float doorXLengthArea;
 	float doorYLengthArea;
 	float doorZLengthArea;
@@ -86,7 +87,6 @@ public:
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 private:
 	bool IncreaseLevelIt();
-	IModel* CreateModel(IMesh* mesh, string data, float& rot);
-	IModel* CreateModel(IMesh* mesh, string data);
+	IModel* CreateModel(IMesh* mesh, string data, float* rot = 0);
 	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
 };
