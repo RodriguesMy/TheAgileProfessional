@@ -160,6 +160,9 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						PillarStruct Spedestal;
 						Spedestal.model = CreateModel(m_MPedestal, input);
 						Spedestal.type = typePedestal;
+						Spedestal.pillarXLength = 2;
+						Spedestal.pillarYLength = 10;
+						Spedestal.pillarZLength = 2;
 						Pillars.push_back(Spedestal);
 						break;
 					case key:

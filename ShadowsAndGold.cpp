@@ -86,7 +86,7 @@ bool CollisionWithWalls(float modelX,float modelY, float modelZ, vector<WallStru
 	}
 	return false;
 }
-bool BooleanCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
+bool BooleanBoxCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
 {
 	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
 		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
@@ -122,7 +122,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	{
 	case DOOR_CLOSED:
 	{
-		if (BooleanCD(pThief,door,doorXLength,doorYLength,doorZLength)) {
+		if (BooleanBoxCD(pThief,door,doorXLength,doorYLength,doorZLength)) {
 
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
@@ -152,7 +152,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	case DOOR_OPEN:
 	{
-		if (BooleanCD(pThief, door, doorXLength, doorYLength, doorZLength)) {
+		if (BooleanBoxCD(pThief, door, doorXLength, doorYLength, doorZLength)) {
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
@@ -321,7 +321,8 @@ void main()
 			//WALL COLLISION DETECTION 
 			//if there is a wall in front of the thief we want him only to go back 
 			//if there is a wall behind the this he is only allowed to go front
-
+			//if there is a wall on the right the this he is only allowed to go left
+			//if there is a wall on the left the this he is only allowed to go right
 			if (CollisionWithWalls(pThief->GetX(), pThief->GetY(), pThief->GetZ() - 2, walls)) {
 				cout << "hello" << endl;
 			}
