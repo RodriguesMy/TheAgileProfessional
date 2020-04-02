@@ -264,9 +264,6 @@ void main()
 	bool keyFound = false;
 
 	//Door variables
-	bool mainDoorUnlocked = false;
-	bool simpleDoorNearby = false;
-	bool mainDoorNearby = false;
 	float maxLimit = 30;
 	float currentLimit = 0;
 	float const doorXLength = 5;
