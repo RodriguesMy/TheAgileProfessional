@@ -306,7 +306,7 @@ void main()
 		}
 		case LEVEL:
 		{
-			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
+			//myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
 			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);
 			levels.UpdateKey(keyMovementSpeed,dt,keyFound);			
@@ -323,7 +323,7 @@ void main()
 			//if there is a wall behind the this he is only allowed to go front
 			//if there is a wall on the right the this he is only allowed to go left
 			//if there is a wall on the left the this he is only allowed to go right
-			if (CollisionWithWalls(pThief->GetX(), pThief->GetY(), pThief->GetZ() - 2, walls)) {
+			if (CollisionWithWalls(pThief->GetX(), pThief->GetY(), pThief->GetLocalZ() +2, walls)) {
 				cout << "hello" << endl;
 			}
 			/*if (myEngine->KeyHeld(Key_W)) {
