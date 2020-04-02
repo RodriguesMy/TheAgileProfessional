@@ -33,6 +33,7 @@ struct DoorStruct {
 	IModel* model;
 	EDoorState state;
 	EDoortype type;
+	float rot;
 	float doorXLengthArea;
 	float doorYLengthArea;
 	float doorZLengthArea;
