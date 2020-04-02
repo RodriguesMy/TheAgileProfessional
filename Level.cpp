@@ -101,15 +101,15 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						wall.model = CreateModel(m_MWall, input, wall.rot);
 						if (wall.rot == 0)
 						{
-							wall.wallXLength = 0.5;
+							wall.wallXLength = 11;
 							wall.wallYLength = 10;
-							wall.wallZLength = 10;
+							wall.wallZLength = 2;
 						}
 						if (wall.rot == 90)
 						{
-							wall.wallXLength = 10;
+							wall.wallXLength = 2;
 							wall.wallYLength = 10;
-							wall.wallZLength = 0.5;
+							wall.wallZLength = 11;
 						}
 						Walls.push_back(wall);
 						break;
@@ -122,6 +122,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Sdoor.doorYLengthArea = 10;
 						Sdoor.doorZLengthArea = 10;
 						Sdoor.doorMovementSpeed = 20;
+
+						Sdoor.doorXLength;
+						Sdoor.doorYLength;
+						Sdoor.doorZLength;
 						Doors.push_back(Sdoor);
 						break;
 					case endingdoor:
@@ -174,9 +178,9 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						PillarStruct Spedestal;
 						Spedestal.model = CreateModel(m_MPedestal, input);
 						Spedestal.type = typePedestal;
-						Spedestal.pillarXLength = 2;
+						Spedestal.pillarXLength = 3;
 						Spedestal.pillarYLength = 10;
-						Spedestal.pillarZLength = 2;
+						Spedestal.pillarZLength = 3;
 						Pillars.push_back(Spedestal);
 						break;
 					case key:

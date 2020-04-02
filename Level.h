@@ -37,6 +37,9 @@ struct DoorStruct {
 	float doorYLengthArea;
 	float doorZLengthArea;
 	float doorMovementSpeed;
+	float doorXLength;
+	float doorYLength;
+	float doorZLength;
 };
 
 struct WallStruct {

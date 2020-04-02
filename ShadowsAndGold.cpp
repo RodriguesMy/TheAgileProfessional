@@ -10,11 +10,46 @@ using namespace tle;
 #define PLAYER_LOST 3
 #define LOADING_NEXT_LEVEL 4
 
-void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt)
+bool BooleanBoxCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
+{
+	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
+		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
+		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
+}
+bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
+	for (int i = 0; i < walls.size(); i++) {
+		
+		if (BooleanBoxCD(pThief,walls[i].model,walls[i].wallXLength,walls[i].wallYLength,walls[i].wallZLength)){
+			return true;
+		}
+	}
+	return false;
+}
+bool CollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
+
+	for (int i = 0; i < doors.size(); i++) {
+
+		if (BooleanBoxCD(pThief, doors[i].model, doors[i].doorXLength, doors[i].doorYLength, doors[i].doorZLength)) {
+			return true;
+		}
+	}
+	return false; 
+}
+bool CollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
+
+	for (int i = 0; i < pillars.size(); i++) {
+
+		if (BooleanBoxCD(pThief, pillars[i].model, pillars[i].pillarXLength, pillars[i].pillarYLength, pillars[i].pillarZLength)) {
+			return true;
+		}
+	}
+	return false;
+}
+void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt,vector<WallStruct> walls,vector<PillarStruct> pillars)
 {
 
-	if (myEngine->KeyHeld(Key_W)) {		
-	pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+	if (myEngine->KeyHeld(Key_W)) {
+		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
 		pThief->MoveLocalZ(thiefMovementSpeed * dt);
@@ -24,6 +59,23 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,fl
 	}
 	if (myEngine->KeyHeld(Key_A)) {
 		pThief->MoveLocalX(thiefMovementSpeed * dt);
+	}
+
+	//Movement depends on collision with:
+	//WALLS, DOORS, PILLARS
+	if (CollisionWithWalls(pThief, walls) || CollisionWithPillars(pThief,pillars))/*|| CollisionWithDoor(pThief,doors)*/ {
+		if (myEngine->KeyHeld(Key_W)) {
+			pThief->MoveLocalZ(thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_S)) {
+			pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_D)) {
+			pThief->MoveLocalX(thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_A)) {
+			pThief->MoveLocalX(-thiefMovementSpeed * dt);
+		}
 	}
 	if (myEngine->KeyHeld(Key_Shift))
 	{
@@ -75,23 +127,7 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-bool CollisionWithWalls(float modelX,float modelY, float modelZ, vector<WallStruct> walls) {
-	for (int i = 0; i < walls.size(); i++) {
-		
-		if (modelX< walls[i].model->GetX() + walls[i].wallXLength && modelX > walls[i].model->GetX() - walls[i].wallXLength &&
-			modelY < walls[i].model->GetY() + walls[i].wallYLength && modelY > walls[i].model->GetY() - walls[i].wallYLength &&
-			modelZ < walls[i].model->GetZ() + walls[i].wallZLength && modelZ > walls[i].model->GetZ() - walls[i].wallZLength){
-			return true;
-		}
-	}
-	return false;
-}
-bool BooleanBoxCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
-{
-	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
-		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
-		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
-}
+
 void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
 {
@@ -306,40 +342,16 @@ void main()
 		}
 		case LEVEL:
 		{
-			//myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
+			myEngine->StartMouseCapture(); // Disables mouse moving and centers it in the center of the screen 
 			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);
 			CollisionWithKey(pThief, R1, R2, levels, keyFound);
 			levels.UpdateKey(keyMovementSpeed,dt,keyFound);			
-			//end of Myriam testing
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,walls, pillars);
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;
 			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);		
-
-			//WALL COLLISION DETECTION 
-			//if there is a wall in front of the thief we want him only to go back 
-			//if there is a wall behind the this he is only allowed to go front
-			//if there is a wall on the right the this he is only allowed to go left
-			//if there is a wall on the left the this he is only allowed to go right
-			if (CollisionWithWalls(pThief->GetX(), pThief->GetY(), pThief->GetLocalZ() +2, walls)) {
-				cout << "hello" << endl;
-			}
-			/*if (myEngine->KeyHeld(Key_W)) {
-				pThief->MoveLocalZ(-thiefMovementSpeed * dt);
-			}
-			if (myEngine->KeyHeld(Key_S)) {
-				pThief->MoveLocalZ(thiefMovementSpeed * dt);
-			}
-			if (myEngine->KeyHeld(Key_D)) {
-				pThief->MoveLocalX(-thiefMovementSpeed * dt);
-			}
-			if (myEngine->KeyHeld(Key_A)) {
-				pThief->MoveLocalX(thiefMovementSpeed * dt);
-			}*/
-
-
 			break;
 		}
 		case PLAYER_LOST:
