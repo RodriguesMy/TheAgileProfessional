@@ -92,7 +92,7 @@ bool BooleanCD(IModel* model1,IModel* model2,float modelXLength,float modelYLeng
 		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
 		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
 }
-void UpdateDoor(int& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
@@ -226,7 +226,7 @@ void main()
 	//Model Containers
 	vector<WallStruct> walls;
 	vector<DoorStruct> doors;
-	vector<IModel*> pillars;
+	vector<PillarStruct> pillars;
 
 	IModel* key=0;
 

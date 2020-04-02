@@ -34,7 +34,7 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data,float rot) {
 	return output;
 }
 
-void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key) {
+void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back().model);
 		Walls.pop_back();
@@ -44,7 +44,13 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		Doors.pop_back();
 	}
 	while (!Pillars.empty()) {
-		m_MPillars->RemoveModel(Pillars.back());
+		if (Pillars.back().type == typePillar) {
+			m_MPillars->RemoveModel(Pillars.back().model);
+		}
+		else if (Pillars.back().type == typePedestal) {
+			m_MPedestal->RemoveModel(Pillars.back().model);
+		}
+		Pillars.pop_back();
 	}
 	if (Key != NULL) {
 		m_MKey->RemoveModel(Key);
@@ -52,7 +58,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	}
 }
 
-bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<IModel*>& Pillars,IModel*& Key) {
+bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
@@ -108,7 +114,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						}
 						DoorStruct door;
 						door.model = CreateModel(m_MDoor, input);
-						door.state = 3;
+						door.state = DOOR_CLOSED;
 						door.type = starting;
 						m_PlayerSPos.x = door.model->GetX();
 						m_PlayerSPos.y = door.model->GetY();
@@ -116,10 +122,16 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.push_back(door);
 						break;
 					case pillar:
-						Pillars.push_back(CreateModel(m_MPillars, input));
+						PillarStruct Spillar;
+						Spillar.model = CreateModel(m_MPillars, input);
+						Spillar.type = typePillar;
+						Pillars.push_back(Spillar);
 						break;
 					case pedestal:
-						Pillars.push_back(CreateModel(m_MPedestal, input));
+						PillarStruct Spedestal;
+						Spedestal.model = CreateModel(m_MPedestal, input);
+						Spedestal.type = typePedestal;
+						Pillars.push_back(Spedestal);
 						break;
 					case key:
 						if (Key != NULL)
