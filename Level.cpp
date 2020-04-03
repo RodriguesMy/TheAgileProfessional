@@ -181,6 +181,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						if (Key != NULL)
 							m_MKey->RemoveModel(Key);
 						m_Key = CreateModel(m_MKey, input);
+						m_Key->RotateX(90);
 					}
 				}
 				else {
@@ -233,9 +234,4 @@ IModel* CLevel::getKey() {
 void CLevel::UpdateKey(float keyMovingSpeed,float dt,bool keyFound) {
 	if(!keyFound)
 	m_Key->RotateY(keyMovingSpeed*dt);
-}
-
-void CLevel::SetUpKey() {
-	m_Key->RotateX(90);
-	m_Key->SetY(7);
 }

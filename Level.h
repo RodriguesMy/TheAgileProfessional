@@ -82,7 +82,6 @@ public:
 	int GetLevelNumber() { return m_LevelIt; }
 	void RemoveKey();
 	IModel* getKey();
-	void SetUpKey();
 	void UpdateKey(float keyMovingSpeed, float dt,bool keyFound);
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 	IMesh* getWallMesh()

@@ -300,7 +300,7 @@ void main()
 	vector<WallStruct> walls;
 	vector<DoorStruct> doors;
 	vector<PillarStruct> pillars;
-
+	
 	IModel* key=0;
 
 	int STATE = MENU;
@@ -346,7 +346,6 @@ void main()
 	pCameraDummy->RotateY(180);
 
 	//Key variables
-	levels.SetUpKey();
 	float R1 = 5;
 	float R2 = 7;
 	float keyMovementSpeed = 150;
