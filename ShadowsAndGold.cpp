@@ -214,7 +214,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
 			}
-			if (doorType == starting && !keyFound) {
+			if (doorType == starting) {
 				InteractionMessage->Draw("No turning back now.", 565, 550);
 			}
 		}
