@@ -73,16 +73,13 @@ private:
 	IMesh* m_MPillars;
 	IMesh* m_MPedestal;
 	IMesh* m_MKey;
-	IModel* m_Key;
 	Vector m_PlayerSPos;
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
 	bool NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
 	int GetLevelNumber() { return m_LevelIt; }
-	void RemoveKey();
-	IModel* getKey();
-	void UpdateKey(float keyMovingSpeed, float dt,bool keyFound);
+	void RemoveKey(IModel*& Key);
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 private:
 	bool IncreaseLevelIt();

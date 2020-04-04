@@ -180,8 +180,8 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case key:
 						if (Key != NULL)
 							m_MKey->RemoveModel(Key);
-						m_Key = CreateModel(m_MKey, input);
-						m_Key->RotateX(90);
+						Key = CreateModel(m_MKey, input);
+						Key->RotateX(90);
 					}
 				}
 				else {
@@ -223,15 +223,6 @@ bool CLevel::IncreaseLevelIt() {
 		return false;
 }
 
-void CLevel::RemoveKey() {
-	m_MKey->RemoveModel(m_Key);
-}
-
-IModel* CLevel::getKey() {
-	return m_Key;
-}
-
-void CLevel::UpdateKey(float keyMovingSpeed,float dt,bool keyFound) {
-	if(!keyFound)
-	m_Key->RotateY(keyMovingSpeed*dt);
+void CLevel::RemoveKey(IModel*& Key) {
+	m_MKey->RemoveModel(Key);
 }

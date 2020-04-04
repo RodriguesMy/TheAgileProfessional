@@ -264,7 +264,7 @@ void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyF
 
 		if (sqrt(x * x + y * y + z * z) < R1 + R2) {
 			keyFound = true;
-			level.RemoveKey();
+			level.RemoveKey(key);
 		}
 	}
 		
@@ -414,7 +414,7 @@ void main()
 			//Transition
 			//Must remove later
 			if (myEngine->KeyHit(Key_P))
-				if (levels.NextLevel(walls, doors, pillars, key))
+				if (!levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;		
 			break;
 		}
