@@ -262,12 +262,12 @@ void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* Int
 			keyFound, door[i].type,pThief, door[i].doorXLengthArea, door[i].doorYLengthArea, door[i].doorZLengthArea);
 	}
 }
-void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound) {
+void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel* key) {
 
 	if (!keyFound) {
-		float x = pThief->GetX() -level.getKey()->GetX();
-		float y = pThief->GetY() - level.getKey()->GetY();
-		float z = pThief->GetZ() - level.getKey()->GetZ();
+		float x = pThief->GetX() - key->GetX();
+		float y = pThief->GetY() - key->GetY();
+		float z = pThief->GetZ() - key->GetZ();
 
 		if (sqrt(x * x + y * y + z * z) < R1 + R2) {
 			keyFound = true;
@@ -411,8 +411,9 @@ void main()
 			//Update
 			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
 			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);//5			
-			CollisionWithKey(pThief, R1, R2, levels, keyFound);//6			
-			levels.UpdateKey(keyMovementSpeed,dt,keyFound);	//7				
+			CollisionWithKey(pThief, R1, R2, levels, keyFound,key);//6			
+			//levels.UpdateKey(keyMovementSpeed,dt,keyFound);	//7		
+			if (!keyFound)key->RotateY(keyMovementSpeed * dt);
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
 			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation,camera,walls);//9			
 			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
