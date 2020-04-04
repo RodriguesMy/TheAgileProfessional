@@ -88,7 +88,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						if (wall.rot == 0 || wall.rot == 180)
 						{
 							wall.wallXLength = 11;
-							wall.wallYLength = 10;
+							wall.wallYLength = 15;
 							wall.wallZLength = 2;
 						}
 						if (wall.rot == 90 || wall.rot == 270)
