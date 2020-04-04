@@ -20,7 +20,7 @@ bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,float modelXLength,floa
 bool ThiefCollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
 	for (int i = 0; i < walls.size(); i++) {
 		
-		if (BooleanBoxCDWithThief(pThief,walls[i].model,walls[i].wallXLength,walls[i].wallYLength,walls[i].wallZLength)){
+		if (BooleanBoxCDWithThief(pThief,walls[i].model,walls[i].length.x,walls[i].length.y,walls[i].length.z)){
 			return true;
 		}
 	}
@@ -30,7 +30,7 @@ bool ThiefCollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
 
 	for (int i = 0; i < doors.size(); i++) {
 
-		if (BooleanBoxCDWithThief(pThief, doors[i].model, doors[i].doorXLength, doors[i].doorYLength, doors[i].doorZLength)) {
+		if (BooleanBoxCDWithThief(pThief, doors[i].model, doors[i].length.x, doors[i].length.y, doors[i].length.z)) {
 			return true;
 		}
 	}
@@ -40,7 +40,7 @@ bool ThiefCollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
 
 	for (int i = 0; i < pillars.size(); i++) {
 
-		if (BooleanBoxCDWithThief(pThief, pillars[i].model, pillars[i].pillarXLength, pillars[i].pillarYLength, pillars[i].pillarZLength)) {
+		if (BooleanBoxCDWithThief(pThief, pillars[i].model, pillars[i].length.x, pillars[i].length.y, pillars[i].length.z)) {
 			return true;
 		}
 	}
@@ -102,7 +102,7 @@ void CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel 
 {
 	for (int i = 0; i < walls.size(); i++) {
 
-		if (BooleanBoxCDWithTCamera(Camera, walls[i].model, walls[i].wallXLength, walls[i].wallYLength, walls[i].wallZLength)) {
+		if (BooleanBoxCDWithTCamera(Camera, walls[i].model, walls[i].length.x, walls[i].length.y, walls[i].length.z)) {
 				
 		}
 	}
@@ -251,8 +251,8 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage,
 	I3DEngine* myEngine,float dt,bool keyFound, float &CurrentDoorLimit, float MaxDoorLimit) {
 	for (int i = 0; i < door.size(); i++) {
-		UpdateDoor(door[i].state, door[i].model, MaxDoorLimit, CurrentDoorLimit, InteractionMessage, myEngine, door[i].doorMovementSpeed, dt,
-			keyFound, door[i].type,pThief, door[i].doorXLengthArea, door[i].doorYLengthArea, door[i].doorZLengthArea);
+		UpdateDoor(door[i].state, door[i].model, MaxDoorLimit, CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, dt,
+			keyFound, door[i].type,pThief, door[i].areaLength.x, door[i].areaLength.y, door[i].areaLength.z);
 	}
 }
 void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel* key) {
