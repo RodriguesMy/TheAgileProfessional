@@ -1,21 +1,23 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  ShadowsAndGold.cpp
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(22,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(32,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(42,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(109,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(119,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(120,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(260,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(261,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Level.cpp
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(126,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(143,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(188,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(220,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(234,14): error C2039: 'UpdateKey': is not a member of 'CLevel'
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.h(62): message : see declaration of 'CLevel'
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(236,2): error C2065: 'm_Key': undeclared identifier
   Generating Code...
   Compiling...
-  Level.cpp
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(126,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(143,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(188,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(220,16): warning C4018: '<': signed/unsigned mismatch
+  ShadowsAndGold.cpp
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(22,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(32,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(42,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(109,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(119,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(120,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(260,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(261,44): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(415,20): error C2039: 'UpdateKey': is not a member of 'CLevel'
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.h(62): message : see declaration of 'CLevel'
   Generating Code...
-C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(216): warning C4715: 'CLevel::NextLevel': not all control paths return a value
-  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
-  Copying DLLs & shaders...
