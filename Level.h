@@ -33,10 +33,14 @@ struct DoorStruct {
 	IModel* model;
 	EDoorState state;
 	EDoortype type;
+	float rot;
 	float doorXLengthArea;
 	float doorYLengthArea;
 	float doorZLengthArea;
 	float doorMovementSpeed;
+	float doorXLength;
+	float doorYLength;
+	float doorZLength;
 };
 
 struct WallStruct {
@@ -78,7 +82,6 @@ public:
 	int GetLevelNumber() { return m_LevelIt; }
 	void RemoveKey();
 	IModel* getKey();
-	void SetUpKey();
 	void UpdateKey(float keyMovingSpeed, float dt,bool keyFound);
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 private:

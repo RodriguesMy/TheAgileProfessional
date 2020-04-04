@@ -9,12 +9,72 @@ using namespace tle;
 #define LEVEL 2
 #define PLAYER_LOST 3
 #define LOADING_NEXT_LEVEL 4
+#define RELOAD_CURRENT_LEVEL 5
 
-void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,float &dt)
+bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
+{
+	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
+		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
+		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
+}
+
+bool ThiefCollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
+	for (int i = 0; i < walls.size(); i++) {
+		
+		if (BooleanBoxCDWithThief(pThief,walls[i].model,walls[i].wallXLength,walls[i].wallYLength,walls[i].wallZLength)){
+			return true;
+		}
+	}
+	return false;
+}
+bool ThiefCollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
+
+	for (int i = 0; i < doors.size(); i++) {
+
+		if (BooleanBoxCDWithThief(pThief, doors[i].model, doors[i].doorXLength, doors[i].doorYLength, doors[i].doorZLength)) {
+			return true;
+		}
+	}
+	return false; 
+}
+bool ThiefCollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
+
+	for (int i = 0; i < pillars.size(); i++) {
+
+		if (BooleanBoxCDWithThief(pThief, pillars[i].model, pillars[i].pillarXLength, pillars[i].pillarYLength, pillars[i].pillarZLength)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void ThiefCollisionWithObjects(I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,IModel* pThief, float& thiefMovementSpeed, float& dt )
+{
+	//Movement depends on collision with:
+	//WALLS, DOORS, PILLARS
+	if (ThiefCollisionWithWalls(pThief, walls) || ThiefCollisionWithPillars(pThief, pillars) || ThiefCollisionWithDoors(pThief, doors)) {
+		/*Reverse the movement in the previous state if a collision occurs
+		Basically the movement that the player was trying to do but reversed*/
+		if (myEngine->KeyHeld(Key_W)) {
+			pThief->MoveLocalZ(thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_S)) {
+			pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_D)) {
+			pThief->MoveLocalX(thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_A)) {
+			pThief->MoveLocalX(-thiefMovementSpeed * dt);
+		}
+	}
+}
+
+void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed, float& dt)
 {
 
-	if (myEngine->KeyHeld(Key_W)) {		
-	pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+	if (myEngine->KeyHeld(Key_W)) {
+		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 	}
 	if (myEngine->KeyHeld(Key_S)) {
 		pThief->MoveLocalZ(thiefMovementSpeed * dt);
@@ -25,6 +85,7 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,fl
 	if (myEngine->KeyHeld(Key_A)) {
 		pThief->MoveLocalX(thiefMovementSpeed * dt);
 	}
+	
 	if (myEngine->KeyHeld(Key_Shift))
 	{
 		thiefMovementSpeed = 7;
@@ -34,28 +95,51 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed,fl
 		thiefMovementSpeed = 5;
 	}
 }
-void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation)
+
+bool BooleanBoxCDWithTCamera(ICamera* Camera, IModel* model2, float modelXLength, float modelYLength, float modelZLength)
 {
-	float cameraMovementY = myEngine->GetMouseMovementY();
-	float cameraMovementX = myEngine->GetMouseMovementX();
+	return ((Camera->GetX() < model2->GetX() + modelXLength && Camera->GetX() > model2->GetX() - modelXLength &&
+		Camera->GetY() < model2->GetY() + modelYLength && Camera->GetY() > model2->GetY() - modelYLength &&
+		Camera->GetZ() < model2->GetZ() + modelZLength && Camera->GetZ() > model2->GetZ() - modelZLength));
+}
 
-	pThief->RotateY(cameraMovementX);
-	//pCameraDummy->RotateY(cameraMovementX);
 
-	if (cameraMovementY > 0)
-	{
-		if (cameraAngle < maxCameraRotation)
+void CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel level)
+{
+	for (int i = 0; i < walls.size(); i++) {
+
+		if (BooleanBoxCDWithTCamera(Camera, walls[i].model, walls[i].wallXLength, walls[i].wallYLength, walls[i].wallZLength)) {
+				
+		}
+	}
+
+}
+void UpdateCamera(I3DEngine* myEngine,IModel* pThief,float &cameraAngle,float maxCameraRotation,IModel* pCameraDummy,float minCameraRotation,ICamera* Camera,vector<WallStruct> walls)
+{
+		float cameraMovementY = myEngine->GetMouseMovementY();
+		float cameraMovementX = myEngine->GetMouseMovementX();
+
+		pThief->RotateY(cameraMovementX);
+
+		if (cameraMovementY > 0)
 		{
-			pCameraDummy->RotateLocalX(cameraMovementY);
-			cameraAngle += cameraMovementY;
+			if (cameraAngle < maxCameraRotation)
+			{
+				pCameraDummy->RotateLocalX(cameraMovementY);
+				cameraAngle += cameraMovementY;
+			}
 		}
-	}
-	else if (cameraMovementY < 0) {
-		if (cameraAngle > minCameraRotation) {
-			pCameraDummy->RotateLocalX(cameraMovementY);
-			cameraAngle += cameraMovementY;
+		else if (cameraMovementY < 0) {
+			if (cameraAngle > minCameraRotation) {
+				pCameraDummy->RotateLocalX(cameraMovementY);
+				cameraAngle += cameraMovementY;
+			}
 		}
-	}
+}
+void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,
+	float& cameraAngle, float maxCameraRotation, IModel* pCameraDummy, float minCameraRotation,CLevel levels)
+{
+	CameraCollisionWithWalls(Camera, walls,levels);
 }
 void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage, IFont* ControlsMessage,float &currentTime,float maxTimer,float dt) {
 	
@@ -68,30 +152,16 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 	{
 		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.", 0, 0);
 	}
+	//Only display the controls for a few seconds
 	currentTime += dt;
 	if (currentTime < maxTimer)
 	{
+		ControlsMessage->Draw("Use your mouse\nto look around", 0, 450);
 		ControlsMessage->Draw("Use WASD to move", 0, 550);
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-bool CollisionWithWalls(float modelX,float modelY, float modelZ, vector<WallStruct> walls) {
-	for (int i = 0; i < walls.size(); i++) {
-		
-		if (modelX< walls[i].model->GetX() + walls[i].wallXLength && modelX > walls[i].model->GetX() - walls[i].wallXLength &&
-			modelY < walls[i].model->GetY() + walls[i].wallYLength && modelY > walls[i].model->GetY() - walls[i].wallYLength &&
-			modelZ < walls[i].model->GetZ() + walls[i].wallZLength && modelZ > walls[i].model->GetZ() - walls[i].wallZLength){
-			return true;
-		}
-	}
-	return false;
-}
-bool BooleanBoxCD(IModel* model1,IModel* model2,float modelXLength,float modelYLength,float modelZLength)
-{
-	return ((model1->GetX() < model2->GetX() + modelXLength && model1->GetX() > model2->GetX() - modelXLength &&
-		model1->GetY() < model2->GetY() + modelYLength && model1->GetY() > model2->GetY() - modelYLength &&
-		model1->GetZ() < model2->GetZ() + modelZLength && model1->GetZ() > model2->GetZ() - modelZLength));
-}
+
 void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, float dt,
 	bool keyFound, EDoortype doorType,IModel* pThief,float doorXLength,float doorYLength, float doorZLength)
 {
@@ -122,7 +192,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	{
 	case DOOR_CLOSED:
 	{
-		if (BooleanBoxCD(pThief,door,doorXLength,doorYLength,doorZLength)) {
+		if (BooleanBoxCDWithThief(pThief,door,doorXLength,doorYLength,doorZLength)) {
 
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to open.", 565, 550);
@@ -144,7 +214,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
 			}
-			if (doorType == starting && !keyFound) {
+			if (doorType == starting) {
 				InteractionMessage->Draw("No turning back now.", 565, 550);
 			}
 		}
@@ -152,7 +222,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	case DOOR_OPEN:
 	{
-		if (BooleanBoxCD(pThief, door, doorXLength, doorYLength, doorZLength)) {
+		if (BooleanBoxCDWithThief(pThief, door, doorXLength, doorYLength, doorZLength)) {
 			if (doorType == simple) {
 				InteractionMessage->Draw("Press 'E' to close.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
@@ -230,7 +300,7 @@ void main()
 	vector<WallStruct> walls;
 	vector<DoorStruct> doors;
 	vector<PillarStruct> pillars;
-
+	
 	IModel* key=0;
 
 	int STATE = MENU;
@@ -244,7 +314,7 @@ void main()
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel(0, 0, -10);
 	pThief->Scale(5);
-	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-3);
+	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-2);
 	camera->RotateX(25);
 
 	//IFONT Variables
@@ -276,7 +346,6 @@ void main()
 	pCameraDummy->RotateY(180);
 
 	//Key variables
-	levels.SetUpKey();
 	float R1 = 5;
 	float R2 = 7;
 	float keyMovementSpeed = 150;
@@ -289,57 +358,73 @@ void main()
 		dt = myEngine->Timer();
 
 		/**** Update your scene each frame here ****/
-		
+		/*
+		MAIN GAME SWITCH
+		States: MENU, LEVEL, PLAYER_LOST, RELOAD_CURRENT_LEVEL, LOADING_NEXT_LEVEL
+
+		MENU:---------------------------------------------------------
+		1 Stops the mouse capture inserted by the player
+		1 Messages displayed on the screen 
+		2 Transitions to LEVEL after the player has hit Space
+		END OF MENU:---------------------------------------------------
+
+		LEVEL:---------------------------------------------------------
+		4 Starts mouse capture that disables the mouse of the player to move around 
+			and centers it in the middle of the screen
+		5 Enables Collision between a larger scale of the doors and the player 
+			to enable him to open or close a door
+		6 Sphere to sphere collision between the player and the key
+		7 Update the animation of the key
+		8 Updates the movement of the model using WASD keys, also the player has the ability to
+			run faster by holding Left Shift
+		9 Captures the movement of the mouse and set some restrains some of the camera movement
+			by using a dummyCamera attached to the player 
+			(We dont want the camera to rotate without limits)
+		10 Checks for collision detection between the thief and the objects that exists in the level 
+			(pillars,walls,doors)
+		11 Displays the Quests on the screen. Also displays the controls for a few seconds after 
+			the player has started playing
+		END OF LEVEL:--------------------------------------------------
+
+		PLAYER_LOST:--------------------------------------------------
+		//must fill later because we will add more things in the previous section
+		PLAYER_LOST:--------------------------------------------------
+
+		//fill the rest when the time comes 
+		*/
 		switch (STATE)
 		{
 		case MENU:
-		{	myEngine->StopMouseCapture();
+		{	myEngine->StopMouseCapture(); //1
+			//2
 			DisplayBigMessage->Draw("Shadows & Gold", 300, 300);
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
-
 			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
-			if (myEngine->KeyHit(Key_Space))
+			if (myEngine->KeyHit(Key_Space))//3
 			{
 				STATE = LEVEL;
 			}
 			break;
 		}
 		case LEVEL:
-		{
-			myEngine->StartMouseCapture(); // Disables mouse and centers it in the center of the screen 
-			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);
-			CollisionWithKey(pThief, R1, R2, levels, keyFound);
-			levels.UpdateKey(keyMovementSpeed,dt,keyFound);			
-			//end of Myriam testing
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);
-			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation);
+		{	
+			//Update
+			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
+			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound, CurrentDoorLimit, MaxDoorLimit);//5			
+			CollisionWithKey(pThief, R1, R2, levels, keyFound);//6			
+			levels.UpdateKey(keyMovementSpeed,dt,keyFound);	//7				
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
+			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation,camera,walls);//9			
+			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
+			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
+			
+			//testing
+			CameraCollisionDetectionWithObjects(camera,pThief, myEngine, walls, pillars, doors,cameraAngle,maxCameraRotation,pCameraDummy,minCameraRotation,levels);
+			//Transition
+			//Must remove later
 			if (myEngine->KeyHit(Key_P))
 				if (levels.NextLevel(walls, doors, pillars, key))
-					cout << "no more levels" << endl;
-			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);		
-
-			//WALL COLLISION DETECTION 
-			//if there is a wall in front of the thief we want him only to go back 
-			//if there is a wall behind the this he is only allowed to go front
-			//if there is a wall on the right the this he is only allowed to go left
-			//if there is a wall on the left the this he is only allowed to go right
-			if (CollisionWithWalls(pThief->GetX(), pThief->GetY(), pThief->GetZ() - 2, walls)) {
-				cout << "hello" << endl;
-			}
-			/*if (myEngine->KeyHeld(Key_W)) {
-				pThief->MoveLocalZ(-thiefMovementSpeed * dt);
-			}
-			if (myEngine->KeyHeld(Key_S)) {
-				pThief->MoveLocalZ(thiefMovementSpeed * dt);
-			}
-			if (myEngine->KeyHeld(Key_D)) {
-				pThief->MoveLocalX(-thiefMovementSpeed * dt);
-			}
-			if (myEngine->KeyHeld(Key_A)) {
-				pThief->MoveLocalX(thiefMovementSpeed * dt);
-			}*/
-
-
+					cout << "no more levels" << endl;		
 			break;
 		}
 		case PLAYER_LOST:
@@ -353,6 +438,12 @@ void main()
 			}
 			break;
 		}
+		case RELOAD_CURRENT_LEVEL:
+		{
+			//executes when the player has lost and the current level has to restart
+
+		}
+		break;
 		case LOADING_NEXT_LEVEL:
 		{
 			// This state could execute when we want to render the next level smoothly
