@@ -36,6 +36,8 @@ struct DoorStruct {
 	Vector length;
 	float movementSpeed;
 	Vector areaLength;
+	float MaxDoorLimit;
+	float CurrentDoorLimit;
 };
 
 struct WallStruct {

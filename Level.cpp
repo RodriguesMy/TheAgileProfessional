@@ -106,9 +106,11 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Sdoor.model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Sdoor.state = DOOR_CLOSED;
 						Sdoor.type = simple;
-						Sdoor.movementSpeed = 130 * scale;
+						Sdoor.movementSpeed = 0.25;
 						Sdoor.areaLength.y = 65 * scale;
 						Sdoor.length.y = 65 * scale;
+						Sdoor.MaxDoorLimit = 16.5;
+						Sdoor.CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Sdoor.areaLength.x = 33 * scale;
 							Sdoor.areaLength.z = 65 * scale;
@@ -135,9 +137,11 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Mdoor.model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Mdoor.state = DOOR_CLOSED;
 						Mdoor.type = ending;
-						Mdoor.movementSpeed = 130 * scale;
+						Mdoor.movementSpeed = 0.25;
 						Mdoor.areaLength.y = 65 * scale;
 						Mdoor.length.y = 65 * scale;
+						Mdoor.MaxDoorLimit = 16.5;
+						Mdoor.CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Mdoor.areaLength.x = 33 * scale;
 							Mdoor.areaLength.z = 65 * scale;
@@ -166,6 +170,8 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						door.movementSpeed = 130 * scale;
 						door.areaLength.y = 65 * scale;
 						door.length.y = 65 * scale;
+						door.MaxDoorLimit = 16.5;
+						door.CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							door.areaLength.x = 33 * scale;
 							door.areaLength.z = 65 * scale;
