@@ -10,6 +10,7 @@ using namespace tle;
 #define PLAYER_LOST 3
 #define LOADING_NEXT_LEVEL 4
 #define RELOAD_CURRENT_LEVEL 5
+#define DEBUG_MODE 6
 
 bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,Vector areaLength)
 {
@@ -390,6 +391,7 @@ void main()
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
 			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
 			if (myEngine->KeyHit(Key_Space)){STATE = LEVEL;}//3
+			if (myEngine->KeyHit(Key_D)) { STATE = DEBUG_MODE; }
 			break;
 		}
 		case LEVEL:
@@ -407,12 +409,7 @@ void main()
 			
 			//testing
 			CameraCollisionDetectionWithObjects(camera,pThief, myEngine, walls, pillars, doors,cameraAngle,maxCameraRotation,pCameraDummy,minCameraRotation,levels);
-
-			//Transition
-			//Must remove later
-			if (myEngine->KeyHit(Key_P))
-				if (!levels.NextLevel(walls, doors, pillars, key))
-					cout << "no more levels" << endl;		
+	
 			break;
 		}
 		case PLAYER_LOST:
@@ -447,6 +444,35 @@ void main()
 			}
 		}
 		break;
+		case DEBUG_MODE:
+		{
+			//Update
+			/*DEBUG MODE:
+			THIEF COLLISION WITH WALLS DISABLED
+			THIEF COLLISION WITH DOORS DISABLED
+			GUARDS DISABLED
+			PRESS P TO LOAD NEXT LEVEL ENABLED
+			*/
+
+			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
+			//CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound);//5			
+			CollisionWithKey(pThief, R1, R2, levels, keyFound, key);//6			
+			//levels.UpdateKey(keyMovementSpeed,dt,keyFound);	//7		
+			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
+			UpdateCamera(myEngine, pThief, cameraAngle, maxCameraRotation, pCameraDummy, minCameraRotation, camera, walls);//9			
+			//ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
+			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt);//11
+
+
+			//Transition
+			//Must remove later
+			if (myEngine->KeyHit(Key_P))
+				if (!levels.NextLevel(walls, doors, pillars, key))
+					cout << "no more levels" << endl;
+			break;
+
+		}
 		}
 
 
