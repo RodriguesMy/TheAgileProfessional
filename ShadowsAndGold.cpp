@@ -344,7 +344,7 @@ void main()
 	
 	IModel* key=0;
 
-	int STATE = DEBUG_MODE;
+	int STATE = MENU;
 	levels.NextLevel(walls, doors,pillars,key);
 
 	//NON-IMPORTANT VARIABLES
@@ -448,7 +448,8 @@ void main()
 			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy,camera,walls);//9			
 			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
-					
+			CameraCollisionDetectionWithObjects(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
+
 			break;
 		}
 		case PLAYER_LOST:
