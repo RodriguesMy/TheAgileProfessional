@@ -13,10 +13,6 @@ using namespace tle;
 #define RELOAD_CURRENT_LEVEL 5
 #define DEBUG_MODE 6
 
-enum ECameraStates {
-	CAMERA_GOING_AWAY,
-	CAMERA_GOING_CLOSER,
-	};
 struct SCameraVariables {
 	//Rotation of camera variables
 	float const maxCameraRotation = 35;
@@ -27,9 +23,6 @@ struct SCameraVariables {
 	float maxCameraDistance = -2;
 	float minCameraDistance = 0;
 	float currentCameraDistance = -2;
-
-	//camera state(nothing will happen initially because of the distance constraints)
-	int CSTATE = CAMERA_GOING_AWAY;
 };
 bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,Vector areaLength)
 {
@@ -112,21 +105,23 @@ void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed, f
 		thiefMovementSpeed = 5;
 	}
 }
-bool BooleanBoxCDWithTCamera(ICamera* Camera, IModel* model2, float modelXLength, float modelYLength, float modelZLength)
+bool BooleanBoxCDWithCamera(ICamera* Camera, IModel* model2, Vector areaLength)
 {
-	return ((Camera->GetX() < model2->GetX() + modelXLength && Camera->GetX() > model2->GetX() - modelXLength &&
-		Camera->GetY() < model2->GetY() + modelYLength && Camera->GetY() > model2->GetY() - modelYLength &&
-		Camera->GetZ() < model2->GetZ() + modelZLength && Camera->GetZ() > model2->GetZ() - modelZLength));
+	return ((Camera->GetX() < model2->GetX() + areaLength.x && Camera->GetX() > model2->GetX() - areaLength.x &&
+		Camera->GetY() < model2->GetY() + areaLength.y && Camera->GetY() > model2->GetY() - areaLength.y &&
+		Camera->GetZ() < model2->GetZ() + areaLength.z && Camera->GetZ() > model2->GetZ() - areaLength.z));
 }
-void CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel level, SCameraVariables& CameraV)
+bool CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel level, SCameraVariables& CameraV)
 {
 	for (int i = 0; i < walls.size(); i++) {
 
-		if (BooleanBoxCDWithTCamera(Camera, walls[i].model, walls[i].length.x, walls[i].length.y, walls[i].length.z)) 
+		if (BooleanBoxCDWithCamera(Camera, walls[i].model, walls[i].length)) 
 		{
-			CameraV.CSTATE = CAMERA_GOING_CLOSER;			
+			return true;			
 		}
 	}
+	
+	return false;
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,IModel* pCameraDummy,ICamera* Camera,vector<WallStruct> walls)
 {
@@ -153,34 +148,16 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,
 void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,
 	SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
 {
-	CameraV.CSTATE = CAMERA_GOING_AWAY;
-
-	CameraCollisionWithWalls(Camera, walls,levels,CameraV);
-
-	switch (CameraV.CSTATE)
-	{
-	case CAMERA_GOING_AWAY:
-	{
-		//going away from the player
-		if (CameraV.currentCameraDistance > CameraV.maxCameraDistance)
-		{
-			CameraV.currentCameraDistance -=0.1;
-		}
-	}break;
-
-	case CAMERA_GOING_CLOSER:
-	{
-		//going closer to the player
-		if (CameraV.currentCameraDistance < CameraV.minCameraDistance)
-		{
-			CameraV.currentCameraDistance += 0.1;
-		}
-
-	}break;
+	cout << CameraCollisionWithWalls(Camera, walls, levels, CameraV) << endl;
+	if (CameraCollisionWithWalls(Camera, walls, levels, CameraV)) {
+		if (CameraV.currentCameraDistance <= CameraV.minCameraDistance)	CameraV.currentCameraDistance += 0.1;//going closer to the player
 	}
-
+	else
+	{	
+		if (CameraV.currentCameraDistance >= CameraV.maxCameraDistance)CameraV.currentCameraDistance -=0.1;//going away from the player
+	}
+	
 	Camera->SetLocalZ(CameraV.currentCameraDistance);
-
 }
 void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage, IFont* ControlsMessage,float &currentTime,float maxTimer,float dt) {
 	
