@@ -15,7 +15,7 @@ using namespace tle;
 
 struct SCameraVariables {
 	//Rotation of camera variables
-	float const maxCameraRotation = 35;
+	float const maxCameraRotation = 25;
 	float cameraAngle = 25;
 	float const minCameraRotation = 10;
 

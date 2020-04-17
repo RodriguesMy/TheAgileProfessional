@@ -89,7 +89,7 @@ bool BooleanBoxCDWithCamera(ICamera* Camera, IModel* model2, Vector areaLength)
 		Camera->GetY() < model2->GetY() + areaLength.y && Camera->GetY() > model2->GetY() - areaLength.y &&
 		Camera->GetZ() < model2->GetZ() + areaLength.z && Camera->GetZ() > model2->GetZ() - areaLength.z));
 }
-bool CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel level, SCameraVariables& CameraV)
+bool CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls)
 {
 	for (int i = 0; i < walls.size(); i++) {
 
@@ -99,6 +99,28 @@ bool CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls, CLevel 
 		}
 	}
 	
+	return false;
+}
+bool CameraCollisionWithDoors(ICamera* Camera, vector<DoorStruct> doors)
+{
+	for (int i = 0; i < doors.size(); i++) {
+
+		if (BooleanBoxCDWithCamera(Camera, doors[i].model, doors[i].length)) {
+			return true;
+		}
+	}
+	return false;
+}
+bool CameraCollisionWithPillars(ICamera* Camera, vector<PillarStruct> pillars)
+{
+	for (int i = 0; i < pillars.size(); i++) {
+
+		if (BooleanBoxCDWithCamera(Camera, pillars[i].model, pillars[i].length))
+		{
+			return true;
+		}
+	}
+
 	return false;
 }
 void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,IModel* pCameraDummy,ICamera* Camera,vector<WallStruct> walls)
@@ -126,7 +148,10 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,
 void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,
 	SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
 {
-	if (CameraCollisionWithWalls(Camera, walls, levels, CameraV)) {
+	if (CameraCollisionWithWalls(Camera, walls) || 
+		CameraCollisionWithDoors(Camera, doors) || 
+		CameraCollisionWithPillars(Camera, pillars)) 
+	{
 		if (CameraV.currentCameraDistance <= CameraV.minCameraDistance)	CameraV.currentCameraDistance += 0.1;//going closer to the player
 	}
 	else
@@ -324,7 +349,6 @@ void main()
 	//END OF IFONT Variables
 	
 	SCameraVariables CameraV;
-
 	//Key related variables
 	bool keyFound = false;
 
@@ -425,7 +449,8 @@ void main()
 		break;
 		case LOADING_NEXT_LEVEL:
 		{
-			// This state could execute when we want to render the next level smoothly
+			//State between now and the next level 
+
 			DisplayBigMessage->Draw("Loading . . .", 300, 300);
 			//I thought of maybe putting a wall in front of the camera (as a black screen) and changing the level here
 			//Resetting the player's and guard's position
