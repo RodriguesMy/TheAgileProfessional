@@ -255,4 +255,5 @@ bool CLevel::IncreaseLevelIt() {
 
 void CLevel::RemoveKey(IModel*& Key) {
 	m_MKey->RemoveModel(Key);
+	Key = NULL;
 }

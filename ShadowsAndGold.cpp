@@ -303,7 +303,7 @@ void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* Int
 			keyFound, door[i].type,pThief, door[i].areaLength);
 	}
 }
-void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel* key) {
+void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel*& key) {
 
 	if (!keyFound) {
 		float x = pThief->GetX() - key->GetX();
