@@ -1,29 +1,7 @@
 // ShadowsAndGold.cpp: A program using the TL-Engine
 
-#include <TL-Engine.h>	// TL-Engine include file and namespace
-#include <iostream>
-#include"Level.h"
-using namespace tle;
+#include "Definitions.h"
 
-//GAME STATES
-#define MENU 1
-#define LEVEL 2
-#define PLAYER_LOST 3
-#define LOADING_NEXT_LEVEL 4
-#define RELOAD_CURRENT_LEVEL 5
-#define DEBUG_MODE 6
-
-struct SCameraVariables {
-	//Rotation of camera variables
-	float const maxCameraRotation = 35;
-	float cameraAngle = 25;
-	float const minCameraRotation = 10;
-
-	//Camera distance from camera to player
-	float maxCameraDistance = -2;
-	float minCameraDistance = 0;
-	float currentCameraDistance = -2;
-};
 bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,Vector areaLength)
 {
 	return ((model1->GetX() < model2->GetX() + areaLength.x && model1->GetX() > model2->GetX() - areaLength.x &&
@@ -148,7 +126,6 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,
 void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,
 	SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
 {
-	cout << CameraCollisionWithWalls(Camera, walls, levels, CameraV) << endl;
 	if (CameraCollisionWithWalls(Camera, walls, levels, CameraV)) {
 		if (CameraV.currentCameraDistance <= CameraV.minCameraDistance)	CameraV.currentCameraDistance += 0.1;//going closer to the player
 	}
