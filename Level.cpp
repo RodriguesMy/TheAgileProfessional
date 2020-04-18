@@ -11,6 +11,7 @@ CLevel::CLevel(I3DEngine* myEngine)
 	m_MPillars = myEngine->LoadMesh("Pillar.x");
 	m_MPedestal = myEngine->LoadMesh("Pedestal.x");
 	m_MKey = myEngine->LoadMesh("Key.x");
+
 }
 
 CLevel::~CLevel()
@@ -61,6 +62,9 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		m_MKey->RemoveModel(Key);
 		Key = NULL;
 	}
+	m_PlayerSPos.x = 0;
+	m_PlayerSPos.y = 0;
+	m_PlayerSPos.z = 0;
 }
 
 bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
@@ -88,43 +92,41 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					float rotation;
 					switch (Current) {
 					case wall:
-						WallStruct wall;
-						wall.model = CreateModel(m_MWall, input, &scale, &rotation);
-						wall.length.y = scale * 2;
+						Walls.push_back(*(new WallStruct));
+						Walls.back().model = CreateModel(m_MWall, input, &scale, &rotation);
+						Walls.back().length.y = scale * 2;
 						if (rotation == 0 || rotation == 180) {
-							wall.length.x = scale * 2;
-							wall.length.z = 1;
+							Walls.back().length.x = scale * 2;
+							Walls.back().length.z = 1;
 						}
 						else if (rotation == 90 || rotation == 270) {
-							wall.length.x = 1;
-							wall.length.z = scale * 2;
+							Walls.back().length.x = 1;
+							Walls.back().length.z = scale * 2;
 						}
-						Walls.push_back(wall);
 						break;
 					case door:
-						DoorStruct Sdoor;
-						Sdoor.model = CreateModel(m_MDoor, input,&scale,&rotation);
-						Sdoor.state = DOOR_CLOSED;
-						Sdoor.type = simple;
-						Sdoor.movementSpeed = 0.25;
-						Sdoor.areaLength.y = 65 * scale;
-						Sdoor.length.y = 100 * scale;
-						Sdoor.MaxDoorLimit = 16.5;
-						Sdoor.CurrentDoorLimit = 0;
+						Doors.push_back(*(new DoorStruct));
+						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
+						Doors.back().state = DOOR_CLOSED;
+						Doors.back().type = simple;
+						Doors.back().movementSpeed = 0.25;
+						Doors.back().areaLength.y = 65 * scale;
+						Doors.back().length.y = 100 * scale;
+						Doors.back().MaxDoorLimit = 16.5;
+						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
-							Sdoor.areaLength.x = 33 * scale;
-							Sdoor.areaLength.z = 65 * scale;
-							Sdoor.length.x = 13 * scale;
-							Sdoor.length.z = 33 * scale;
+							Doors.back().areaLength.x = 33 * scale;
+							Doors.back().areaLength.z = 65 * scale;
+							Doors.back().length.x = 13 * scale;
+							Doors.back().length.z = 33 * scale;
 						}
 						else if (rotation == 90 || rotation == 270) {
 
-							Sdoor.areaLength.x = 65 * scale;
-							Sdoor.areaLength.z = 33 * scale;
-							Sdoor.length.x = 33 * scale;
-							Sdoor.length.z = 13 * scale;
+							Doors.back().areaLength.x = 65 * scale;
+							Doors.back().areaLength.z = 33 * scale;
+							Doors.back().length.x = 33 * scale;
+							Doors.back().length.z = 13 * scale;
 						}
-						Doors.push_back(Sdoor);
 						break;
 					case endingdoor:
 						for (int i = 0; i < Doors.size(); i++) {
@@ -133,28 +135,27 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 								Doors.erase(Doors.begin()+i);
 							}
 						}
-						DoorStruct Mdoor;
-						Mdoor.model = CreateModel(m_MDoor, input,&scale,&rotation);
-						Mdoor.state = DOOR_CLOSED;
-						Mdoor.type = ending;
-						Mdoor.movementSpeed = 0.25;
-						Mdoor.areaLength.y = 65 * scale;
-						Mdoor.length.y = 85 * scale;
-						Mdoor.MaxDoorLimit = 16.5;
-						Mdoor.CurrentDoorLimit = 0;
+						Doors.push_back(*(new DoorStruct));
+						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
+						Doors.back().state = DOOR_CLOSED;
+						Doors.back().type = ending;
+						Doors.back().movementSpeed = 0.25;
+						Doors.back().areaLength.y = 65 * scale;
+						Doors.back().length.y = 85 * scale;
+						Doors.back().MaxDoorLimit = 16.5;
+						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
-							Mdoor.areaLength.x = 33 * scale;
-							Mdoor.areaLength.z = 65 * scale;
-							Mdoor.length.x = 13 * scale;
-							Mdoor.length.z = 33 * scale;
+							Doors.back().areaLength.x = 33 * scale;
+							Doors.back().areaLength.z = 65 * scale;
+							Doors.back().length.x = 13 * scale;
+							Doors.back().length.z = 33 * scale;
 						}
 						else if (rotation == 90 || rotation == 270) {
-							Mdoor.areaLength.x = 65 * scale;
-							Mdoor.areaLength.z = 33 * scale;
-							Mdoor.length.x = 33 * scale;
-							Mdoor.length.z = 13 * scale;
+							Doors.back().areaLength.x = 65 * scale;
+							Doors.back().areaLength.z = 33 * scale;
+							Doors.back().length.x = 33 * scale;
+							Doors.back().length.z = 13 * scale;
 						}
-						Doors.push_back(Mdoor);
 						break;
 					case startingdoor:
 						for (int i = 0; i < Doors.size(); i++) {
@@ -163,49 +164,46 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 								Doors.erase(Doors.begin() + i);
 							}
 						}
-						DoorStruct door;
-						door.model = CreateModel(m_MDoor, input,&scale,&rotation);
-						door.state = DOOR_CLOSED;
-						door.type = starting;
-						door.movementSpeed = 130 * scale;
-						door.areaLength.y = 65 * scale;
-						door.length.y =90 * scale;
-						door.MaxDoorLimit = 16.5;
-						door.CurrentDoorLimit = 0;
+						Doors.push_back(*(new DoorStruct));
+						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
+						Doors.back().state = DOOR_CLOSED;
+						Doors.back().type = starting;
+						Doors.back().movementSpeed = 130 * scale;
+						Doors.back().areaLength.y = 65 * scale;
+						Doors.back().length.y =90 * scale;
+						Doors.back().MaxDoorLimit = 16.5;
+						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
-							door.areaLength.x = 33 * scale;
-							door.areaLength.z = 65 * scale;
-							door.length.x = 13 * scale;
-							door.length.z = 33 * scale;
+							Doors.back().areaLength.x = 33 * scale;
+							Doors.back().areaLength.z = 65 * scale;
+							Doors.back().length.x = 13 * scale;
+							Doors.back().length.z = 33 * scale;
 						}
 						else if (rotation == 90 || rotation == 270) {
-							door.areaLength.x = 65 * scale;
-							door.areaLength.z = 33 * scale;
-							door.length.x = 33 * scale;
-							door.length.z = 13 * scale;
+							Doors.back().areaLength.x = 65 * scale;
+							Doors.back().areaLength.z = 33 * scale;
+							Doors.back().length.x = 33 * scale;
+							Doors.back().length.z = 13 * scale;
 						}
-						m_PlayerSPos.x = door.model->GetX();
-						m_PlayerSPos.y = door.model->GetY();
-						m_PlayerSPos.z = door.model->GetZ() + 3;
-						Doors.push_back(door);
+						m_PlayerSPos.x = Doors.back().model->GetX();
+						m_PlayerSPos.y = Doors.back().model->GetY();
+						m_PlayerSPos.z = Doors.back().model->GetZ() - 6;
 						break;
 					case pillar:
-						PillarStruct Spillar;
-						Spillar.model = CreateModel(m_MPillars, input,&scale);
-						Spillar.type = typePillar;
-						Spillar.length.x = 0.5*scale;
-						Spillar.length.y = 5*scale;
-						Spillar.length.z = 0.5*scale;
-						Pillars.push_back(Spillar);
+						Pillars.push_back(*(new PillarStruct));
+						Pillars.back().model = CreateModel(m_MPillars, input,&scale);
+						Pillars.back().type = typePillar;
+						Pillars.back().length.x = 0.5*scale;
+						Pillars.back().length.y = 5*scale;
+						Pillars.back().length.z = 0.5*scale;
 						break;
 					case pedestal:
-						PillarStruct Spedestal;
-						Spedestal.model = CreateModel(m_MPedestal, input,&scale);
-						Spedestal.type = typePedestal;
-						Spedestal.length.x = 2 * scale;
-						Spedestal.length.y = 5 * scale;;
-						Spedestal.length.z = 2 * scale;
-						Pillars.push_back(Spedestal);
+						Pillars.push_back(*(new PillarStruct));
+						Pillars.back().model = CreateModel(m_MPedestal, input,&scale);
+						Pillars.back().type = typePedestal;
+						Pillars.back().length.x = 2 * scale;
+						Pillars.back().length.y = 5 * scale;;
+						Pillars.back().length.z = 2 * scale;
 						break;
 					case key:
 						if (Key != NULL)

@@ -28,6 +28,16 @@ struct Vector{
 	float x;
 	float y;
 	float z;
+	Vector() {
+		x = 0;
+		y = 0;
+		z = 0;
+	}
+	Vector(float X, float Y, float Z) {
+		this->x = X;
+		this->y = Y;
+		this->z = Z;
+	}
 };
 struct DoorStruct {
 	IModel* model;

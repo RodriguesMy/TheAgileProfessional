@@ -13,6 +13,11 @@ using namespace tle;
 #define RELOAD_CURRENT_LEVEL 5
 #define DEBUG_MODE 6
 
+//Thief States
+#define WAITING 0
+#define FORWARD 1
+#define NORMAL 2
+
 struct SCameraVariables {
 	//Rotation of camera variables
 	float const maxCameraRotation = 25;

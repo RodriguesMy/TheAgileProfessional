@@ -2,6 +2,9 @@
 
 #include "Definitions.h"
 
+bool CollisionSTS(Vector V1, Vector V2, float radius) {
+	return radius > sqrt(pow((V1.x - V2.x), 2) + pow((V1.y - V2.y), 2) + pow((V1.z - V2.z), 2));
+}
 bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,Vector areaLength)
 {
 	return ((model1->GetX() < model2->GetX() + areaLength.x && model1->GetX() > model2->GetX() - areaLength.x &&
@@ -58,29 +61,40 @@ void ThiefCollisionWithObjects(I3DEngine* myEngine, vector<WallStruct> walls, ve
 		}
 	}
 }
-void UpdateModel(I3DEngine* myEngine,IModel* pThief,float &thiefMovementSpeed, float& dt)
+void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed, float& dt, int& ThiefState,CLevel levels)
 {
-
-	if (myEngine->KeyHeld(Key_W)) {
+	switch (ThiefState)
+	{
+	case WAITING:
+		break;
+	case FORWARD:
 		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
-	}
-	if (myEngine->KeyHeld(Key_S)) {
-		pThief->MoveLocalZ(thiefMovementSpeed * dt);
-	}
-	if (myEngine->KeyHeld(Key_D)) {
-		pThief->MoveLocalX(-thiefMovementSpeed * dt);
-	}
-	if (myEngine->KeyHeld(Key_A)) {
-		pThief->MoveLocalX(thiefMovementSpeed * dt);
-	}
-	
-	if (myEngine->KeyHeld(Key_Shift))
-	{
-		thiefMovementSpeed = 7;
-	}
-	else
-	{
-		thiefMovementSpeed = 5;
+		if(CollisionSTS(Vector(pThief->GetX(),pThief->GetY(),pThief->GetZ()),levels.GetPlayerSPos(),1))
+			ThiefState = NORMAL;
+		break;
+	case NORMAL:
+		if (myEngine->KeyHeld(Key_W)) {
+			pThief->MoveLocalZ(-thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_S)) {
+			pThief->MoveLocalZ(thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_D)) {
+			pThief->MoveLocalX(-thiefMovementSpeed * dt);
+		}
+		if (myEngine->KeyHeld(Key_A)) {
+			pThief->MoveLocalX(thiefMovementSpeed * dt);
+		}
+
+		if (myEngine->KeyHeld(Key_Shift))
+		{
+			thiefMovementSpeed = 7;
+		}
+		else
+		{
+			thiefMovementSpeed = 5;
+		}
+		break;
 	}
 }
 bool BooleanBoxCDWithCamera(ICamera* Camera, IModel* model2, Vector areaLength)
@@ -123,8 +137,9 @@ bool CameraCollisionWithPillars(ICamera* Camera, vector<PillarStruct> pillars)
 
 	return false;
 }
-void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,IModel* pCameraDummy,ICamera* Camera,vector<WallStruct> walls)
+void UpdateCamera(I3DEngine* myEngine, IModel* pThief, SCameraVariables& CameraV, IModel* pCameraDummy, ICamera* Camera, vector<WallStruct> walls, int ThiefState)
 {
+	if (ThiefState == NORMAL) {
 		float cameraMovementY = myEngine->GetMouseMovementY();
 		float cameraMovementX = myEngine->GetMouseMovementX();
 
@@ -144,9 +159,9 @@ void UpdateCamera(I3DEngine* myEngine,IModel* pThief, SCameraVariables &CameraV,
 				CameraV.cameraAngle += cameraMovementY;
 			}
 		}
+	}
 }
-void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,
-	SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
+void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors, SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
 {
 	if (CameraCollisionWithWalls(Camera, walls) || 
 		CameraCollisionWithDoors(Camera, doors) || 
@@ -181,8 +196,7 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed,
-	bool keyFound, EDoortype doorType,IModel* pThief,Vector areaLength)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -225,8 +239,18 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
-					doorState = DOOR_OPENING;
-					//progress to the next level
+					levels.NextLevel(walls, doors, pillars, key);
+					Vector Pos = levels.GetPlayerSPos();
+					pThief->SetPosition(Pos.x, Pos.y, Pos.z+12);
+					pThief->LookAt(Pos.x, Pos.y, Pos.z+13);
+					pThief->Scale(5);
+					ThiefState = WAITING;
+					for (int i = 0; i < doors.size(); i++) {
+						if (doors[i].type == starting) {
+							doors[i].state = DOOR_OPENING;
+							break;
+						}
+					}
 				}
 			}
 
@@ -271,15 +295,15 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 		{
 			doorState = DOOR_OPEN;
 			currentLimit = 0;
+			if (doorType == starting)
+				ThiefState = FORWARD;
 		}
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage,
-	I3DEngine* myEngine,float dt,bool keyFound) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine,float dt,bool keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState) {
 	for (int i = 0; i < door.size(); i++) {
-		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed,
-			keyFound, door[i].type,pThief, door[i].areaLength);
+		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState);
 	}
 }
 void CollisionWithKey(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel*& key) {
@@ -334,6 +358,7 @@ void main()
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
 	IModel* pThief = pThieflMesh->CreateModel(0, 0, -10);
 	pThief->Scale(5);
+	int ThiefState = NORMAL;
 	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-2);
 	camera->RotateX(25);
 
@@ -419,11 +444,11 @@ void main()
 		{	
 			//Update
 			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound);//5			
+			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound,levels,walls,doors,pillars,key,ThiefState);//5			
 			CollisionWithKey(pThief, R1, R2, levels, keyFound,key);//6			
 			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
-			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy,camera,walls);//9			
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels);//8			
+			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy,camera,walls,ThiefState);//9			
 			ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
 			CameraCollisionDetectionWithObjects(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
@@ -477,8 +502,8 @@ void main()
 			//CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound);//5			
 			CollisionWithKey(pThief, R1, R2, levels, keyFound, key);//6			
 			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt);//8			
-			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls);//9			
+			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels);//8			
+			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls,ThiefState);//9			
 			//ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt);//11
 
