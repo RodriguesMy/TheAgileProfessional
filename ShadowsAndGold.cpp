@@ -245,16 +245,17 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
-					levels.NextLevel(walls, doors, pillars, key);
-					Vector Pos = levels.GetPlayerSPos();
-					pThief->SetPosition(Pos.x, Pos.y, Pos.z+40);
-					pThief->LookAt(Pos.x, Pos.y, Pos.z+41);
-					pThief->Scale(5);
-					ThiefState = WAITING;
-					for (int i = 0; i < doors.size(); i++) {
-						if (doors[i].type == starting) {
-							doors[i].state = DOOR_OPENING;
-							break;
+					if (levels.NextLevel(walls, doors, pillars, key)) {
+						Vector Pos = levels.GetPlayerSPos();
+						pThief->SetPosition(Pos.x, Pos.y, Pos.z + 40);
+						pThief->LookAt(Pos.x, Pos.y, Pos.z + 41);
+						pThief->Scale(5);
+						ThiefState = WAITING;
+						for (int i = 0; i < doors.size(); i++) {
+							if (doors[i].type == starting) {
+								doors[i].state = DOOR_OPENING;
+								break;
+							}
 						}
 					}
 				}
