@@ -241,8 +241,8 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				{
 					levels.NextLevel(walls, doors, pillars, key);
 					Vector Pos = levels.GetPlayerSPos();
-					pThief->SetPosition(Pos.x, Pos.y, Pos.z+12);
-					pThief->LookAt(Pos.x, Pos.y, Pos.z+13);
+					pThief->SetPosition(Pos.x, Pos.y, Pos.z+40);
+					pThief->LookAt(Pos.x, Pos.y, Pos.z+41);
 					pThief->Scale(5);
 					ThiefState = WAITING;
 					for (int i = 0; i < doors.size(); i++) {

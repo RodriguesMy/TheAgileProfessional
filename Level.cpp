@@ -187,7 +187,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						}
 						m_PlayerSPos.x = Doors.back().model->GetX();
 						m_PlayerSPos.y = Doors.back().model->GetY();
-						m_PlayerSPos.z = Doors.back().model->GetZ() - 6;
+						m_PlayerSPos.z = Doors.back().model->GetZ() - 20;
 						break;
 					case pillar:
 						Pillars.push_back(*(new PillarStruct));

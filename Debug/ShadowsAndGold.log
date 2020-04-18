@@ -8,17 +8,8 @@ C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(130,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(143,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(144,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(247,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(304,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(305,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  Level.cpp
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(132,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(161,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(196,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(198,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(216,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(248,16): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(244): warning C4715: 'CLevel::NextLevel': not all control paths return a value
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(248,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(305,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(306,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
