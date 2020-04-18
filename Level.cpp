@@ -168,7 +168,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = starting;
-						Doors.back().movementSpeed = 130 * scale;
+						Doors.back().movementSpeed = 0.25;
 						Doors.back().areaLength.y = 65 * scale;
 						Doors.back().length.y =90 * scale;
 						Doors.back().MaxDoorLimit = 16.5;
