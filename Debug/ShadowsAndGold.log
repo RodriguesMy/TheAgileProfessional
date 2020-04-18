@@ -1,15 +1,11 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  ShadowsAndGold.cpp
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(15,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(25,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(35,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(108,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(120,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(130,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(143,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(144,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(248,24): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(305,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(306,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
+  Level.cpp
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(132,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(161,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(218,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(220,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(238,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(270,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(266): warning C4715: 'CLevel::NextLevel': not all control paths return a value
+  ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
