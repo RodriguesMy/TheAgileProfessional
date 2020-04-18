@@ -109,10 +109,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = simple;
-						Doors.back().movementSpeed = 0.25;
+						Doors.back().movementSpeed = 1.6 * scale;
 						Doors.back().areaLength.y = 65 * scale;
 						Doors.back().length.y = 100 * scale;
-						Doors.back().MaxDoorLimit = 16.5;
+						Doors.back().MaxDoorLimit = 115 * scale;
 						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Doors.back().areaLength.x = 33 * scale;
@@ -139,10 +139,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = ending;
-						Doors.back().movementSpeed = 0.25;
+						Doors.back().movementSpeed = 1.6*scale;
 						Doors.back().areaLength.y = 65 * scale;
-						Doors.back().length.y = 85 * scale;
-						Doors.back().MaxDoorLimit = 16.5;
+						Doors.back().length.y =90 * scale;
+						Doors.back().MaxDoorLimit = 115 * scale;
 						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Doors.back().areaLength.x = 33 * scale;
@@ -168,10 +168,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = starting;
-						Doors.back().movementSpeed = 0.25;
+						Doors.back().movementSpeed = 1.6*scale;
 						Doors.back().areaLength.y = 65 * scale;
 						Doors.back().length.y =90 * scale;
-						Doors.back().MaxDoorLimit = 16.5;
+						Doors.back().MaxDoorLimit = 115 * scale;
 						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Doors.back().areaLength.x = 33 * scale;
