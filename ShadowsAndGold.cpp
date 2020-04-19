@@ -11,7 +11,7 @@ bool BooleanBoxCDWithThief(IModel* model1,IModel* model2,Vector areaLength)
 		model1->GetY() < model2->GetY() + areaLength.y && model1->GetY() > model2->GetY() - areaLength.y &&
 		model1->GetZ() < model2->GetZ() + areaLength.z && model1->GetZ() > model2->GetZ() - areaLength.z));
 }
-bool ThiefCollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
+bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
 	for (int i = 0; i < walls.size(); i++) {
 		
 		if (BooleanBoxCDWithThief(pThief,walls[i].model,walls[i].length)){
@@ -20,7 +20,7 @@ bool ThiefCollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
 	}
 	return false;
 }
-bool ThiefCollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
+bool CollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
 
 	for (int i = 0; i < doors.size(); i++) {
 
@@ -44,7 +44,7 @@ void ThiefCollisionWithObjects(I3DEngine* myEngine, vector<WallStruct> walls, ve
 {
 	//Movement depends on collision with:
 	//WALLS, DOORS, PILLARS
-	if (ThiefCollisionWithWalls(pThief, walls) || ThiefCollisionWithPillars(pThief, pillars) || ThiefCollisionWithDoors(pThief, doors)) {
+	if (CollisionWithWalls(pThief, walls) || ThiefCollisionWithPillars(pThief, pillars) || CollisionWithDoors(pThief, doors)) {
 		/*Reverse the movement in the previous state if a collision occurs
 		Basically the movement that the player was trying to do but reversed*/
 		if (myEngine->KeyHeld(Key_W)) {
@@ -97,46 +97,6 @@ void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed,
 		break;
 	}
 }
-bool BooleanBoxCDWithCamera(ICamera* Camera, IModel* model2, Vector areaLength)
-{
-	return ((Camera->GetX() < model2->GetX() + areaLength.x && Camera->GetX() > model2->GetX() - areaLength.x &&
-		Camera->GetY() < model2->GetY() + areaLength.y && Camera->GetY() > model2->GetY() - areaLength.y &&
-		Camera->GetZ() < model2->GetZ() + areaLength.z && Camera->GetZ() > model2->GetZ() - areaLength.z));
-}
-bool CameraCollisionWithWalls(ICamera* Camera, vector<WallStruct> walls)
-{
-	for (int i = 0; i < walls.size(); i++) {
-
-		if (BooleanBoxCDWithCamera(Camera, walls[i].model, walls[i].length)) 
-		{
-			return true;			
-		}
-	}
-	
-	return false;
-}
-bool CameraCollisionWithDoors(ICamera* Camera, vector<DoorStruct> doors)
-{
-	for (int i = 0; i < doors.size(); i++) {
-
-		if (BooleanBoxCDWithCamera(Camera, doors[i].model, doors[i].length)) {
-			return true;
-		}
-	}
-	return false;
-}
-bool CameraCollisionWithPillars(ICamera* Camera, vector<PillarStruct> pillars)
-{
-	for (int i = 0; i < pillars.size(); i++) {
-
-		if (BooleanBoxCDWithCamera(Camera, pillars[i].model, pillars[i].length))
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
 void UpdateCamera(I3DEngine* myEngine, IModel* pThief, SCameraVariables& CameraV, IModel* pCameraDummy, ICamera* Camera, vector<WallStruct> walls, int ThiefState)
 {
 	if (ThiefState == NORMAL) {
@@ -163,16 +123,16 @@ void UpdateCamera(I3DEngine* myEngine, IModel* pThief, SCameraVariables& CameraV
 }
 void CameraCollisionDetectionWithObjects(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors, SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
 {
-	if (CameraCollisionWithWalls(Camera, walls) || 
-		CameraCollisionWithDoors(Camera, doors) || 
-		CameraCollisionWithPillars(Camera, pillars)) 
+	int counter=0;
+	if (CollisionWithWalls(CameraV.dummyOnCamera, walls) || 
+		CollisionWithDoors(CameraV.dummyOnCamera, doors))
 	{
-		if (CameraV.currentCameraDistance <= CameraV.minCameraDistance)	CameraV.currentCameraDistance += 0.1;//going closer to the player
+		
+		if (CameraV.currentCameraDistance <= CameraV.minCameraDistance)CameraV.currentCameraDistance += 0.05;//going closer to the player	
+		counter++;
 	}
-	else
-	{	
-		if (CameraV.currentCameraDistance >= CameraV.maxCameraDistance)CameraV.currentCameraDistance -=0.1;//going away from the player
-	}
+	
+	if (CameraV.currentCameraDistance >= CameraV.maxCameraDistance && counter==0)CameraV.currentCameraDistance -= 0.05;//going away from the player
 	
 	Camera->SetLocalZ(CameraV.currentCameraDistance);
 }
@@ -350,7 +310,7 @@ void main()
 	int STATE = MENU;
 	levels.NextLevel(walls, doors,pillars,key);
 
-	//NON-IMPORTANT VARIABLES
+	//IMPORTANT VARIABLES
 	float dt=myEngine->Timer();
 	float thiefMovementSpeed = 5;
 
@@ -373,20 +333,26 @@ void main()
 	float const maxTimer = 10;
 	//END OF IFONT Variables
 	
+	//Camera variables 
 	SCameraVariables CameraV;
-	//Key related variables
-	bool keyFound = false;
+	IMesh* dummyOnCameraMesh = myEngine->LoadMesh("dummy.x");
+	CameraV.dummyOnCamera = dummyOnCameraMesh->CreateModel();
+	CameraV.dummyOnCamera->Scale(5);
+	CameraV.dummyOnCamera->AttachToParent(camera);
 
-	//END OF NON-IMPORTANT VARIABLES 
 	camera->AttachToParent(pCameraDummy);
 	pCameraDummy->AttachToParent(pThief);
 	pCameraDummy->RotateY(180);
+
+	//Key related variables
+	bool keyFound = false;
 
 	//Key variables
 	float R1 = 5;
 	float R2 = 7;
 	float keyMovementSpeed = 150;
 
+	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
 	{
@@ -497,7 +463,6 @@ void main()
 			GUARDS DISABLED
 			PRESS P TO LOAD NEXT LEVEL ENABLED
 			*/
-
 			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
 			//CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound);//5			
 			CollisionWithKey(pThief, R1, R2, levels, keyFound, key);//6			

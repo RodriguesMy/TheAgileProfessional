@@ -19,13 +19,14 @@ using namespace tle;
 #define NORMAL 2
 
 struct SCameraVariables {
+	IModel* dummyOnCamera;
 	//Rotation of camera variables
 	float const maxCameraRotation = 25;
 	float cameraAngle = 25;
 	float const minCameraRotation = 10;
 
 	//Camera distance from camera to player
-	float maxCameraDistance = -2;
-	float minCameraDistance = 0;
-	float currentCameraDistance = -2;
+	float maxCameraDistance = -1.5;
+	float minCameraDistance = 2;
+	float currentCameraDistance = -1.5;
 };
