@@ -289,8 +289,7 @@ void SphereToSphereCD(IModel* pThief, float R1, float R2,CLevel level,bool &keyF
 			keyFound = true;
 			level.RemoveKey(key);
 		}
-	}
-		
+	}		
 }
 void main()
 {
@@ -406,8 +405,6 @@ void main()
 
 		//fill the rest when the time comes 
 		*/
-
-		cout << keyFound << endl;
 		switch (STATE)
 		{
 		case MENU:
@@ -478,19 +475,15 @@ void main()
 			PRESS P TO LOAD NEXT LEVEL ENABLED
 			*/
 			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-			//CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound);//5			
 			SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
 			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels,doors);//8			
 			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls,ThiefState);//9			
-			//ThiefCollisionWithObjects(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt);//11
-
-			//testing
 			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy,levels);
 
 			//Transition
-			//Must remove later
+			//go to the next level after p is hit
 			if (myEngine->KeyHit(Key_P))
 				if (!levels.NextLevel(walls, doors, pillars, key))
 					cout << "no more levels" << endl;

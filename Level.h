@@ -67,7 +67,8 @@ private:
 	vector<string> m_Levels = {
 		"Level1",
 		"Level2",
-		"Level3"
+		"Level3",
+		"Level4"
 	};
 	int m_LevelIt;
 	IMesh* m_MWall;
