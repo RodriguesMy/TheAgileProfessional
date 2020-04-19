@@ -223,13 +223,19 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 					}
 				}
 			}
-
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
 			}
 
 			if (doorType == starting) {
 				InteractionMessage->Draw("No turning back now.", 565, 550);
+			}
+			if (doorType == exiting) {
+				InteractionMessage->Draw("Press 'E to EXIT", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{
+					doorState = DOOR_OPENING;
+				}
 			}
 		}
 		
@@ -363,6 +369,9 @@ void main()
 	float R2 = 7;
 	float keyMovementSpeed = 150;
 
+	//Other Variables
+	int score = 0;
+
 	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -443,28 +452,16 @@ void main()
 			}
 			break;
 		}
-		case RELOAD_CURRENT_LEVEL:
-		{
-			//executes when the player has lost and the current level has to restart
-
-		}
 		break;
-		case LOADING_NEXT_LEVEL:
+		case END:
 		{
-			//State between now and the next level 
-
-			DisplayBigMessage->Draw("Loading . . .", 300, 300);
-			//I thought of maybe putting a wall in front of the camera (as a black screen) and changing the level here
-			//Resetting the player's and guard's position
-			//Having the starting place of the player and the guard inside each level (get them from level.txt) is a good idea
-			//for having checkpoints
-
-			if (1/*loading map finished*/)
+			DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 300, 300);
+			DisplayMenu->Draw("Hit Space to Play Again!", 420, 450);
+			if (myEngine->KeyHit(Key_Space))
 			{
-				STATE = LEVEL;
+				//start from the beggining
 			}
-		}
-		break;
+		}break;
 		case DEBUG_MODE:
 		{
 			//Update
@@ -481,6 +478,7 @@ void main()
 			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls,ThiefState);//9			
 			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt);//11
 			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy,levels);
+			CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState);//5			
 
 			//Transition
 			//go to the next level after p is hit
