@@ -163,7 +163,7 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool &keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool &keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState,int &STATE)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -235,6 +235,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				if (myEngine->KeyHit(Key_E))
 				{
 					doorState = DOOR_OPENING;
+					STATE = END;
 				}
 			}
 		}
@@ -279,9 +280,9 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine,float dt,bool &keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine,float dt,bool &keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState,int &STATE) {
 	for (int i = 0; i < door.size(); i++) {
-		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState);
+		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState,STATE);
 	}
 }
 void SphereToSphereCD(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel*& key) {
@@ -430,7 +431,7 @@ void main()
 		{	
 			//Update
 			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound,levels,walls,doors,pillars,key,ThiefState);//5			
+			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound,levels,walls,doors,pillars,key,ThiefState,STATE);//5			
 			SphereToSphereCD(pThief, R1, R2, levels, keyFound,key);//6			
 			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels,doors);//8			
@@ -448,18 +449,20 @@ void main()
 			if (myEngine->KeyHit(Key_Space))
 			{
 				STATE = LEVEL;
-				//reset variables
+				keyFound = false;
+				score = 0;
+				//we need to find a way to reset the levels and go back on level 1	
 			}
 			break;
 		}
 		break;
 		case END:
 		{
-			DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 300, 300);
-			DisplayMenu->Draw("Hit Space to Play Again!", 420, 450);
+			DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
+			DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
 			if (myEngine->KeyHit(Key_Space))
 			{
-				//start from the beggining
+				STATE = LEVEL;
 			}
 		}break;
 		case DEBUG_MODE:
@@ -478,7 +481,7 @@ void main()
 			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls,ThiefState);//9			
 			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt);//11
 			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy,levels);
-			CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState);//5			
+			CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState,STATE);//5			
 
 			//Transition
 			//go to the next level after p is hit
