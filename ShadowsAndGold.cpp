@@ -163,7 +163,7 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool &keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -205,13 +205,15 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 			if (doorType == ending && keyFound) {
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
-				{
+				{					
 					if (levels.NextLevel(walls, doors, pillars, key)) {
+						keyFound = false;
 						Vector Pos = levels.GetPlayerSPos();
 						pThief->SetPosition(Pos.x, Pos.y, Pos.z + 40);
 						pThief->LookAt(Pos.x, Pos.y, Pos.z + 41);
 						pThief->Scale(5);
 						ThiefState = WAITING;
+						
 						for (int i = 0; i < doors.size(); i++) {
 							if (doors[i].type == starting) {
 								doors[i].state = DOOR_OPENING;
@@ -271,7 +273,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine,float dt,bool keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine,float dt,bool &keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState) {
 	for (int i = 0; i < door.size(); i++) {
 		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState);
 	}
@@ -404,6 +406,8 @@ void main()
 
 		//fill the rest when the time comes 
 		*/
+
+		cout << keyFound << endl;
 		switch (STATE)
 		{
 		case MENU:
