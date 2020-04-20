@@ -66,7 +66,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	m_PlayerSPos.y = 0;
 	m_PlayerSPos.z = 0;
 }
-
+//STOP
 bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
@@ -79,7 +79,8 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 				startingdoor,
 				pillar,
 				pedestal,
-				key
+				key,
+				exit
 			};
 			EModelType Current=wall;
 			string input;
@@ -112,7 +113,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().movementSpeed = 1.6 * scale;
 						Doors.back().areaLength.y = 65 * scale;
 						Doors.back().length.y = 100 * scale;
-						Doors.back().MaxDoorLimit = 115 * scale;
+						Doors.back().MaxDoorLimit = 110*scale;
 						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Doors.back().areaLength.x = 33 * scale;
@@ -139,10 +140,10 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = ending;
-						Doors.back().movementSpeed = 1.6*scale;
+						Doors.back().movementSpeed = 1.6 * scale;
 						Doors.back().areaLength.y = 65 * scale;
-						Doors.back().length.y =90 * scale;
-						Doors.back().MaxDoorLimit = 115 * scale;
+						Doors.back().length.y = 85 * scale;
+						Doors.back().MaxDoorLimit = 110 * scale;
 						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Doors.back().areaLength.x = 33 * scale;
@@ -171,7 +172,33 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Doors.back().movementSpeed = 1.6*scale;
 						Doors.back().areaLength.y = 65 * scale;
 						Doors.back().length.y =90 * scale;
-						Doors.back().MaxDoorLimit = 115 * scale;
+						Doors.back().MaxDoorLimit = 110 * scale;
+						Doors.back().CurrentDoorLimit = 0;
+						if (rotation == 0 || rotation == 180) {
+							Doors.back().areaLength.x = 33 * scale;
+							Doors.back().areaLength.z = 65 * scale;
+							Doors.back().length.x = 13 * scale;
+							Doors.back().length.z = 33 * scale;
+						}
+						else if (rotation == 90 || rotation == 270) {
+							Doors.back().areaLength.x = 65 * scale;
+							Doors.back().areaLength.z = 33 * scale;
+							Doors.back().length.x = 33 * scale;
+							Doors.back().length.z = 13 * scale;
+						}
+						m_PlayerSPos.x = Doors.back().model->GetX();
+						m_PlayerSPos.y = Doors.back().model->GetY();
+						m_PlayerSPos.z = Doors.back().model->GetZ() - 20;
+						break;
+					case exit:
+						Doors.push_back(*(new DoorStruct));
+						Doors.back().model = CreateModel(m_MDoor, input, &scale, &rotation);
+						Doors.back().state = DOOR_CLOSED;
+						Doors.back().type = exiting;
+						Doors.back().movementSpeed = 1.6 * scale;
+						Doors.back().areaLength.y = 65 * scale;
+						Doors.back().length.y = 90 * scale;
+						Doors.back().MaxDoorLimit = 110 * scale;
 						Doors.back().CurrentDoorLimit = 0;
 						if (rotation == 0 || rotation == 180) {
 							Doors.back().areaLength.x = 33 * scale;
@@ -228,8 +255,11 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Current = endingdoor;
 					else if (input == "startingdoor")
 						Current = startingdoor;
+					else if (input == "exit")
+						Current = exit;
 					else if (input == "key")
 						Current = key;
+					
 				}
 			}
 			return true;
