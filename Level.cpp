@@ -11,14 +11,16 @@ CLevel::CLevel(I3DEngine* myEngine)
 	m_MPillars = myEngine->LoadMesh("Pillar.x");
 	m_MPedestal = myEngine->LoadMesh("Pedestal.x");
 	m_MKey = myEngine->LoadMesh("Key.x");
-
+	m_PlayerSPos = Vector(0, 0, 0);
+	m_Min = Vector(INT_MAX, 0, INT_MAX);
+	m_Min = Vector(INT_MIN, 0, INT_MIN);
 }
 
 CLevel::~CLevel()
 {
 }
 
-IModel* CLevel::CreateModel(IMesh* mesh,string data,float* scale, float* rot) {
+IModel* CLevel::CreateModel(IMesh* mesh, string data, bool Check, float* scale, float* rot) {
 	IModel* output = mesh->CreateModel();
 	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
 	for (int i = 0; i < 5; i++) {
@@ -30,6 +32,20 @@ IModel* CLevel::CreateModel(IMesh* mesh,string data,float* scale, float* rot) {
 	}
 	output->Scale(fdata[4]);
 	output->SetPosition(fdata[0], fdata[1], fdata[2]);
+	if (Check) {
+		if (fdata[0] < m_Min.x) {
+			m_Min.x = fdata[0];
+		}
+		if (fdata[2] < m_Min.z) {
+			m_Min.z = fdata[2];
+		}
+		if (fdata[0] > m_Max.x) {
+			m_Max.x = fdata[0];
+		}
+		if (fdata[2] > m_Max.z) {
+			m_Max.z = fdata[2];
+		}
+	}
 	if (rot != 0) {
 		*rot = fdata[3];
 	}
@@ -65,8 +81,14 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	m_PlayerSPos.x = 0;
 	m_PlayerSPos.y = 0;
 	m_PlayerSPos.z = 0;
+	m_Max.x = INT_MIN;
+	m_Max.z = INT_MIN;
+	m_Min.x = INT_MAX;
+	m_Min.z = INT_MAX;
 }
-//STOP
+
+
+
 bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
@@ -94,7 +116,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					switch (Current) {
 					case wall:
 						Walls.push_back(*(new WallStruct));
-						Walls.back().model = CreateModel(m_MWall, input, &scale, &rotation);
+						Walls.back().model = CreateModel(m_MWall, input, true, &scale, &rotation);
 						Walls.back().length.y = scale * 2;
 						if (rotation == 0 || rotation == 180) {
 							Walls.back().length.x = scale * 2;
@@ -107,7 +129,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case door:
 						Doors.push_back(*(new DoorStruct));
-						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
+						Doors.back().model = CreateModel(m_MDoor, input, false, &scale, &rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = simple;
 						Doors.back().movementSpeed = 1.6 * scale;
@@ -137,7 +159,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 							}
 						}
 						Doors.push_back(*(new DoorStruct));
-						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
+						Doors.back().model = CreateModel(m_MDoor, input, false, &scale, &rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = ending;
 						Doors.back().movementSpeed = 1.6 * scale;
@@ -166,7 +188,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 							}
 						}
 						Doors.push_back(*(new DoorStruct));
-						Doors.back().model = CreateModel(m_MDoor, input,&scale,&rotation);
+						Doors.back().model = CreateModel(m_MDoor, input, false, &scale, &rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = starting;
 						Doors.back().movementSpeed = 1.6*scale;
@@ -192,7 +214,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case exit:
 						Doors.push_back(*(new DoorStruct));
-						Doors.back().model = CreateModel(m_MDoor, input, &scale, &rotation);
+						Doors.back().model = CreateModel(m_MDoor, input, false, &scale, &rotation);
 						Doors.back().state = DOOR_CLOSED;
 						Doors.back().type = exiting;
 						Doors.back().movementSpeed = 1.6 * scale;
@@ -218,7 +240,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case pillar:
 						Pillars.push_back(*(new PillarStruct));
-						Pillars.back().model = CreateModel(m_MPillars, input,&scale);
+						Pillars.back().model = CreateModel(m_MPillars, input, true, &scale);
 						Pillars.back().type = typePillar;
 						Pillars.back().length.x = 0.5*scale;
 						Pillars.back().length.y = 5*scale;
@@ -226,7 +248,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case pedestal:
 						Pillars.push_back(*(new PillarStruct));
-						Pillars.back().model = CreateModel(m_MPedestal, input,&scale);
+						Pillars.back().model = CreateModel(m_MPedestal, input, true, &scale);
 						Pillars.back().type = typePedestal;
 						Pillars.back().length.x = 2 * scale;
 						Pillars.back().length.y = 5 * scale;;
@@ -235,7 +257,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case key:
 						if (Key != NULL)
 							m_MKey->RemoveModel(Key);
-						Key = CreateModel(m_MKey, input);
+						Key = CreateModel(m_MKey, input, false);
 						Key->RotateX(90);
 					}
 				}
@@ -262,6 +284,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					
 				}
 			}
+			CreateGrid(Walls, Pillars);
 			return true;
 		}
 		else {
@@ -272,6 +295,51 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 		return false;
 	}
 }
+
+void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars) {
+	int heightofgrid = (m_Max.z - m_Min.z) / 5;
+	int widthofgrid = (m_Max.x - m_Min.x) / 5;
+	for (int i = 0; i <= heightofgrid; i++) {
+		vector<int>* line = new vector<int>;
+		for (int j = 0; j <= widthofgrid; j++) {
+			line->push_back(1);
+		}
+		Grid.push_back(*line);
+	}
+	for (int i = 0; i < Walls.size(); i++) {
+		int maxX = (Walls[i].model->GetX() + Walls[i].length.x - m_Min.x) / 5;
+		int maxZ = (Walls[i].model->GetZ() + Walls[i].length.z - m_Min.z) / 5;
+		int minX = (Walls[i].model->GetX() - Walls[i].length.x - m_Min.x) / 5;
+		int minZ = (Walls[i].model->GetZ() - Walls[i].length.z - m_Min.z) / 5;
+		for (int k = minX; k <= maxX; k++) {
+			for (int l = minZ; l <= maxZ; l++) {
+				if (l < Grid.size() && l>=0)
+					if (k < Grid[l].size() && k>=0)
+						Grid[l][k] = 0;
+			}
+		}
+	}
+	for (int i = 0; i < Pillars.size(); i++) {
+		int maxX = (Pillars[i].model->GetX() + Pillars[i].length.x - m_Min.x) / 5;
+		int maxZ = (Pillars[i].model->GetZ() + Pillars[i].length.z - m_Min.z) / 5;
+		int minX = (Pillars[i].model->GetX() - Pillars[i].length.x - m_Min.x) / 5;
+		int minZ = (Pillars[i].model->GetZ() - Pillars[i].length.z - m_Min.z) / 5;
+		for (int k = minX; k <= maxX; k++) {
+			for (int l = minZ; l <= maxZ; l++) {
+				if (l < Grid.size() && l>=0)
+					if (k < Grid[l].size() && k>=0)
+						Grid[l][k] = 0;
+			}
+		}
+	}
+	for (int i = 0; i < Grid.size(); i++) {
+		for (int j = 0; j < Grid[i].size(); j++) {
+			cout << Grid[i][j] << " ";
+		}
+		cout << endl;
+	}
+}
+
 
 bool CLevel::IncreaseLevelIt() {
 	m_LevelIt++;
