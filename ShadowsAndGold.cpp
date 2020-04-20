@@ -5,7 +5,7 @@
 bool CollisionSTS(Vector V1, Vector V2, float radius) {
 	return radius > sqrt(pow((V1.x - V2.x), 2) + pow((V1.y - V2.y), 2) + pow((V1.z - V2.z), 2));
 }
-bool SphereToBoxCD(IModel* model1,IModel* model2,Vector areaLength)
+bool SphereToBoxCD(IModel* model1, IModel* model2, Vector areaLength)
 {
 	return ((model1->GetX() < model2->GetX() + areaLength.x && model1->GetX() > model2->GetX() - areaLength.x &&
 		model1->GetY() < model2->GetY() + areaLength.y && model1->GetY() > model2->GetY() - areaLength.y &&
@@ -40,7 +40,7 @@ bool CollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
 	}
 	return false;
 }
-void ThiefCollisionBehavior(I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors,IModel* pThief, float& thiefMovementSpeed, float& dt )
+void ThiefCollisionBehavior(I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors, IModel* pThief, float& thiefMovementSpeed, float& dt)
 {
 	//Movement depends on collision with:
 	//WALLS, DOORS, PILLARS
@@ -61,7 +61,7 @@ void ThiefCollisionBehavior(I3DEngine* myEngine, vector<WallStruct> walls, vecto
 		}
 	}
 }
-void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed, float& dt, int& ThiefState,CLevel levels,vector<DoorStruct>& doors)
+void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed, float& dt, int& ThiefState, CLevel levels, vector<DoorStruct>& doors)
 {
 	switch (ThiefState)
 	{
@@ -127,7 +127,7 @@ void UpdateCamera(I3DEngine* myEngine, IModel* pThief, SCameraVariables& CameraV
 		}
 	}
 }
-void CameraCollisionBehavior(ICamera* Camera,IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors, SCameraVariables &CameraV,IModel* pCameraDummy,CLevel levels)
+void CameraCollisionBehavior(ICamera* Camera, IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors, SCameraVariables& CameraV, IModel* pCameraDummy, CLevel levels)
 {
 	//Movement depends on collision with:
 	//WALLS, DOORS
@@ -143,7 +143,7 @@ void CameraCollisionBehavior(ICamera* Camera,IModel* pThief, I3DEngine* myEngine
 	
 	Camera->SetLocalZ(CameraV.currentCameraDistance);
 }
-void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage, IFont* ControlsMessage,float &currentTime,float maxTimer,float dt) {
+void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessage, IFont* ControlsMessage, float& currentTime, float maxTimer, float dt) {
 	
 	//Update the Quests Fonts
 	if (keyFound)
@@ -163,7 +163,7 @@ void UpdateMessages(bool &keyFound,IFont* DisplayQuest,IFont* InteractionMessage
 		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
 	}
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool &keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState,int &STATE)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -278,12 +278,12 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine,float dt,bool &keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState,int &STATE) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE) {
 	for (int i = 0; i < door.size(); i++) {
 		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState,STATE);
 	}
 }
-void SphereToSphereCD(IModel* pThief, float R1, float R2,CLevel level,bool &keyFound,IModel*& key) {
+void SphereToSphereCD(IModel* pThief, float R1, float R2, CLevel level, bool& keyFound, IModel*& key) {
 
 	if (!keyFound) {
 		float x = pThief->GetX() - key->GetX();

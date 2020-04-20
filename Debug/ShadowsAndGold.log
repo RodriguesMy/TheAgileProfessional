@@ -1,13 +1,33 @@
 ﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
-  ShadowsAndGold.cpp
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(15,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(25,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(35,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(74,22): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(109,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(110,25): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(217,25): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(282,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(283,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Level.cpp
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(135,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(155,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(165,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(184,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(194,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(220,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(245,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(247,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(265,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(300,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(301,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(309,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(310,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(311,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(312,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(313,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(316,11): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(317,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(322,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(323,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(324,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(325,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(326,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(329,11): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(330,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(335,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(336,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(346,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(297): warning C4715: 'CLevel::NextLevel': not all control paths return a value
   ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

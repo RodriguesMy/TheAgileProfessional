@@ -78,6 +78,9 @@ private:
 	IMesh* m_MPedestal;
 	IMesh* m_MKey;
 	Vector m_PlayerSPos;
+	Vector m_Min; // holds the coordinates of the bottom left corner of the level(with y being 0)
+	Vector m_Max; // holds the coordinates of the top right corner of the level(with y being 0)
+	vector<vector<int>> Grid; // A top side view of the entire level scaled so each element of the 2d dynamic array repressents 5 units
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
@@ -87,6 +90,7 @@ public:
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 private:
 	bool IncreaseLevelIt();
-	IModel* CreateModel(IMesh* mesh, string data, float* scale = 0, float* rot = 0);
+	IModel* CreateModel(IMesh* mesh, string data, bool Check, float* scale = 0, float* rot = 0);//The check parameter is to alter the max and min or not
 	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
+	void CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars);
 };
