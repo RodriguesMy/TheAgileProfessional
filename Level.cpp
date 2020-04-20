@@ -66,7 +66,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	m_PlayerSPos.y = 0;
 	m_PlayerSPos.z = 0;
 }
-//STOP
+
 bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");

@@ -273,9 +273,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 			doorState = DOOR_OPEN;
 			currentLimit = 0;
 			if (doorType == starting)
-				for (int i = 0; i < doors.size(); i++)
-					if (doors[i].type == starting) 
-						ThiefState = FORWARD;
+				ThiefState = FORWARD;
 		}
 	}break;
 	}
@@ -334,7 +332,7 @@ void main()
 
 	//Create Thief
 	IMesh* pThieflMesh = myEngine->LoadMesh("thief.x");
-	IModel* pThief = pThieflMesh->CreateModel(0, 0, -10);
+	IModel* pThief = pThieflMesh->CreateModel(levels.GetPlayerSPos().x,levels.GetPlayerSPos().y,levels.GetPlayerSPos().z);
 	pThief->Scale(5);
 	int ThiefState = NORMAL;
 	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-2);
