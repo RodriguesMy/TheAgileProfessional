@@ -231,7 +231,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("No turning back now.", 565, 550);
 			}
 			if (doorType == exiting) {
-				InteractionMessage->Draw("Press 'E to EXIT", 565, 550);
+				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
 					doorState = DOOR_OPENING;
@@ -372,6 +372,7 @@ void main()
 
 	//Other Variables
 	int score = 0;
+	int currentScore; //in case player dies 
 
 	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
@@ -451,7 +452,8 @@ void main()
 				STATE = LEVEL;
 				keyFound = false;
 				score = 0;
-				//we need to find a way to reset the levels and go back on level 1	
+				levels.NextLevel(walls, doors, pillars, key);
+
 			}
 			break;
 		}
@@ -463,6 +465,9 @@ void main()
 			if (myEngine->KeyHit(Key_Space))
 			{
 				STATE = LEVEL;
+				keyFound = false;
+				score = 0;
+				//we need to find a way to reset the levels and go back on level 1	
 			}
 		}break;
 		case DEBUG_MODE:

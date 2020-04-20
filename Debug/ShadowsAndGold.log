@@ -10,5 +10,19 @@ C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(276,23): warning C4018: '<': signed/unsigned mismatch
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(284,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(285,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(375,6): warning C4101: 'currentScore': unreferenced local variable
+  Level.cpp
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(113,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(133,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(143,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(162,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(172,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(198,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(223,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(225,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(243,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(278,16): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(274): warning C4715: 'CLevel::NextLevel': not all control paths return a value
   ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...
