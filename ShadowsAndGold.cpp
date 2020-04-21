@@ -442,7 +442,14 @@ void main()
 				STATE = LEVEL;
 				keyFound = false;
 				score = 0;
-				levels.NextLevel(walls, doors, pillars, key);
+				pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
+				pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
+				pThief->Scale(5);
+				for (int i = 0; i < doors.size(); i++) {
+					if (doors[i].state == DOOR_OPEN)
+						doors[i].state = DOOR_CLOSING;
+				}
+				levels.ReloadKey(key);
 			}
 			break;
 		}
@@ -456,7 +463,10 @@ void main()
 				STATE = LEVEL;
 				keyFound = false;
 				score = 0;
-				//we need to find a way to reset the levels and go back on level 1	
+				levels.Restart(walls, doors, pillars, key);
+				pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
+				pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
+				pThief->Scale(5);
 			}
 		}break;
 		case DEBUG_MODE:
@@ -464,6 +474,7 @@ void main()
 			//Update
 			/*DEBUG MODE:
 			THIEF COLLISION WITH WALLS DISABLED
+			THIEF COLLISION WITH PILLARS DISABLED
 			THIEF COLLISION WITH DOORS DISABLED
 			GUARDS DISABLED
 			PRESS P TO LOAD NEXT LEVEL ENABLED
