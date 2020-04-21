@@ -14,8 +14,7 @@ enum EPillarType {
 enum EDoortype {
 	simple,
 	starting,
-	ending,
-	exiting
+	ending
 };
 
 enum EDoorState

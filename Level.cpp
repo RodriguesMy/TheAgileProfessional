@@ -209,32 +209,6 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						m_PlayerSPos.y = Doors.back().model->GetY();
 						m_PlayerSPos.z = Doors.back().model->GetZ() - 20;
 						break;
-					case exit:
-						Doors.push_back(*(new DoorStruct));
-						Doors.back().model = CreateModel(m_MDoor, input, false, &scale, &rotation);
-						Doors.back().state = DOOR_CLOSED;
-						Doors.back().type = exiting;
-						Doors.back().movementSpeed = 1.6 * scale;
-						Doors.back().areaLength.y = 65 * scale;
-						Doors.back().length.y = 90 * scale;
-						Doors.back().MaxDoorLimit = 110 * scale;
-						Doors.back().CurrentDoorLimit = 0;
-						if (rotation == 0 || rotation == 180) {
-							Doors.back().areaLength.x = 33 * scale;
-							Doors.back().areaLength.z = 65 * scale;
-							Doors.back().length.x = 13 * scale;
-							Doors.back().length.z = 33 * scale;
-						}
-						else if (rotation == 90 || rotation == 270) {
-							Doors.back().areaLength.x = 65 * scale;
-							Doors.back().areaLength.z = 33 * scale;
-							Doors.back().length.x = 33 * scale;
-							Doors.back().length.z = 13 * scale;
-						}
-						m_PlayerSPos.x = Doors.back().model->GetX();
-						m_PlayerSPos.y = Doors.back().model->GetY();
-						m_PlayerSPos.z = Doors.back().model->GetZ() - 20;
-						break;
 					case pillar:
 						Pillars.push_back(*(new PillarStruct));
 						Pillars.back().model = CreateModel(m_MPillars, input, true, &scale);

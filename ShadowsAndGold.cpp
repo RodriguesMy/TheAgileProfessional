@@ -194,7 +194,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				}
 			}
 
-			if (doorType == ending && keyFound) {
+			if (doorType == ending && keyFound && levels.getLevelIt()<4) {
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{					
@@ -215,20 +215,20 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 					}
 				}
 			}
+			else if(levels.getLevelIt() ==4)
+			{
+				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
+				if (myEngine->KeyHit(Key_E))
+				{					
+					STATE = END;
+				}
+			}
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
 			}
 
 			if (doorType == starting) {
 				InteractionMessage->Draw("No turning back now.", 565, 550);
-			}
-			if (doorType == exiting) {
-				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
-				if (myEngine->KeyHit(Key_E))
-				{
-					doorState = DOOR_OPENING;
-					STATE = END;
-				}
 			}
 		}
 		
