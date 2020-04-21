@@ -3,30 +3,30 @@
 #include "Definitions.h"
 #include "CollisionDetection.h"
 
-bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
+bool CollisionWithWalls(IModel* model, vector<WallStruct> walls) {
 	for (int i = 0; i < walls.size(); i++) {
 		
-		if (SphereToBoxCD(pThief,walls[i].model,walls[i].length)){
+		if (SphereToBoxCD(model,walls[i].model,walls[i].length)){
 			return true;
 		}
 	}
 	return false;
 }
-bool CollisionWithDoors(IModel* pThief, vector<DoorStruct> doors) {
+bool CollisionWithDoors(IModel* model, vector<DoorStruct> doors) {
 
 	for (int i = 0; i < doors.size(); i++) {
 
-		if (SphereToBoxCD(pThief, doors[i].model, doors[i].length)) {
+		if (SphereToBoxCD(model, doors[i].model, doors[i].length)) {
 			return true;
 		}
 	}
 	return false; 
 }
-bool CollisionWithPillars(IModel* pThief, vector<PillarStruct> pillars) {
+bool CollisionWithPillars(IModel* model, vector<PillarStruct> pillars) {
 
 	for (int i = 0; i < pillars.size(); i++) {
 
-		if (SphereToBoxCD(pThief, pillars[i].model, pillars[i].length)) {
+		if (SphereToBoxCD(model, pillars[i].model, pillars[i].length)) {
 			return true;
 		}
 	}
