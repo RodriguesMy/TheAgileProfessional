@@ -1,16 +1,8 @@
 // ShadowsAndGold.cpp: A program using the TL-Engine
 
 #include "Definitions.h"
+#include "CollisionDetection.h"
 
-bool CollisionSTS(Vector V1, Vector V2, float radius) {
-	return radius > sqrt(pow((V1.x - V2.x), 2) + pow((V1.y - V2.y), 2) + pow((V1.z - V2.z), 2));
-}
-bool SphereToBoxCD(IModel* model1, IModel* model2, Vector areaLength)
-{
-	return ((model1->GetX() < model2->GetX() + areaLength.x && model1->GetX() > model2->GetX() - areaLength.x &&
-		model1->GetY() < model2->GetY() + areaLength.y && model1->GetY() > model2->GetY() - areaLength.y &&
-		model1->GetZ() < model2->GetZ() + areaLength.z && model1->GetZ() > model2->GetZ() - areaLength.z));
-}
 bool CollisionWithWalls(IModel* pThief, vector<WallStruct> walls) {
 	for (int i = 0; i < walls.size(); i++) {
 		
@@ -231,7 +223,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("No turning back now.", 565, 550);
 			}
 			if (doorType == exiting) {
-				InteractionMessage->Draw("Press 'E to EXIT", 565, 550);
+				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
 					doorState = DOOR_OPENING;
@@ -370,6 +362,7 @@ void main()
 
 	//Other Variables
 	int score = 0;
+	int currentScore; //in case player dies 
 
 	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
@@ -449,7 +442,7 @@ void main()
 				STATE = LEVEL;
 				keyFound = false;
 				score = 0;
-				//we need to find a way to reset the levels and go back on level 1	
+				levels.NextLevel(walls, doors, pillars, key);
 			}
 			break;
 		}
@@ -461,6 +454,9 @@ void main()
 			if (myEngine->KeyHit(Key_Space))
 			{
 				STATE = LEVEL;
+				keyFound = false;
+				score = 0;
+				//we need to find a way to reset the levels and go back on level 1	
 			}
 		}break;
 		case DEBUG_MODE:
@@ -490,7 +486,6 @@ void main()
 
 		}
 		}
-
 
 		if (myEngine->KeyHit(Key_Escape)) {
 			myEngine->Stop();

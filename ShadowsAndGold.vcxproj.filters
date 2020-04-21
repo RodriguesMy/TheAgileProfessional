@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="ShadowsAndGold.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="CollisionDetection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -15,5 +16,6 @@
   <ItemGroup>
     <ClInclude Include="Level.h" />
     <ClInclude Include="Definitions.h" />
+    <ClInclude Include="CollisionDetection.h" />
   </ItemGroup>
 </Project>
