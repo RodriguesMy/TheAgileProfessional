@@ -163,7 +163,7 @@ void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessa
 	}
 	
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE,bool &finished)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -223,12 +223,12 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 					}
 				}
 			}
-			
-			if(doorType == ending && levels.GetLevelNumber() ==3)
+			if(doorType == ending && levels.GetLevelNumber()>=3)
 			{
 				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
 				if (myEngine->KeyHit(Key_E))
-				{					
+				{				
+					finished = true;
 					STATE = END;
 				}
 			}
@@ -280,9 +280,9 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE,bool &finished) {
 	for (int i = 0; i < door.size(); i++) {
-		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState,STATE);
+		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState,STATE,finished);
 	}
 }
 void SphereToSphereCD(IModel* pThief, float R1, float R2, CLevel level, bool& keyFound, IModel*& key) {
@@ -311,6 +311,16 @@ void reloadLevel(I3DEngine* myEngine,int &STATE,bool &keyFound,int &score,IModel
 		}
 		levels.ReloadKey(key);
 }
+void restartGame(int &STATE, bool &keyFound,int &score,CLevel &levels, vector<DoorStruct> &doors, vector<PillarStruct> &pillars, vector<WallStruct> &walls,IModel* &key,IModel* &pThief)
+{
+	STATE = LEVEL;
+	keyFound = false;
+	score = 0;
+	levels.Restart(walls, doors, pillars, key);
+	pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
+	pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
+	pThief->Scale(5);
+}
 void gameSettings(I3DEngine* myEngine, bool& pause, IFont* DisplayBigMessage, IFont* ControlsMessage)
 {
 	//exit
@@ -318,13 +328,15 @@ void gameSettings(I3DEngine* myEngine, bool& pause, IFont* DisplayBigMessage, IF
 
 	//pause functionalities
 	if (myEngine->KeyHit(Key_P))pause = !pause;
+
 	if (pause)
 	{
 		DisplayBigMessage->Draw("PAUSED", 500, 300);
-		ControlsMessage->Draw("'ESC' to exit", 1100, 0);
-		ControlsMessage->Draw("'R' to restart\n current level", 1100, 50);
-	}
+		ControlsMessage->Draw("'T' to restart game", 1100, 0);
+		ControlsMessage->Draw("'R' to restart\n current level", 1100, 20);
+		ControlsMessage->Draw("'ESC' to exit", 1100, 70);
 
+	}
 }
 void main()
 {
@@ -405,6 +417,8 @@ void main()
 	//Game varaibles
 	bool pause = false;
 	bool lost = false;
+	bool finished = false;
+
 	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -464,7 +478,7 @@ void main()
 			{
 				//Update
 				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE);//5			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE,finished);//5			
 				SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
 				if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
 				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);//8			
@@ -474,6 +488,7 @@ void main()
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 
 				if (myEngine->KeyHit(Key_R))STATE = RELOAD_CURRENT_LEVEL;
+				if (myEngine->KeyHit(Key_T))STATE = END;
 
 				break;
 			}
@@ -485,7 +500,7 @@ void main()
 				}
 				else
 				{
-					DisplayMenu->Draw("Hit Space to Start!", 420, 450);
+					DisplayMenu->Draw("Hit Space to Restart Level!", 420, 450);
 				}
 
 				if (myEngine->KeyHit(Key_Space))reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
@@ -495,17 +510,26 @@ void main()
 			break;
 			case END:
 			{
-				DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
-				DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
+				if (finished)
+				{
+					DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
+					DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
+				}
+				else
+				{
+					DisplayMenu->Draw("Hit Space to Restart Game!", 420, 600);
+
+				}
 				if (myEngine->KeyHit(Key_Space))
 				{
-					STATE = LEVEL;
+					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief);
+					/*STATE = LEVEL;
 					keyFound = false;
 					score = 0;
 					levels.Restart(walls, doors, pillars, key);
 					pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
 					pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
-					pThief->Scale(5);
+					pThief->Scale(5);*/
 				}
 			}break;
 			case DEBUG_MODE:
@@ -525,11 +549,11 @@ void main()
 				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);//9			
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE);//5			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE,finished);//5			
 
 				//Transition
 				//go to the next level after p is hit
-				if (myEngine->KeyHit(Key_P))
+				if (myEngine->KeyHit(Key_Q))
 					if (!levels.NextLevel(walls, doors, pillars, key))
 						cout << "no more levels" << endl;
 				break;
