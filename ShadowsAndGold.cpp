@@ -523,13 +523,6 @@ void main()
 				if (myEngine->KeyHit(Key_Space))
 				{
 					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief);
-					/*STATE = LEVEL;
-					keyFound = false;
-					score = 0;
-					levels.Restart(walls, doors, pillars, key);
-					pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
-					pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
-					pThief->Scale(5);*/
 				}
 			}break;
 			case DEBUG_MODE:
@@ -540,7 +533,7 @@ void main()
 				THIEF COLLISION WITH PILLARS DISABLED
 				THIEF COLLISION WITH DOORS DISABLED
 				GUARDS DISABLED
-				PRESS P TO LOAD NEXT LEVEL ENABLED
+				PRESS Q TO LOAD NEXT LEVEL ENABLED
 				*/
 				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
 				SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
