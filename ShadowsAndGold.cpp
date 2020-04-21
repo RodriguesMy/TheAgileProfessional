@@ -135,16 +135,22 @@ void CameraCollisionBehavior(ICamera* Camera, IModel* pThief, I3DEngine* myEngin
 	
 	Camera->SetLocalZ(CameraV.currentCameraDistance);
 }
-void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessage, IFont* ControlsMessage, float& currentTime, float maxTimer, float dt) {
+void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessage, IFont* ControlsMessage, float& currentTime, float maxTimer, float dt, CLevel levels) {
 	
 	//Update the Quests Fonts
 	if (keyFound)
 	{
-		DisplayQuest->Draw("You Found the Key! Find the Door to Go to the Next Floor.", 0, 0);
+		if (levels.GetLevelNumber() < 3)
+		{
+			DisplayQuest->Draw("You Found the Key! Find the Door to Go to the Next Floor.", 0, 0);
+		}
+		else {
+			DisplayQuest->Draw("You Found the EXIT Key! Gather all the gold and leave!", 0, 0);
+		}
 	}
 	else
 	{
-		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.", 0, 0);
+		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.\nGather all the gold you can!", 0, 0);
 	}
 	//Only display the controls for a few seconds
 	currentTime += dt;
@@ -429,7 +435,7 @@ void main()
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels,doors);//8			
 			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy,camera,walls,ThiefState);//9			
 			ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
-			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt);//11
+			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt,levels);//11
 			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 
 			break;
@@ -485,7 +491,7 @@ void main()
 			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
 			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels,doors);//8			
 			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls,ThiefState);//9			
-			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt);//11
+			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt,levels);//11
 			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy,levels);
 			CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState,STATE);//5			
 
