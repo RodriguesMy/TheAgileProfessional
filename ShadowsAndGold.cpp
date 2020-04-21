@@ -194,7 +194,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				}
 			}
 
-			if (doorType == ending && keyFound && levels.getLevelIt()<4) {
+			if (doorType == ending && keyFound && levels.GetLevelNumber()<3) {
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{					
@@ -215,7 +215,8 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 					}
 				}
 			}
-			else if(levels.getLevelIt() ==4)
+			
+			if(doorType == ending && levels.GetLevelNumber() ==3)
 			{
 				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
 				if (myEngine->KeyHit(Key_E))

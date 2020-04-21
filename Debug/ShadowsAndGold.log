@@ -1,21 +1,32 @@
-﻿TL-Engine2015Debug.lib(TL-Engine.obj) : warning LNK4099: PDB 'TL-Engine.pdb' was not found with 'TL-Engine2015Debug.lib(TL-Engine.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\TL-Engine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(Errors.obj) : warning LNK4099: PDB 'Common.pdb' was not found with 'TL-Engine2015Debug.lib(Errors.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\Common.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXSprite.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXSprite.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXSceneNode.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXSceneNode.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXModelNode.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXModelNode.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXModel.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXModel.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXMesh.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXMesh.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXLight.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXLight.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXFont.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXFont.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXEngine.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXEngine.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(TLXCamera.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(TLXCamera.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtSceneNode.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtSceneNode.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtModel.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtModel.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtMesh.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtMesh.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtLight.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtLight.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtInput.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtInput.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtFont.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtFont.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtEngine.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtEngine.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
-TL-Engine2015Debug.lib(IrrlichtCamera.obj) : warning LNK4099: PDB '3DEngine.pdb' was not found with 'TL-Engine2015Debug.lib(IrrlichtCamera.obj)' or at 'C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\3DEngine.pdb'; linking object as if no debug info
+﻿cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  Level.cpp
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(132,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(152,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(162,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(181,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(191,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(216,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(218,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(237,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(279,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(280,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(288,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(289,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(290,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(291,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(292,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(295,11): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(296,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(301,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(302,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(303,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(304,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(305,12): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(308,11): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(309,12): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(314,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(315,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(325,16): warning C4018: '<': signed/unsigned mismatch
+C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\Level.cpp(269): warning C4715: 'CLevel::NextLevel': not all control paths return a value
   ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

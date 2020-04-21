@@ -336,6 +336,6 @@ void CLevel::RemoveKey(IModel*& Key) {
 }
 
 void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key) {
-	m_LevelIt = 0;
+	m_LevelIt = -1;
 	NextLevel(Walls, Doors, Pillars, Key);
 }
