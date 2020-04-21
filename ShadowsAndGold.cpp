@@ -230,6 +230,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 					STATE = END;
 				}
 			}
+
 			if (doorType == ending && !keyFound) {
 				InteractionMessage->Draw("You have to find the key first.", 565, 550);
 			}
@@ -294,6 +295,15 @@ void SphereToSphereCD(IModel* pThief, float R1, float R2, CLevel level, bool& ke
 			level.RemoveKey(key);
 		}
 	}		
+}
+void gameSettings(I3DEngine* myEngine, bool& pause, IFont* DisplayBigMessage)
+{
+	//exit
+	if (myEngine->KeyHit(Key_Escape))myEngine->Stop(); 
+
+	//pause functionalities
+	if (myEngine->KeyHit(Key_P))pause = !pause;
+	if (pause)DisplayBigMessage->Draw("PAUSED", 500, 300);
 }
 void main()
 {
@@ -371,6 +381,9 @@ void main()
 	int score = 0;
 	int currentScore; //in case player dies 
 
+	//Game varaibles
+	bool pause = false;
+
 	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -413,101 +426,102 @@ void main()
 
 		//fill the rest when the time comes 
 		*/
-		switch (STATE)
-		{
-		case MENU:
-		{	myEngine->StopMouseCapture(); //1
-			//2
+		if (!pause) {
+			switch (STATE)
+			{
+			case MENU:
+			{	myEngine->StopMouseCapture(); //1
+				//2
 			DisplayBigMessage->Draw("Shadows & Gold", 300, 300);
 			DisplayMenu->Draw("Hit Space To Start!", 420, 450);
 			InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
-			if (myEngine->KeyHit(Key_Space)){STATE = LEVEL;}//3
+			if (myEngine->KeyHit(Key_Space)) { STATE = LEVEL; }//3
 			if (myEngine->KeyHit(Key_D)) { STATE = DEBUG_MODE; }
 			break;
-		}
-		case LEVEL:
-		{	
-			//Update
-			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-			CollisionToHandleDoors(pThief,doors,InteractionMessage,myEngine,dt,keyFound,levels,walls,doors,pillars,key,ThiefState,STATE);//5			
-			SphereToSphereCD(pThief, R1, R2, levels, keyFound,key);//6			
-			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels,doors);//8			
-			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy,camera,walls,ThiefState);//9			
-			ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
-			UpdateMessages(keyFound, DisplayQuest,InteractionMessage,ControlsMessage,currentTime,maxTimer,dt,levels);//11
-			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-
-			break;
-		}
-		case PLAYER_LOST:
-		{
-			DisplayBigMessage->Draw("You Lost!", 300, 300);
-			DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
-			if (myEngine->KeyHit(Key_Space))
+			}
+			case LEVEL:
 			{
-				STATE = LEVEL;
-				keyFound = false;
-				score = 0;
-				pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
-				pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
-				pThief->Scale(5);
-				for (int i = 0; i < doors.size(); i++) {
-					if (doors[i].state == DOOR_OPEN)
-						doors[i].state = DOOR_CLOSING;
+				//Update
+				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE);//5			
+				SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
+				if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
+				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);//8			
+				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);//9			
+				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
+				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
+				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
+
+				break;
+			}
+			case PLAYER_LOST:
+			{
+				DisplayBigMessage->Draw("You Lost!", 300, 300);
+				DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
+				if (myEngine->KeyHit(Key_Space))
+				{
+					STATE = LEVEL;
+					keyFound = false;
+					score = 0;
+					pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
+					pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
+					pThief->Scale(5);
+					for (int i = 0; i < doors.size(); i++) {
+						if (doors[i].state == DOOR_OPEN)
+							doors[i].state = DOOR_CLOSING;
+					}
+					levels.ReloadKey(key);
 				}
-				levels.ReloadKey(key);
+				break;
 			}
 			break;
-		}
-		break;
-		case END:
-		{
-			DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
-			DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
-			if (myEngine->KeyHit(Key_Space))
+			case END:
 			{
-				STATE = LEVEL;
-				keyFound = false;
-				score = 0;
-				levels.Restart(walls, doors, pillars, key);
-				pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
-				pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
-				pThief->Scale(5);
+				DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
+				DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
+				if (myEngine->KeyHit(Key_Space))
+				{
+					STATE = LEVEL;
+					keyFound = false;
+					score = 0;
+					levels.Restart(walls, doors, pillars, key);
+					pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
+					pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
+					pThief->Scale(5);
+				}
+			}break;
+			case DEBUG_MODE:
+			{
+				//Update
+				/*DEBUG MODE:
+				THIEF COLLISION WITH WALLS DISABLED
+				THIEF COLLISION WITH PILLARS DISABLED
+				THIEF COLLISION WITH DOORS DISABLED
+				GUARDS DISABLED
+				PRESS P TO LOAD NEXT LEVEL ENABLED
+				*/
+				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
+				SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
+				if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
+				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);//8			
+				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);//9			
+				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
+				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE);//5			
+
+				//Transition
+				//go to the next level after p is hit
+				if (myEngine->KeyHit(Key_P))
+					if (!levels.NextLevel(walls, doors, pillars, key))
+						cout << "no more levels" << endl;
+				break;
+
 			}
-		}break;
-		case DEBUG_MODE:
-		{
-			//Update
-			/*DEBUG MODE:
-			THIEF COLLISION WITH WALLS DISABLED
-			THIEF COLLISION WITH PILLARS DISABLED
-			THIEF COLLISION WITH DOORS DISABLED
-			GUARDS DISABLED
-			PRESS P TO LOAD NEXT LEVEL ENABLED
-			*/
-			myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-			SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
-			if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
-			UpdateModel(myEngine, pThief, thiefMovementSpeed, dt,ThiefState,levels,doors);//8			
-			UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls,ThiefState);//9			
-			UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt,levels);//11
-			CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy,levels);
-			CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState,STATE);//5			
-
-			//Transition
-			//go to the next level after p is hit
-			if (myEngine->KeyHit(Key_P))
-				if (!levels.NextLevel(walls, doors, pillars, key))
-					cout << "no more levels" << endl;
-			break;
-
-		}
+			}
 		}
 
-		if (myEngine->KeyHit(Key_Escape)) {
-			myEngine->Stop();
-		}
+		gameSettings(myEngine, pause,DisplayBigMessage);
+
 	}
 
 	// Delete the 3D engine now we are finished with it
