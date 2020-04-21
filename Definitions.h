@@ -8,7 +8,7 @@ using namespace tle;
 //GAME STATES
 #define MENU 1
 #define LEVEL 2
-#define PLAYER_LOST 3
+#define RELOAD_CURRENT_LEVEL 3
 #define DEBUG_MODE 4
 #define END 5
 

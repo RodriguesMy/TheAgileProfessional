@@ -156,10 +156,12 @@ void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessa
 	currentTime += dt;
 	if (currentTime < maxTimer)
 	{
+		ControlsMessage->Draw("Press 'P' to pause", 0, 400);
 		ControlsMessage->Draw("Use your mouse\nto look around", 0, 450);
 		ControlsMessage->Draw("Use WASD to move", 0, 550);
-		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);
+		ControlsMessage->Draw("Hold Left Shift\nto run", 0, 600);		
 	}
+	
 }
 void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE)
 {
@@ -296,14 +298,33 @@ void SphereToSphereCD(IModel* pThief, float R1, float R2, CLevel level, bool& ke
 		}
 	}		
 }
-void gameSettings(I3DEngine* myEngine, bool& pause, IFont* DisplayBigMessage)
+void reloadLevel(I3DEngine* myEngine,int &STATE,bool &keyFound,int &score,IModel* pThief,CLevel &levels, vector<DoorStruct>& doors,IModel* key) {
+		STATE = LEVEL;
+		keyFound = false;
+		score = 0;
+		pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
+		pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
+		pThief->Scale(5);
+		for (int i = 0; i < doors.size(); i++) {
+			if (doors[i].state == DOOR_OPEN)
+				doors[i].state = DOOR_CLOSING;
+		}
+		levels.ReloadKey(key);
+}
+void gameSettings(I3DEngine* myEngine, bool& pause, IFont* DisplayBigMessage, IFont* ControlsMessage)
 {
 	//exit
 	if (myEngine->KeyHit(Key_Escape))myEngine->Stop(); 
 
 	//pause functionalities
 	if (myEngine->KeyHit(Key_P))pause = !pause;
-	if (pause)DisplayBigMessage->Draw("PAUSED", 500, 300);
+	if (pause)
+	{
+		DisplayBigMessage->Draw("PAUSED", 500, 300);
+		ControlsMessage->Draw("'ESC' to exit", 1100, 0);
+		ControlsMessage->Draw("'R' to restart\n current level", 1100, 50);
+	}
+
 }
 void main()
 {
@@ -383,7 +404,7 @@ void main()
 
 	//Game varaibles
 	bool pause = false;
-
+	bool lost = false;
 	//END OF IMPORTANT VARIABLES 
 	// The main game loop, repeat until engine is stopped
 	while (myEngine->IsRunning())
@@ -452,26 +473,23 @@ void main()
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 
+				if (myEngine->KeyHit(Key_R))STATE = RELOAD_CURRENT_LEVEL;
+
 				break;
 			}
-			case PLAYER_LOST:
+			case RELOAD_CURRENT_LEVEL:
 			{
-				DisplayBigMessage->Draw("You Lost!", 300, 300);
-				DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
-				if (myEngine->KeyHit(Key_Space))
-				{
-					STATE = LEVEL;
-					keyFound = false;
-					score = 0;
-					pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
-					pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
-					pThief->Scale(5);
-					for (int i = 0; i < doors.size(); i++) {
-						if (doors[i].state == DOOR_OPEN)
-							doors[i].state = DOOR_CLOSING;
-					}
-					levels.ReloadKey(key);
+				if (lost) {
+					DisplayBigMessage->Draw("You Lost!", 300, 300);
+					DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
 				}
+				else
+				{
+					DisplayMenu->Draw("Hit Space to Start!", 420, 450);
+				}
+
+				if (myEngine->KeyHit(Key_Space))reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
+
 				break;
 			}
 			break;
@@ -520,7 +538,7 @@ void main()
 			}
 		}
 
-		gameSettings(myEngine, pause,DisplayBigMessage);
+		gameSettings(myEngine, pause,DisplayBigMessage,ControlsMessage);
 
 	}
 
