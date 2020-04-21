@@ -11,6 +11,7 @@ CLevel::CLevel(I3DEngine* myEngine)
 	m_MPillars = myEngine->LoadMesh("Pillar.x");
 	m_MPedestal = myEngine->LoadMesh("Pedestal.x");
 	m_MKey = myEngine->LoadMesh("Key.x");
+	m_KeyData = "";
 	m_PlayerSPos = Vector(0, 0, 0);
 	m_Min = Vector(INT_MAX, 0, INT_MAX);
 	m_Min = Vector(INT_MIN, 0, INT_MIN);
@@ -74,10 +75,8 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		}
 		Pillars.pop_back();
 	}
-	if (Key != NULL) {
-		m_MKey->RemoveModel(Key);
-		Key = NULL;
-	}
+	RemoveKey(Key);
+	m_KeyData = "";
 	m_PlayerSPos.x = 0;
 	m_PlayerSPos.y = 0;
 	m_PlayerSPos.z = 0;
@@ -257,6 +256,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 							m_MKey->RemoveModel(Key);
 						Key = CreateModel(m_MKey, input, false);
 						Key->RotateX(90);
+						m_KeyData = input;
 					}
 				}
 				else {//if it starts with a character then change
@@ -291,6 +291,13 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 	}
 	else {
 		return false;
+	}
+}
+
+void CLevel::ReloadKey(IModel*& Key) {
+	if (Key == NULL) {
+		Key = CreateModel(m_MKey, m_KeyData, false);
+		Key->RotateX(90);
 	}
 }
 
@@ -348,6 +355,13 @@ bool CLevel::IncreaseLevelIt() {
 }
 
 void CLevel::RemoveKey(IModel*& Key) {
-	m_MKey->RemoveModel(Key);
-	Key = NULL;
+	if (Key != NULL) {
+		m_MKey->RemoveModel(Key);
+		Key = NULL;
+	}
+}
+
+void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key) {
+	m_LevelIt = 0;
+	NextLevel(Walls, Doors, Pillars, Key);
 }
