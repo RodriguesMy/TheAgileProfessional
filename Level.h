@@ -1,10 +1,8 @@
 #pragma once
 
-#include <TL-Engine.h>
-#include <vector>
 #include <fstream>
-using namespace std;
-using namespace tle;
+#include "Definitions.h"
+#include "CGuard.h"
 
 enum EPillarType {
 	typePillar,
@@ -23,21 +21,6 @@ DOOR_OPENING,
 DOOR_CLOSING,
 DOOR_CLOSED,
 DOOR_OPEN
-};
-struct Vector{
-	float x;
-	float y;
-	float z;
-	Vector() {
-		x = 0;
-		y = 0;
-		z = 0;
-	}
-	Vector(float X, float Y, float Z) {
-		this->x = X;
-		this->y = Y;
-		this->z = Z;
-	}
 };
 struct DoorStruct {
 	IModel* model;
@@ -80,19 +63,19 @@ private:
 	Vector m_PlayerSPos;
 	Vector m_Min; // holds the coordinates of the bottom left corner of the level(with y being 0)
 	Vector m_Max; // holds the coordinates of the top right corner of the level(with y being 0)
-	vector<vector<int>> Grid; // A top side view of the entire level scaled so each element of the 2d dynamic array repressents 5 units
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	bool NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
+	void NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard);
 	void RemoveKey(IModel*& Key);
 	int GetLevelNumber(){return m_LevelIt;}
+	Vector GetMin() { return m_Min; }
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 	void ReloadKey(IModel*& Key);
-	void Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key);
+	void Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key, CGuard& Guard);
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh, string data, bool Check, float* scale = 0, float* rot = 0);//The check parameter is to alter the max and min or not
-	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
-	void CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars);
+	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard);
+	void CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, CGuard& Guard);
 };

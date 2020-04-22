@@ -2,7 +2,8 @@
 
 #include <TL-Engine.h>	// TL-Engine include file and namespace
 #include <iostream>
-#include"Level.h"
+#include <vector>
+#include <random>
 using namespace tle;
 
 //GAME STATES
@@ -29,4 +30,20 @@ struct SCameraVariables {
 	float maxCameraDistance = -1.5;
 	float minCameraDistance = 2;
 	float currentCameraDistance = -1.5;
+};
+
+struct Vector {
+	float x;
+	float y;
+	float z;
+	Vector() {
+		x = 0;
+		y = 0;
+		z = 0;
+	}
+	Vector(float X, float Y, float Z) {
+		this->x = X;
+		this->y = Y;
+		this->z = Z;
+	}
 };
