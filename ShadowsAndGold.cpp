@@ -313,12 +313,12 @@ void reloadLevel(I3DEngine* myEngine,int &STATE,bool &keyFound,int &score,IModel
 		}
 		levels.ReloadKey(key);
 }
-void restartGame(int& STATE, bool& keyFound, int& score, CLevel& levels, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, vector<WallStruct>& walls, IModel*& key, IModel*& pThief, CGuard& guard)
+void restartGame(int& STATE, bool& keyFound, int& score, CLevel& levels, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, vector<WallStruct>& walls, IModel*& key, IModel*& pThief, CGuard& guard, vector<IModel*>& coins)
 {
 	STATE = LEVEL;
 	keyFound = false;
 	score = 0;
-	levels.Restart(walls, doors, pillars, key, guard);
+	levels.Restart(walls, doors, pillars, key, guard,coins);
 	pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
 	pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
 	pThief->Scale(5);
@@ -528,7 +528,7 @@ void main()
 				}
 				if (myEngine->KeyHit(Key_Space))
 				{
-					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief, guard);
+					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief, guard, coins);
 				}
 			}break;
 			case DEBUG_MODE:

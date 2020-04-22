@@ -78,7 +78,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		Pillars.pop_back();
 	}
 	while (!Coins.empty()) {
-		m_MCoin->RemoveModel(Coins.back().model);
+		m_MCoin->RemoveModel(Coins.back());
 		Coins.pop_back();
 	}
 	RemoveKey(Key);
@@ -97,7 +97,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
-			ClearLevel(Walls, Doors, Pillars, Key, Guard);
+			ClearLevel(Walls, Doors, Pillars, Key, Guard,Coins);
 			enum EModelType {
 				wall,
 				door,
@@ -118,6 +118,9 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 				else if (!isalpha(input[0])) { // if it doesnt start with a letter it must be the information for the model(x,y,z,scale,rot)
 					float scale;
 					float rotation;
+					float x;
+					float z;
+					int pos;
 					switch (Current) {
 					case wall:
 						Walls.push_back(*(new WallStruct));
@@ -241,11 +244,11 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						m_KeyData = input;
 						break;
 					case guard:
-						int pos = input.find(",");
-						int x = stof(input.substr(0, pos));
+						pos = input.find(",");
+						x = stof(input.substr(0, pos));
 						input = input.substr(pos + 1);
 						pos = input.find(",");
-						int z = stof(input.substr(0, pos));
+						z = stof(input.substr(0, pos));
 						Guard.CreatePoint(Vector(x, 0, z));
 						break;
 					case coin:
@@ -363,7 +366,7 @@ void CLevel::RemoveCoin(IModel*& Coin) {
 	}
 }
 
-void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key, CGuard& Guard) {
+void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key, CGuard& Guard, vector<IModel*>& Coins) {
 	m_LevelIt = -1;
-	NextLevel(Walls, Doors, Pillars, Key, Guard);
+	NextLevel(Walls, Doors, Pillars, Key, Guard,Coins);
 }
