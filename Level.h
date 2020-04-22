@@ -14,8 +14,7 @@ enum EPillarType {
 enum EDoortype {
 	simple,
 	starting,
-	ending,
-	exiting
+	ending
 };
 
 enum EDoorState
@@ -87,6 +86,7 @@ public:
 	~CLevel();
 	bool NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key);
 	void RemoveKey(IModel*& Key);
+	int GetLevelNumber(){return m_LevelIt;}
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
 	void ReloadKey(IModel*& Key);
 	void Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key);
