@@ -88,7 +88,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	m_Min.z = INT_MAX;
 }
 
-bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard) {
+void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
@@ -268,14 +268,12 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 			}
 			CreateGrid(Walls, Pillars, Guard);
 			Guard.SetPosition();
-			return true;
 		}
 		else {
 			cout << "File not found" << endl;
 		}
 	}
 	else {
-		return false;
 	}
 }
 

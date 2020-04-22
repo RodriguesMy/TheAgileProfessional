@@ -208,20 +208,19 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 			if (doorType == ending && keyFound && levels.GetLevelNumber()<3) {
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
-				{					
-					if (levels.NextLevel(walls, doors, pillars, key, guard)) {
-						keyFound = false;
-						Vector Pos = levels.GetPlayerSPos();
-						pThief->SetPosition(Pos.x, Pos.y, Pos.z + 40);
-						pThief->LookAt(Pos.x, Pos.y, Pos.z + 41);
-						pThief->Scale(5);
-						ThiefState = WAITING;
-						
-						for (int i = 0; i < doors.size(); i++) {
-							if (doors[i].type == starting) {
-								doors[i].state = DOOR_OPENING;
-								break;
-							}
+				{
+					levels.NextLevel(walls, doors, pillars, key, guard);
+					keyFound = false;
+					Vector Pos = levels.GetPlayerSPos();
+					pThief->SetPosition(Pos.x, Pos.y, Pos.z + 40);
+					pThief->LookAt(Pos.x, Pos.y, Pos.z + 41);
+					pThief->Scale(5);
+					ThiefState = WAITING;
+
+					for (int i = 0; i < doors.size(); i++) {
+						if (doors[i].type == starting) {
+							doors[i].state = DOOR_OPENING;
+							break;
 						}
 					}
 				}
@@ -491,6 +490,7 @@ void main()
 				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
+				guard.Update(dt, levels, myEngine);
 
 				if (myEngine->KeyHit(Key_R))STATE = RELOAD_CURRENT_LEVEL;
 				if (myEngine->KeyHit(Key_T))STATE = END;
@@ -548,12 +548,10 @@ void main()
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard);//5			
-				guard.Update(dt, levels,myEngine);
 				//Transition
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
-					if (!levels.NextLevel(walls, doors, pillars, key, guard))
-						cout << "no more levels" << endl;
+					levels.NextLevel(walls, doors, pillars, key, guard);
 				break;
 
 			}

@@ -66,7 +66,7 @@ private:
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	bool NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard);
+	void NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard);
 	void RemoveKey(IModel*& Key);
 	int GetLevelNumber(){return m_LevelIt;}
 	Vector GetMin() { return m_Min; }
