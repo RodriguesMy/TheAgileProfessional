@@ -254,6 +254,9 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case coin:
 						Coins.push_back(CreateModel(m_MCoin, input, false));
 						Coins.back()->RotateX(90);
+						Coins.back()->RotateZ(180);
+						Coins.back()->SetY(7);
+						Coins.back()->Scale(0.5);
 						break;
 					}
 				}

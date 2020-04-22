@@ -3,7 +3,9 @@
 bool CollisionSTS(Vector V1, Vector V2, float radius) {
 	return radius > sqrt(pow((V1.x - V2.x), 2) + pow((V1.y - V2.y), 2) + pow((V1.z - V2.z), 2));
 }
-
+bool CollisionSTS(IModel* model1, IModel* model2, float radius) {
+	return radius > sqrt(pow((model1->GetX() - model2->GetX()), 2) + pow((model1->GetY() - model2->GetY()), 2) + pow((model1->GetZ() - model2->GetZ()), 2));
+}
 bool SphereToBoxCD(IModel* model1, IModel* model2, Vector areaLength)
 {
 	return ((model1->GetX() < model2->GetX() + areaLength.x && model1->GetX() > model2->GetX() - areaLength.x &&
