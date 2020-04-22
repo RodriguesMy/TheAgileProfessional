@@ -209,7 +209,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
-					levels.NextLevel(walls, doors, pillars, key, guard,coins);
+					levels.NextLevel(walls, doors, pillars, key, guard,Coins);
 					keyFound = false;
 					Vector Pos = levels.GetPlayerSPos();
 					pThief->SetPosition(Pos.x, Pos.y, Pos.z + 40);
@@ -284,7 +284,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 }
 void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins) {
 	for (int i = 0; i < door.size(); i++) {
-		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard);
+		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,Coins);
 	}
 }
 void SphereToSphereCD(IModel* pThief, float R1, float R2, CLevel level, bool& keyFound, IModel*& key) {
