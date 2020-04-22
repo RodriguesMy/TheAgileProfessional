@@ -509,7 +509,7 @@ void main()
 			{
 			case MENU:
 			{	
-				myEngine->StopMouseCapture(); //1
+				myEngine->StopMouseCapture(); 
 
 				if (myEngine->KeyHit(Key_Space)) { 
 					DisplayBigMessage->Draw("LOADING . . .", 350, 300);
@@ -519,8 +519,9 @@ void main()
 				{
 				DisplayBigMessage->Draw("Shadows & Gold", 300, 300);
 				DisplayMenu->Draw("Hit Space To Start!", 420, 450);
+				InteractionMessage->Draw("Hit 'D' for DEBUG MODE", 1000, 0);
 				InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
-				}//3
+				}
 
 				if (myEngine->KeyHit(Key_D)) { STATE = DEBUG_MODE; }
 			break;
@@ -528,13 +529,13 @@ void main()
 			case LEVEL:
 			{
 				//Update
-				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);//5			
-				KeyCollision(pThief, R1, R2, levels, keyFound, key);//6			
-				if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
-				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);//8			
-				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);//9			
-				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);	//10					
+				myEngine->StartMouseCapture();// Disables mouse moving and centers it in the center of the screen 			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);		
+				KeyCollision(pThief, R1, R2, levels, keyFound, key);		
+				if (!keyFound)key->RotateY(keyMovementSpeed * dt);
+				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);			
+				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);			
+				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);					
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 				guard.Update(dt, levels, myEngine);
@@ -556,8 +557,7 @@ void main()
 
 			}break;
 			case RELOAD_CURRENT_LEVEL:
-			{
-				
+			{		
 				if (lost) {
 					DisplayBigMessage->Draw("You Lost!", 300, 300);
 					DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
@@ -591,7 +591,6 @@ void main()
 			}break;
 			case DEBUG_MODE:
 			{
-				//Update
 				/*DEBUG MODE:
 				THIEF COLLISION WITH WALLS DISABLED
 				THIEF COLLISION WITH PILLARS DISABLED
@@ -599,15 +598,17 @@ void main()
 				GUARDS DISABLED
 				PRESS Q TO LOAD NEXT LEVEL ENABLED
 				*/
+				InteractionMessage->Draw("Hit 'Q' to load next level", 900, 0);
+
 				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-				KeyCollision(pThief, R1, R2, levels, keyFound, key);//6			
-				if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
-				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);//8			
-				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);//9			
-				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
+				KeyCollision(pThief, R1, R2, levels, keyFound, key);		
+				if (!keyFound)key->RotateY(keyMovementSpeed * dt); 
+				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);			
+				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);			
+				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);//5			
-				//Transition
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);			
+	
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
 					levels.NextLevel(walls, doors, pillars, key, guard,coins);
