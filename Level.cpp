@@ -253,6 +253,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					case coin:
 						Coins.push_back(CreateModel(m_MCoin, input, false));
+						Coins.back()->RotateX(90);
 						break;
 					}
 				}
