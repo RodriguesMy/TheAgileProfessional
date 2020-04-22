@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 
+
 CLevel::CLevel(I3DEngine* myEngine)
 {
 	m_LevelIt = -1;
@@ -57,7 +58,7 @@ IModel* CLevel::CreateModel(IMesh* mesh, string data, bool Check, float* scale, 
 	return output;
 }
 
-void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
+void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back().model);
 		Walls.pop_back();
@@ -76,6 +77,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		Pillars.pop_back();
 	}
 	RemoveKey(Key);
+	Guard.ClearPoints();
 	m_KeyData = "";
 	m_PlayerSPos.x = 0;
 	m_PlayerSPos.y = 0;
@@ -86,11 +88,11 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	m_Min.z = INT_MAX;
 }
 
-bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key) {
+bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
-			ClearLevel(Walls, Doors, Pillars,Key);
+			ClearLevel(Walls, Doors, Pillars, Key, Guard);
 			enum EModelType {
 				wall,
 				door,
@@ -99,7 +101,7 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 				pillar,
 				pedestal,
 				key,
-				exit
+				guard
 			};
 			EModelType Current=wall;
 			string input;
@@ -231,6 +233,14 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Key = CreateModel(m_MKey, input, false);
 						Key->RotateX(90);
 						m_KeyData = input;
+						break;
+					case guard:
+						int pos = input.find(",");
+						int x = stof(input.substr(0, pos));
+						input = input.substr(pos + 1);
+						pos = input.find(",");
+						int z = stof(input.substr(0, pos));
+						Guard.CreatePoint(Vector(x, 0, z));
 					}
 				}
 				else {//if it starts with a character then change
@@ -249,14 +259,15 @@ bool CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Current = endingdoor;
 					else if (input == "startingdoor")
 						Current = startingdoor;
-					else if (input == "exit")
-						Current = exit;
+					else if (input == "guard")
+						Current = guard;
 					else if (input == "key")
 						Current = key;
 					
 				}
 			}
-			CreateGrid(Walls, Pillars);
+			CreateGrid(Walls, Pillars, Guard);
+			Guard.SetPosition();
 			return true;
 		}
 		else {
@@ -275,7 +286,8 @@ void CLevel::ReloadKey(IModel*& Key) {
 	}
 }
 
-void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars) {
+void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, CGuard& Guard) {
+	vector<vector<int>> Grid;
 	int heightofgrid = (m_Max.z - m_Min.z) / 5;
 	int widthofgrid = (m_Max.x - m_Min.x) / 5;
 	for (int i = 0; i <= heightofgrid; i++) {
@@ -317,6 +329,7 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars) 
 		}
 		cout << endl;
 	}
+	Guard.SetGrid(Grid);
 }
 
 
@@ -335,7 +348,7 @@ void CLevel::RemoveKey(IModel*& Key) {
 	}
 }
 
-void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key) {
+void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key, CGuard& Guard) {
 	m_LevelIt = -1;
-	NextLevel(Walls, Doors, Pillars, Key);
+	NextLevel(Walls, Doors, Pillars, Key, Guard);
 }
