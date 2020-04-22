@@ -344,7 +344,6 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, 
 	Guard.SetGrid(Grid);
 }
 
-
 bool CLevel::IncreaseLevelIt() {
 	m_LevelIt++;
 	if (m_LevelIt < m_Levels.size())
