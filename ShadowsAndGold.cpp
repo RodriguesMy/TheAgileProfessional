@@ -505,7 +505,7 @@ void main()
 				}
 				else
 				{
-					DisplayMenu->Draw("Hit Space to Restart Level!", 420, 450);
+					DisplayMenu->Draw("Hit Space to Restart Level!",350, 450);
 				}
 
 				if (myEngine->KeyHit(Key_Space))reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
@@ -522,7 +522,7 @@ void main()
 				}
 				else
 				{
-					DisplayMenu->Draw("Hit Space to Restart Game!", 420, 600);
+					DisplayMenu->Draw("Hit Space to Restart Game!", 350, 600);
 
 				}
 				if (myEngine->KeyHit(Key_Space))
