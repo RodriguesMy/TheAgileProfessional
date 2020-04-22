@@ -12,6 +12,7 @@ using namespace tle;
 #define RELOAD_CURRENT_LEVEL 3
 #define DEBUG_MODE 4
 #define END 5
+#define THIEF_DIES 6
 
 //Thief States
 #define WAITING 0

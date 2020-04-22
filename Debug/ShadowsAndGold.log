@@ -12,7 +12,5 @@ C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(319,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(337,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\rodri\source\repos\RodriguesMy\TheAgileProfessional\ShadowsAndGold.cpp(378,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  CollisionDetection.cpp
-  Generating Code...
   ShadowsAndGold.vcxproj -> C:\Users\rodri\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

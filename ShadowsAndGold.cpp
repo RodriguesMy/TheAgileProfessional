@@ -40,7 +40,7 @@ void ThiefToGuardCD(IModel* model1, IModel* model2,int &STATE,bool &lost) {
 	if (CollisionSTS(model1, model2, 3))
 	{
 		lost = true;
-		STATE = RELOAD_CURRENT_LEVEL;	
+		STATE = THIEF_DIES;	
 	}
 
 }
@@ -417,6 +417,10 @@ void main()
 	int ThiefState = NORMAL;
 	ICamera* camera = myEngine->CreateCamera(kManual,0,2,-2);
 	camera->RotateX(25);
+	//when thief dies variables
+	float currentRotation = 0;
+	float maxRotation = 80;
+	float rotationSpeed = 100;
 
 	//IFONT Variables
 	IFont* DisplayBigMessage = myEngine->LoadFont("Cambria", 120U);
@@ -543,6 +547,14 @@ void main()
 
 				break;
 			}
+			case THIEF_DIES:
+			{
+				pThief->RotateLocalZ(rotationSpeed*dt);
+				currentRotation += rotationSpeed * dt;
+				if (currentRotation > maxRotation)
+					STATE = RELOAD_CURRENT_LEVEL;
+
+			}break;
 			case RELOAD_CURRENT_LEVEL:
 			{
 				
