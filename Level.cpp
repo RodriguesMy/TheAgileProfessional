@@ -12,6 +12,7 @@ CLevel::CLevel(I3DEngine* myEngine)
 	m_MPillars = myEngine->LoadMesh("Pillar.x");
 	m_MPedestal = myEngine->LoadMesh("Pedestal.x");
 	m_MKey = myEngine->LoadMesh("Key.x");
+	m_MCoin = myEngine->LoadMesh("Coin.x");
 	m_KeyData = "";
 	m_PlayerSPos = Vector(0, 0, 0);
 	m_Min = Vector(INT_MAX, 0, INT_MAX);
@@ -58,7 +59,7 @@ IModel* CLevel::CreateModel(IMesh* mesh, string data, bool Check, float* scale, 
 	return output;
 }
 
-void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard) {
+void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard, vector<IModel*>& Coins) {
 	while(!Walls.empty()){
 		m_MWall->RemoveModel(Walls.back().model);
 		Walls.pop_back();
@@ -76,6 +77,10 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		}
 		Pillars.pop_back();
 	}
+	while (!Coins.empty()) {
+		m_MCoin->RemoveModel(Coins.back().model);
+		Coins.pop_back();
+	}
 	RemoveKey(Key);
 	Guard.ClearPoints();
 	m_KeyData = "";
@@ -88,7 +93,7 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 	m_Min.z = INT_MAX;
 }
 
-void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard) {
+void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard, vector<IModel*>& Coins) {
 	if (IncreaseLevelIt()) {
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
 		if (File.is_open()) {
@@ -101,7 +106,8 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 				pillar,
 				pedestal,
 				key,
-				guard
+				guard,
+				coin
 			};
 			EModelType Current=wall;
 			string input;
@@ -241,6 +247,10 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						pos = input.find(",");
 						int z = stof(input.substr(0, pos));
 						Guard.CreatePoint(Vector(x, 0, z));
+						break;
+					case coin:
+						Coins.push_back(CreateModel(m_MCoin, input, false));
+						break;
 					}
 				}
 				else {//if it starts with a character then change
@@ -263,7 +273,8 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Current = guard;
 					else if (input == "key")
 						Current = key;
-					
+					else if (input == "coin")
+						Current = coin;
 				}
 			}
 			CreateGrid(Walls, Pillars, Guard);
@@ -343,6 +354,12 @@ void CLevel::RemoveKey(IModel*& Key) {
 	if (Key != NULL) {
 		m_MKey->RemoveModel(Key);
 		Key = NULL;
+	}
+}
+
+void CLevel::RemoveCoin(IModel*& Coin) {
+	if(Coin != NULL) {
+		m_MCoin->RemoveModel(Coin);
 	}
 }
 

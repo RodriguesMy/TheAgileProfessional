@@ -59,6 +59,7 @@ private:
 	IMesh* m_MPillars;
 	IMesh* m_MPedestal;
 	IMesh* m_MKey;
+	IMesh* m_MCoin;
 	string m_KeyData; //used to recreate the key when you want to reload the key(meaning it was deleted and we want it back)
 	Vector m_PlayerSPos;
 	Vector m_Min; // holds the coordinates of the bottom left corner of the level(with y being 0)
@@ -66,8 +67,9 @@ private:
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
-	void NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard);
+	void NextLevel(vector<WallStruct>& Walls,vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard, vector<IModel*>& Coins);
 	void RemoveKey(IModel*& Key);
+	void RemoveCoin(IModel*& Coin);
 	int GetLevelNumber(){return m_LevelIt;}
 	Vector GetMin() { return m_Min; }
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
@@ -76,6 +78,6 @@ public:
 private:
 	bool IncreaseLevelIt();
 	IModel* CreateModel(IMesh* mesh, string data, bool Check, float* scale = 0, float* rot = 0);//The check parameter is to alter the max and min or not
-	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard);
+	void ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard, vector<IModel*>& Coins);
 	void CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, CGuard& Guard);
 };

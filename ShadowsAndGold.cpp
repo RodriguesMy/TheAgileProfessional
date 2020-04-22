@@ -166,7 +166,7 @@ void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessa
 	}
 	
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -209,7 +209,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
-					levels.NextLevel(walls, doors, pillars, key, guard);
+					levels.NextLevel(walls, doors, pillars, key, guard,coins);
 					keyFound = false;
 					Vector Pos = levels.GetPlayerSPos();
 					pThief->SetPosition(Pos.x, Pos.y, Pos.z + 40);
@@ -282,7 +282,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins) {
 	for (int i = 0; i < door.size(); i++) {
 		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard);
 	}
@@ -367,11 +367,12 @@ void main()
 	vector<WallStruct> walls;
 	vector<DoorStruct> doors;
 	vector<PillarStruct> pillars;
+	vector<IModel*> coins;
 	
 	IModel* key=0;
 
 	int STATE = MENU;
-	levels.NextLevel(walls, doors,pillars,key,guard);
+	levels.NextLevel(walls, doors,pillars,key,guard,coins);
 
 	//IMPORTANT VARIABLES
 	float dt=myEngine->Timer();
@@ -482,7 +483,7 @@ void main()
 			{
 				//Update
 				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard);//5			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);//5			
 				SphereToSphereCD(pThief, R1, R2, levels, keyFound, key);//6			
 				if (!keyFound)key->RotateY(keyMovementSpeed * dt); //7
 				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);//8			
@@ -547,11 +548,11 @@ void main()
 				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);//9			
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard);//5			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);//5			
 				//Transition
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
-					levels.NextLevel(walls, doors, pillars, key, guard);
+					levels.NextLevel(walls, doors, pillars, key, guard,coins);
 				break;
 
 			}
