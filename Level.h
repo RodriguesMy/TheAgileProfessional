@@ -64,6 +64,7 @@ private:
 	Vector m_PlayerSPos;
 	Vector m_Min; // holds the coordinates of the bottom left corner of the level(with y being 0)
 	Vector m_Max; // holds the coordinates of the top right corner of the level(with y being 0)
+	int m_CoinCount;
 public:
 	CLevel(I3DEngine* myEngine);
 	~CLevel();
@@ -73,6 +74,7 @@ public:
 	int GetLevelNumber(){return m_LevelIt;}
 	Vector GetMin() { return m_Min; }
 	Vector GetPlayerSPos(){return m_PlayerSPos;}
+	int GetNumberOfCoins() { return m_CoinCount; }
 	void ReloadKey(IModel*& Key);
 	void Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key, CGuard& Guard, vector<IModel*>& Coins);
 private:
