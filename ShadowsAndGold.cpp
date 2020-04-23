@@ -562,8 +562,12 @@ void main()
 					DisplayBigMessage->Draw("You Lost!", 300, 300);
 					DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
 				}
-				else 
-					DisplayMenu->Draw("Hit Space to Restart Level!",350, 450);
+				else
+				{
+					DisplayMenu->Draw("Hit Space to Restart Level!", 350, 450);
+					DisplayMenu->Draw("Hit 'B' to go back!", 450, 600);
+				}
+
 
 				scoreSinceLastCheckpoint = score;
 				if (myEngine->KeyHit(Key_Space))
@@ -571,7 +575,7 @@ void main()
 					reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
 					lost = false;
 				}
-
+				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
 				break;
 			}
 			break;
@@ -583,10 +587,16 @@ void main()
 					DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
 				}
 				else
+				{
 					DisplayMenu->Draw("Hit Space to Restart Game!", 350, 600);
+					DisplayMenu->Draw("Hit 'B' to go back!", 450, 600);
+				}
 
 				if (myEngine->KeyHit(Key_Space))
 					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief, guard, coins);
+
+				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
+
 
 			}break;
 			case DEBUG_MODE:
