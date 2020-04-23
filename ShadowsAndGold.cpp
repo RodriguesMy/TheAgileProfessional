@@ -405,7 +405,7 @@ void main()
 	
 	IModel* key=0;
 
-	int STATE = MENU;
+	int STATE = DEBUG_MODE;
 	levels.NextLevel(walls, doors,pillars,key,guard,coins);
 
 	//IMPORTANT VARIABLES
@@ -534,7 +534,6 @@ void main()
 			}
 			case LEVEL:
 			{
-				cout << coinsMissed << endl;
 				//Update			
 				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins,coinsMissed);		
 				KeyCollision(pThief, R1, R2, levels, keyFound, key);		
