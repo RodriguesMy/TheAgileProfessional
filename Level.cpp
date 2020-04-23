@@ -334,12 +334,6 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, 
 			}
 		}
 	}
-	for (int i = 0; i < Grid.size(); i++) {
-		for (int j = 0; j < Grid[i].size(); j++) {
-			cout << Grid[i][j] << " ";
-		}
-		cout << endl;
-	}
 	Guard.SetGrid(Grid);
 }
 

@@ -509,11 +509,10 @@ void main()
 			{
 			case MENU:
 			{	
-				myEngine->StopMouseCapture(); 
-
-				if (myEngine->KeyHit(Key_Space)) { 
+				if (myEngine->KeyHit(Key_Space)) {
 					DisplayBigMessage->Draw("LOADING . . .", 350, 300);
-					STATE = LEVEL; 
+					STATE = LEVEL;
+					myEngine->StartMouseCapture();// Disables mouse moving and centers it in the center of the screen 
 				}
 				else
 				{
@@ -523,13 +522,15 @@ void main()
 				InteractionMessage->Draw("Find the Keys and Get all the Gold!", 500, 600);
 				}
 
-				if (myEngine->KeyHit(Key_D)) { STATE = DEBUG_MODE; }
+				if (myEngine->KeyHit(Key_D)) { 
+					STATE = DEBUG_MODE;
+					myEngine->StartMouseCapture();// Disables mouse moving and centers it in the center of the screen 
+				}
 			break;
 			}
 			case LEVEL:
 			{
-				//Update
-				myEngine->StartMouseCapture();// Disables mouse moving and centers it in the center of the screen 			
+				//Update			
 				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);		
 				KeyCollision(pThief, R1, R2, levels, keyFound, key);		
 				if (!keyFound)key->RotateY(keyMovementSpeed * dt);
@@ -538,12 +539,15 @@ void main()
 				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);					
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				guard.Update(dt, levels, myEngine);
 				updateCoins(pThief, R1, R3, levels, coins,score);				
 				updateScore(Score, score);
 				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
+				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
 
-				if (myEngine->KeyHit(Key_R))STATE = RELOAD_CURRENT_LEVEL;
+				if (myEngine->KeyHit(Key_R)) {
+					STATE = RELOAD_CURRENT_LEVEL;
+					scoreSinceLastCheckpoint = score;
+				}
 				if (myEngine->KeyHit(Key_T))STATE = END;
 
 				break;
@@ -552,8 +556,10 @@ void main()
 			{
 				pThief->RotateLocalZ(rotationSpeed*dt);
 				currentRotation += rotationSpeed * dt;
-				if (currentRotation > maxRotation)
+				if (currentRotation > maxRotation) {
 					STATE = RELOAD_CURRENT_LEVEL;
+					scoreSinceLastCheckpoint = score;
+				}
 
 			}break;
 			case RELOAD_CURRENT_LEVEL:
@@ -562,20 +568,14 @@ void main()
 					DisplayBigMessage->Draw("You Lost!", 300, 300);
 					DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
 				}
-				else
-				{
-					DisplayMenu->Draw("Hit Space to Restart Level!", 350, 450);
-					DisplayMenu->Draw("Hit 'B' to go back!", 450, 600);
-				}
-
-
-				scoreSinceLastCheckpoint = score;
+				else 
+					DisplayMenu->Draw("Hit Space to Restart Level!",350, 450);
 				if (myEngine->KeyHit(Key_Space))
 				{
 					reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
 					lost = false;
 				}
-				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
+
 				break;
 			}
 			break;
@@ -587,16 +587,10 @@ void main()
 					DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
 				}
 				else
-				{
 					DisplayMenu->Draw("Hit Space to Restart Game!", 350, 600);
-					DisplayMenu->Draw("Hit 'B' to go back!", 450, 600);
-				}
 
 				if (myEngine->KeyHit(Key_Space))
 					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief, guard, coins);
-
-				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
-
 
 			}break;
 			case DEBUG_MODE:
@@ -608,9 +602,7 @@ void main()
 				GUARDS DISABLED
 				PRESS Q TO LOAD NEXT LEVEL ENABLED
 				*/
-				InteractionMessage->Draw("Hit 'Q' to load next level", 900, 0);
-
-				myEngine->StartMouseCapture(); //4 // Disables mouse moving and centers it in the center of the screen 			
+				InteractionMessage->Draw("Hit 'Q' to load next level", 900, 0);	
 				KeyCollision(pThief, R1, R2, levels, keyFound, key);		
 				if (!keyFound)key->RotateY(keyMovementSpeed * dt); 
 				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);			
