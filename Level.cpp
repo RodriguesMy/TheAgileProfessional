@@ -17,6 +17,7 @@ CLevel::CLevel(I3DEngine* myEngine)
 	m_PlayerSPos = Vector(0, 0, 0);
 	m_Min = Vector(INT_MAX, 0, INT_MAX);
 	m_Min = Vector(INT_MIN, 0, INT_MIN);
+	m_CoinCount = 0;
 }
 
 CLevel::~CLevel()
@@ -254,6 +255,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					case coin:
 						Coins.push_back(CreateModel(m_MCoin, input, false));
 						Coins.back()->RotateX(90);
+						m_CoinCount++;
 						break;
 					}
 				}
@@ -360,5 +362,6 @@ void CLevel::RemoveCoin(IModel*& Coin) {
 
 void CLevel::Restart(vector<WallStruct>& Walls, vector<DoorStruct>& Doors, vector<PillarStruct>& Pillars, IModel*& Key, CGuard& Guard, vector<IModel*>& Coins) {
 	m_LevelIt = -1;
+	m_CoinCount = 0;
 	NextLevel(Walls, Doors, Pillars, Key, Guard,Coins);
 }
