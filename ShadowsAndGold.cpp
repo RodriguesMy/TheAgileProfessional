@@ -357,6 +357,33 @@ void updateScore(IFont* Score,int &score) {
 	StringScore << score;
 	Score->Draw("Score: " + StringScore.str(), 1150, 0);
 }
+void calculateRating(int score,CLevel levels,string &finalRating)
+{
+	int percentage = 100 * (score / 10) / levels.GetNumberOfCoins();
+	if (percentage < 10) {
+		finalRating = "F";
+	}
+	else if (percentage < 40)
+	{
+		finalRating = "D";
+	}
+	else if (percentage < 60)
+	{
+		finalRating = "C";
+	}
+	else if (percentage < 70)
+	{
+		finalRating = "C";
+	}
+	else if (percentage < 80)
+	{
+		finalRating = "B";
+	}
+	else if (percentage < 90)
+	{
+		finalRating = "A";
+	}
+}
 void gameSettings(I3DEngine* myEngine, bool& pause, IFont* DisplayBigMessage, IFont* ControlsMessage)
 {
 	//exit
@@ -458,7 +485,6 @@ void main()
 
 	//Scoring variables
 	int score = 0;
-	string ratings[] = { "A+","A","A-","B+","B","B-","C+","C","C-","D+","D","D-","F" };
 	int coinsMissed=0; //sums up together all coins that are missed when the player goes to the next level
 	string finalRating = "A+";
 
@@ -590,11 +616,16 @@ void main()
 			{
 				if (finished)
 				{
+					//scoring
 					stringstream StringScore;
 					StringScore << score;
 
+					//coins missed
 					stringstream StringCoinsMissed;
 					StringCoinsMissed << coinsMissed;
+
+					//rating
+					calculateRating(score, levels, finalRating);
 
 					DisplayBigMessage->Draw("Congratulations you WON!", 100, 300);
 					InteractionMessage->Draw("Score:"+ StringScore.str()+"\nRating : "+finalRating+"\nCoins Missed:"+ StringCoinsMissed.str(),100, 500);
