@@ -175,7 +175,7 @@ void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessa
 	}
 	
 }
-void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins)
+void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& currentLimit, IFont* InteractionMessage, I3DEngine* myEngine, float doorMovementSpeed, bool& keyFound, EDoortype doorType, IModel* pThief, Vector areaLength, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins,int &coinsMissed)
 {
 	/*MAIN SWITCH STATEMENT FOR DOORS
 	-Each door has its own state
@@ -218,6 +218,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 				InteractionMessage->Draw("Press 'E' to go to the next level.", 565, 550);
 				if (myEngine->KeyHit(Key_E))
 				{
+					coinsMissed += Coins.size();
 					levels.NextLevel(walls, doors, pillars, key, guard,Coins);
 					keyFound = false;
 					Vector Pos = levels.GetPlayerSPos();
@@ -238,7 +239,8 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 			{
 				InteractionMessage->Draw("Press 'E' to EXIT", 565, 550);
 				if (myEngine->KeyHit(Key_E))
-				{				
+				{		
+					coinsMissed += Coins.size();
 					finished = true;
 					STATE = END;
 				}
@@ -291,9 +293,9 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}break;
 	}
 }
-void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins) {
+void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins,int &coinsMissed) {
 	for (int i = 0; i < door.size(); i++) {
-		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,Coins);
+		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,Coins,coinsMissed);
 	}
 }
 void KeyCollision(IModel* pThief, float R1, float R2, CLevel level, bool& keyFound, IModel*& key) {
@@ -403,7 +405,7 @@ void main()
 	
 	IModel* key=0;
 
-	int STATE = DEBUG_MODE;
+	int STATE = MENU;
 	levels.NextLevel(walls, doors,pillars,key,guard,coins);
 
 	//IMPORTANT VARIABLES
@@ -454,9 +456,11 @@ void main()
 	float R3 = 3; //coin
 	float keyMovementSpeed = 150;
 
-	//Other Variables
+	//Scoring variables
 	int score = 0;
-	int scoreSinceLastCheckpoint=0; //in case player dies 
+	string ratings[] = { "A+","A","A-","B+","B","B-","C+","C","C-","D+","D","D-","F" };
+	int coinsMissed=0; //sums up together all coins that are missed when the player goes to the next level
+	string finalRating = "A+";
 
 	//Game varaibles
 	bool pause = false;
@@ -530,8 +534,9 @@ void main()
 			}
 			case LEVEL:
 			{
+				cout << coinsMissed << endl;
 				//Update			
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);		
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins,coinsMissed);		
 				KeyCollision(pThief, R1, R2, levels, keyFound, key);		
 				if (!keyFound)key->RotateY(keyMovementSpeed * dt);
 				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);			
@@ -542,11 +547,10 @@ void main()
 				updateCoins(pThief, R1, R3, levels, coins,score);				
 				updateScore(Score, score);
 				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
-				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
+				//guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
 
 				if (myEngine->KeyHit(Key_R)) {
 					STATE = RELOAD_CURRENT_LEVEL;
-					scoreSinceLastCheckpoint = score;
 				}
 				if (myEngine->KeyHit(Key_T))STATE = END;
 
@@ -558,26 +562,25 @@ void main()
 				currentRotation += rotationSpeed * dt;
 				if (currentRotation > maxRotation) {
 					STATE = RELOAD_CURRENT_LEVEL;
-					scoreSinceLastCheckpoint = score;
 				}
 
 			}break;
 			case RELOAD_CURRENT_LEVEL:
 			{		
 				if (lost) {
-					DisplayBigMessage->Draw("You Lost!", 300, 300);
-					DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
+					DisplayBigMessage->Draw("You Lost!\n(-10 score)", 350, 300);
+					DisplayMenu->Draw("Hit Space to Try Again!", 420, 600);
 				}
 				else
 				{
-					DisplayMenu->Draw("Hit Space to Restart Level!", 350, 450);
-					DisplayMenu->Draw("Hit 'B' to go back!", 420, 550);
-
+					DisplayMenu->Draw("Are you sure you want to restart \nthe current level?\n(-10 score)\nHit Space to confirm", 50, 300);
+					DisplayMenu->Draw("Hit 'B' to go back!", 420, 600);
 				}
 				if (myEngine->KeyHit(Key_Space))
 				{
 					reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
 					lost = false;
+					score -= 10;
 				}
 
 				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
@@ -588,8 +591,15 @@ void main()
 			{
 				if (finished)
 				{
-					DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
-					DisplayMenu->Draw("Hit 'B' to go back!", 420, 550);
+					stringstream StringScore;
+					StringScore << score;
+
+					stringstream StringCoinsMissed;
+					StringCoinsMissed << coinsMissed;
+
+					DisplayBigMessage->Draw("Congratulations you WON!", 100, 300);
+					InteractionMessage->Draw("Score:"+ StringScore.str()+"\nRating : "+finalRating+"\nCoins Missed:"+ StringCoinsMissed.str(),100, 500);
+					DisplayMenu->Draw("Hit Space to Try Again!", 400, 0);
 				}
 				else
 				{
@@ -609,7 +619,8 @@ void main()
 				THIEF COLLISION WITH WALLS DISABLED
 				THIEF COLLISION WITH PILLARS DISABLED
 				THIEF COLLISION WITH DOORS DISABLED
-				GUARDS DISABLED
+				CAMERA COLLISION BEHAVIOR DISABLED
+				GUARD BEHAVIOR DISABLED
 				PRESS Q TO LOAD NEXT LEVEL ENABLED
 				*/
 				InteractionMessage->Draw("Hit 'Q' to load next level", 900, 0);	
@@ -618,14 +629,8 @@ void main()
 				UpdateModel(myEngine, pThief, thiefMovementSpeed, dt, ThiefState, levels, doors);			
 				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);			
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);
-				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);			
+				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins, coinsMissed);
 				updateCoins(pThief, R1, R3, levels, coins, score);
-				if (myEngine->KeyHit(Key_R)) {
-					STATE = RELOAD_CURRENT_LEVEL;
-					scoreSinceLastCheckpoint = score;
-				}
-				if (myEngine->KeyHit(Key_T))STATE = END;
 
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
