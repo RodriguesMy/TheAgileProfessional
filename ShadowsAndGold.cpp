@@ -511,7 +511,7 @@ void main()
 			{	
 				myEngine->StopMouseCapture(); 
 
-				if (myEngine->KeyHit(Key_Space)) { 
+				if (myEngine->KeyHit(Key_Space)) {
 					DisplayBigMessage->Draw("LOADING . . .", 350, 300);
 					STATE = LEVEL; 
 				}
@@ -538,10 +538,10 @@ void main()
 				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);					
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				guard.Update(dt, levels, myEngine);
 				updateCoins(pThief, R1, R3, levels, coins,score);				
 				updateScore(Score, score);
 				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
+				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
 
 				if (myEngine->KeyHit(Key_R))STATE = RELOAD_CURRENT_LEVEL;
 				if (myEngine->KeyHit(Key_T))STATE = END;

@@ -6,6 +6,8 @@ CGuard::CGuard(I3DEngine* myEngine) {
 	m_Model = m_Mesh->CreateModel();
 	m_Model->Scale(5);
 	m_PathTime = 0;
+	m_State = patrol;
+	m_HuntingTime = 0;
 }
 
 void CGuard::CreatePoint(Vector point) {
@@ -53,25 +55,25 @@ bool CGuard::CheckChild(SNode* pChild, deque<SNode*> open, deque<SNode*> closed)
 	return false;
 }
 
-void CGuard::GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> closed,int x,int y, Vector target){
+void CGuard::GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> closed,int x,int y, int Targetx, int Targety){
 	SNode* pChild = new SNode;
 	pChild->x = x;
 	pChild->y = y;
 	if (CheckChild(pChild, open, closed)) {
 		pChild->parent = pCurrent;
 		pChild->Dijkstra = pCurrent->Dijkstra + 1;
-		pChild->score = pChild->Dijkstra + (target.x - x + target.y - y);
+		pChild->score = pChild->Dijkstra + (Targetx - x + Targety - y);
 		open.push_back(pChild);
 	}
 }
 
-bool CGuard::FindPath(Vector target, CLevel Level) {
+void CGuard::FindPath(Vector Target, CLevel Level) {
 	ClearPath();
 	SNode* pCurrent = new SNode;
 	float Minx = Level.GetMin().x;
 	float Minz = Level.GetMin().z;
-	int targetx = (target.x - Minx) / 5;
-	int targety = (target.z - Minz) / 5;
+	int NormalisedTargetx = (Target.x - Minx) / 5;
+	int NormalisedTargetz = (Target.z - Minz) / 5;
 	deque<SNode*> open;
 	deque<SNode*> closed;
 	pCurrent->x = (m_Model->GetX() - Minx) / 5;
@@ -81,21 +83,21 @@ bool CGuard::FindPath(Vector target, CLevel Level) {
 		pCurrent = open.front();
 		open.pop_front();
 		//check if we reached the target
-		if (pCurrent->x == targetx && pCurrent->y == targety) {
+		if (pCurrent->x == NormalisedTargetx && pCurrent->y == NormalisedTargetz) {
 			//construct the path
 			while (pCurrent) {
 				SNode* pTemp = pCurrent->parent;
 				m_Path.push_front(pCurrent);
 				pCurrent = pTemp;
 			}
-			return true;
+			break;
 		}
 		else{
 			//generate all children of the current node and check if they are valid and havent already been generated
-			GetChildNode(pCurrent, open, closed, pCurrent->x, pCurrent->y + 1, target);
-			GetChildNode(pCurrent, open, closed, pCurrent->x + 1, pCurrent->y, target);
-			GetChildNode(pCurrent, open, closed, pCurrent->x, pCurrent->y - 1, target);
-			GetChildNode(pCurrent, open, closed, pCurrent->x - 1, pCurrent->y, target);
+			GetChildNode(pCurrent, open, closed, pCurrent->x, pCurrent->y + 1, NormalisedTargetx, NormalisedTargetz);
+			GetChildNode(pCurrent, open, closed, pCurrent->x + 1, pCurrent->y, NormalisedTargetx, NormalisedTargetz);
+			GetChildNode(pCurrent, open, closed, pCurrent->x, pCurrent->y - 1, NormalisedTargetx, NormalisedTargetz);
+			GetChildNode(pCurrent, open, closed, pCurrent->x - 1, pCurrent->y, NormalisedTargetx, NormalisedTargetz);
 			//sort by score to find the next best node
 			for (int i = 0; i+1 < open.size(); i++) {
 				for (int j = i + 1; j < open.size(); j++) {
@@ -104,12 +106,10 @@ bool CGuard::FindPath(Vector target, CLevel Level) {
 					}
 				}
 			}
-			//cout << pCurrent->x << " " << pCurrent->y << endl;
 			closed.push_back(pCurrent);
 		}
 	}
-	// if we get out of the while loop then we cant find a path to the target and we return false
-	return false;
+	// if we get out of the while loop then we cant find a path to the target and the path container remains empty
 }
 
 bool CGuard::Move(float dt, CLevel Level) {
@@ -138,7 +138,6 @@ bool CGuard::Move(float dt, CLevel Level) {
 		m_Model->LookAt(x, 0, y);
 		m_Model->SetPosition(x, 0, y);
 		m_Model->Scale(5);
-		cout << x << " " << m_Model->GetY() << " " << y << endl;
 		return false;
 	}
 }
@@ -152,9 +151,49 @@ float CGuard::CatMullRom(float p1, float p2, float p3, float p4, float t) {
 	return output;
 }
 
-void CGuard::Update(float& dt,CLevel Level, I3DEngine* myEngine) {
-	if (Move(dt,Level)) {
-		FindPath(m_Patrol.at(rand() % m_Patrol.size()), Level);
-		dt = myEngine->Timer();
+void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief) {
+	switch (m_State)
+	{
+	case patrol:
+		if (Move(dt, Level)) {
+			if (!m_Patrol.empty()) {
+				FindPath(m_Patrol.at(rand() % m_Patrol.size()), Level);
+				dt = myEngine->Timer();
+			}
+		}
+		if (InSight(Thief)) {
+			m_HuntingTime = 0;
+			ClearPath();
+			m_State = hunt;
+		}
+		break;
+	case hunt:
+		m_HuntingTime += dt;
+		cout << m_HuntingTime << " " << dt << endl;
+		if (Move(dt, Level)) {
+			FindPath(Thief, Level);
+			dt = myEngine->Timer();
+		}
+		if (m_HuntingTime > m_HuntingTimeMax) {
+			FindPath(Thief, Level);
+			m_HuntingTime = 0;
+			dt = myEngine->Timer();
+			if (!InSight(Thief)) {
+				ClearPath();
+				m_State = patrol;
+			}
+		}
+		break;
 	}
+}
+
+bool CGuard::InSight(Vector Target) {
+	Vector guardToTarget = Vector(Target.x - m_Model->GetX(), 0, Target.z - m_Model->GetZ());
+	float distance = sqrt(guardToTarget.x * guardToTarget.x + guardToTarget.z * guardToTarget.z);
+	float matrix[16];
+	m_Model->GetMatrix(matrix);
+	Vector Forward = Vector(matrix[8], matrix[9], matrix[10]);
+	float crossProd = Forward.x * guardToTarget.x + Forward.z * guardToTarget.z;
+	crossProd /= (sqrt(Forward.x * Forward.x + Forward.z * Forward.z) * distance);
+	return acos(crossProd) * 180 / 3.142 <= m_ViewAngle && distance < m_ViewDistance;
 }

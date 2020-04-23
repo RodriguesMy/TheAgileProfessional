@@ -8,6 +8,10 @@ class CLevel;
 class CGuard
 {
 private:
+	enum EState {
+		patrol,
+		hunt
+	};
 	struct SNode
 	{
 		int x;            // x coordinate
@@ -23,6 +27,13 @@ private:
 	vector<vector<int>> m_Grid; // A top side view of the entire level scaled so each element of the 2d dynamic array repressents 5 units, used to find the path the guard will take
 	deque<SNode*> m_Path;
 	float m_PathTime;
+	EState m_State;
+	float m_HuntingTime;
+
+	//constants
+	const float m_HuntingTimeMax = 5;
+	const float m_ViewAngle = 45;
+	const float m_ViewDistance = 20;
 public:
 	IModel* m_Model;
 	CGuard(I3DEngine* myEngine);
@@ -30,12 +41,13 @@ public:
 	void ClearPoints();
 	void SetPosition();
 	void SetGrid(vector<vector<int>> grid) { m_Grid = grid; }
-	void Update(float& dt,CLevel Level, I3DEngine* myEngine);
+	void Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief);
 private:
-	bool FindPath(Vector target, CLevel Level);
-	void GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> closed, int x, int y, Vector target);
+	void FindPath(Vector Target, CLevel Level);
+	void GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> closed, int x, int y, int Targetx, int Targety);
 	bool CheckChild(SNode* pChild, deque<SNode*> open, deque<SNode*> closed);
 	bool Move(float dt, CLevel Level);
 	float CatMullRom(float p1, float p2, float p3, float p4, float t);
 	void ClearPath();
+	bool InSight(Vector Target);
 };
