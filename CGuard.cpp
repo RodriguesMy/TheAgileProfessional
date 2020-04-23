@@ -115,7 +115,6 @@ void CGuard::FindPath(Vector Target, CLevel Level) {
 bool CGuard::Move(float dt, CLevel Level) {
 	m_PathTime += dt;
 	if (m_PathTime + 1.0f >= m_Path.size()) {
-		m_PathTime = 0;
 		return true;
 	}
 	else {
@@ -157,6 +156,7 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 	case patrol:
 		if (Move(dt, Level)) {
 			if (!m_Patrol.empty()) {
+				m_PathTime = 0;
 				FindPath(m_Patrol.at(rand() % m_Patrol.size()), Level);
 				dt = myEngine->Timer();
 			}
@@ -169,13 +169,14 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 		break;
 	case hunt:
 		m_HuntingTime += dt;
-		cout << m_HuntingTime << " " << dt << endl;
 		if (Move(dt, Level)) {
+			m_PathTime = 0;
 			FindPath(Thief, Level);
 			dt = myEngine->Timer();
 		}
 		if (m_HuntingTime > m_HuntingTimeMax) {
 			FindPath(Thief, Level);
+			m_PathTime = 0;
 			m_HuntingTime = 0;
 			dt = myEngine->Timer();
 			if (!InSight(Thief)) {

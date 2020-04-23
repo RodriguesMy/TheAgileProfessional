@@ -32,8 +32,8 @@ private:
 
 	//constants
 	const float m_HuntingTimeMax = 5;
-	const float m_ViewAngle = 45;
-	const float m_ViewDistance = 20;
+	const float m_ViewAngle = 80;
+	const float m_ViewDistance = 40;
 public:
 	IModel* m_Model;
 	CGuard(I3DEngine* myEngine);
