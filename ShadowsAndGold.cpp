@@ -403,7 +403,7 @@ void main()
 	
 	IModel* key=0;
 
-	int STATE = MENU;
+	int STATE = DEBUG_MODE;
 	levels.NextLevel(walls, doors,pillars,key,guard,coins);
 
 	//IMPORTANT VARIABLES
@@ -568,15 +568,20 @@ void main()
 					DisplayBigMessage->Draw("You Lost!", 300, 300);
 					DisplayMenu->Draw("Hit Space to Try Again!", 420, 450);
 				}
-				else 
-					DisplayMenu->Draw("Hit Space to Restart Level!",350, 450);
+				else
+				{
+					DisplayMenu->Draw("Hit Space to Restart Level!", 350, 450);
+					DisplayMenu->Draw("Hit 'B' to go back!", 420, 550);
+
+				}
 				if (myEngine->KeyHit(Key_Space))
 				{
 					reloadLevel(myEngine, STATE, keyFound, score, pThief, levels, doors, key);
 					lost = false;
 				}
 
-				break;
+				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
+
 			}
 			break;
 			case END:
@@ -584,13 +589,18 @@ void main()
 				if (finished)
 				{
 					DisplayBigMessage->Draw("Congratulations you WON!\n SCORE: x", 100, 300);
-					DisplayMenu->Draw("Hit Space to Play Again!", 420, 600);
+					DisplayMenu->Draw("Hit 'B' to go back!", 420, 550);
 				}
 				else
-					DisplayMenu->Draw("Hit Space to Restart Game!", 350, 600);
+				{
+					DisplayMenu->Draw("Hit Space to Restart Game!", 350, 450);
+					DisplayMenu->Draw("Hit 'B' to go back!", 420,550);
+				}
 
 				if (myEngine->KeyHit(Key_Space))
 					restartGame(STATE, keyFound, score, levels, doors, pillars, walls, key, pThief, guard, coins);
+
+				if (myEngine->KeyHit(Key_B))STATE = LEVEL;
 
 			}break;
 			case DEBUG_MODE:
@@ -610,7 +620,13 @@ void main()
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins);			
-	
+				updateCoins(pThief, R1, R3, levels, coins, score);
+				if (myEngine->KeyHit(Key_R)) {
+					STATE = RELOAD_CURRENT_LEVEL;
+					scoreSinceLastCheckpoint = score;
+				}
+				if (myEngine->KeyHit(Key_T))STATE = END;
+
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
 					levels.NextLevel(walls, doors, pillars, key, guard,coins);
