@@ -309,7 +309,7 @@ void KeyCollision(IModel* pThief, float R1, float R2, CLevel level, bool& keyFou
 		}
 	}		
 }
-void reloadLevel(I3DEngine* myEngine,int &STATE,bool &keyFound,int &score,IModel* pThief,CLevel &levels, vector<DoorStruct>& doors,IModel* key) {
+void reloadLevel(I3DEngine* myEngine,int &STATE,bool &keyFound,int &score,IModel* pThief,CLevel &levels, vector<DoorStruct>& doors,IModel*& key) {
 		STATE = LEVEL;
 		keyFound = false;
 		score = 0;

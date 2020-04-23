@@ -306,13 +306,11 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, 
 	vector<vector<int>> Grid;
 	int heightofgrid = (m_Max.z - m_Min.z) / 5;
 	int widthofgrid = (m_Max.x - m_Min.x) / 5;
-	for (int i = 0; i <= heightofgrid; i++) {
-		vector<int>* line = new vector<int>;
-		for (int j = 0; j <= widthofgrid; j++) {
-			line->push_back(1);
-		}
-		Grid.push_back(*line);
-	}
+	vector<int> line;
+	line.resize(widthofgrid);
+	fill(line.begin(), line.end(), 1);
+	Grid.resize(heightofgrid);
+	fill(Grid.begin(), Grid.end(), line);
 	for (int i = 0; i < Walls.size(); i++) {
 		int maxX = (Walls[i].model->GetX() + Walls[i].length.x - m_Min.x) / 5;
 		int maxZ = (Walls[i].model->GetZ() + Walls[i].length.z - m_Min.z) / 5;

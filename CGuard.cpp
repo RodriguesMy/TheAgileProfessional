@@ -15,6 +15,14 @@ void CGuard::CreatePoint(Vector point) {
 void CGuard::ClearPoints() {
 	while (!m_Patrol.empty())
 		m_Patrol.pop_back();
+	ClearPath();
+}
+
+void CGuard::ClearPath() {
+	while (!m_Path.empty()) {
+		delete m_Path.back();
+		m_Path.pop_back();
+	}
 }
 
 void CGuard::SetPosition() {
@@ -58,16 +66,16 @@ void CGuard::GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> cl
 }
 
 bool CGuard::FindPath(Vector target, CLevel Level) {
-	while (!m_Path.empty()) {
-		m_Path.pop_back();
-	}
+	ClearPath();
 	SNode* pCurrent = new SNode;
-	int targetx = (target.x - Level.GetMin().x) / 5;
-	int targety = (target.z - Level.GetMin().z) / 5;
+	float Minx = Level.GetMin().x;
+	float Minz = Level.GetMin().z;
+	int targetx = (target.x - Minx) / 5;
+	int targety = (target.z - Minz) / 5;
 	deque<SNode*> open;
 	deque<SNode*> closed;
-	pCurrent->x = (m_Model->GetX() - Level.GetMin().x) / 5;
-	pCurrent->y = (m_Model->GetZ() - Level.GetMin().z) / 5;
+	pCurrent->x = (m_Model->GetX() - Minx) / 5;
+	pCurrent->y = (m_Model->GetZ() - Minz) / 5;
 	open.push_front(pCurrent);
 	while (!open.empty()){
 		pCurrent = open.front();

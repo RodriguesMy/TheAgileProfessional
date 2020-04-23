@@ -37,5 +37,5 @@ private:
 	bool CheckChild(SNode* pChild, deque<SNode*> open, deque<SNode*> closed);
 	bool Move(float dt, CLevel Level);
 	float CatMullRom(float p1, float p2, float p3, float p4, float t);
-
+	void ClearPath();
 };
