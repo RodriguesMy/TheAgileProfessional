@@ -34,24 +34,29 @@ void CGuard::SetPosition() {
 	}
 }
 
-bool CGuard::CheckChild(SNode* pChild, deque<SNode*> open, deque<SNode*> closed) {
-	//The first two if check if the node is in the bounds of the grid
-	if (pChild->y >= 0 && pChild->y < m_Grid.size()) {
-		if (pChild->x >= 0 && pChild->x < m_Grid.at(pChild->y).size()) {
-			if (m_Grid.at(pChild->y).at(pChild->x) != 0)//checks if the node is valid (not 0)
-			{
-				//checks if the node exists either in the closed or in the open containers
-				for (int i = 0; i < closed.size(); i++)
-					if (closed[i]->x == pChild->x && closed[i]->y == pChild->y)
-						return false;
-				for (int i = 0; i < open.size(); i++)
-					if (open[i]->x == pChild->x && open[i]->y == pChild->y)
-						return false;
-				return true;
-			}
-		}
+bool CGuard::CheckNode(SNode* pChild, deque<SNode*> open, deque<SNode*> closed) {
+	if (CheckNode(pChild))
+	{
+		//checks if the node exists either in the closed or in the open containers
+		for (int i = 0; i < closed.size(); i++)
+			if (closed[i]->x == pChild->x && closed[i]->y == pChild->y)
+				return false;
+		for (int i = 0; i < open.size(); i++)
+			if (open[i]->x == pChild->x && open[i]->y == pChild->y)
+				return false;
+		return true;
 	}
-	//didnt use an else so to avoid having 3 else statements all returning false for the first three if statements
+	else {
+		return false;
+	}
+}
+
+bool CGuard::CheckNode(SNode* pChild) {
+	//The first two if check if the node is in the bounds of the grid
+	if (pChild->y >= 0 && pChild->y < m_Grid.size())
+		if (pChild->x >= 0 && pChild->x < m_Grid.at(pChild->y).size())
+			if (m_Grid.at(pChild->y).at(pChild->x) != 0)//checks if the node is valid (not 0)
+				return true;
 	return false;
 }
 
@@ -59,7 +64,7 @@ void CGuard::GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> cl
 	SNode* pChild = new SNode;
 	pChild->x = x;
 	pChild->y = y;
-	if (CheckChild(pChild, open, closed)) {
+	if (CheckNode(pChild, open, closed)) {
 		pChild->parent = pCurrent;
 		pChild->Dijkstra = pCurrent->Dijkstra + 1;
 		pChild->score = pChild->Dijkstra + (Targetx - x + Targety - y);
@@ -79,7 +84,7 @@ void CGuard::FindPath(Vector Target, CLevel Level) {
 	pCurrent->x = (m_Model->GetX() - Minx) / 5;
 	pCurrent->y = (m_Model->GetZ() - Minz) / 5;
 	open.push_front(pCurrent);
-	while (!open.empty()){
+	while (!open.empty()) {
 		pCurrent = open.front();
 		open.pop_front();
 		//check if we reached the target
@@ -92,14 +97,14 @@ void CGuard::FindPath(Vector Target, CLevel Level) {
 			}
 			break;
 		}
-		else{
+		else {
 			//generate all children of the current node and check if they are valid and havent already been generated
 			GetChildNode(pCurrent, open, closed, pCurrent->x, pCurrent->y + 1, NormalisedTargetx, NormalisedTargetz);
 			GetChildNode(pCurrent, open, closed, pCurrent->x + 1, pCurrent->y, NormalisedTargetx, NormalisedTargetz);
 			GetChildNode(pCurrent, open, closed, pCurrent->x, pCurrent->y - 1, NormalisedTargetx, NormalisedTargetz);
 			GetChildNode(pCurrent, open, closed, pCurrent->x - 1, pCurrent->y, NormalisedTargetx, NormalisedTargetz);
 			//sort by score to find the next best node
-			for (int i = 0; i+1 < open.size(); i++) {
+			for (int i = 0; i + 1 < open.size(); i++) {
 				for (int j = i + 1; j < open.size(); j++) {
 					if (open[i]->score > open[j]->score) {
 						iter_swap(open.begin() + i, open.begin() + j);
@@ -161,7 +166,7 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 				dt = myEngine->Timer();
 			}
 		}
-		if (InSight(Thief)) {
+		if (InSight(Thief, Level)) {
 			m_HuntingTime = 0;
 			ClearPath();
 			m_State = hunt;
@@ -179,7 +184,7 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 			m_PathTime = 0;
 			m_HuntingTime = 0;
 			dt = myEngine->Timer();
-			if (!InSight(Thief)) {
+			if (!InSight(Thief, Level)) {
 				ClearPath();
 				m_State = patrol;
 			}
@@ -188,7 +193,7 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 	}
 }
 
-bool CGuard::InSight(Vector Target) {
+bool CGuard::InSight(Vector Target,CLevel Level) {
 	Vector guardToTarget = Vector(Target.x - m_Model->GetX(), 0, Target.z - m_Model->GetZ());
 	float distance = sqrt(guardToTarget.x * guardToTarget.x + guardToTarget.z * guardToTarget.z);
 	float matrix[16];
@@ -196,5 +201,20 @@ bool CGuard::InSight(Vector Target) {
 	Vector Forward = Vector(matrix[8], matrix[9], matrix[10]);
 	float crossProd = Forward.x * guardToTarget.x + Forward.z * guardToTarget.z;
 	crossProd /= (sqrt(Forward.x * Forward.x + Forward.z * Forward.z) * distance);
-	return acos(crossProd) * 180 / 3.142 <= m_ViewAngle && distance < m_ViewDistance;
+	if (acos(crossProd) * 180 / 3.142 <= m_ViewAngle && distance < m_ViewDistance) {
+		int steps = m_ViewDistance / 5;
+		float mx = m_Model->GetX();
+		float mz = m_Model->GetZ();
+		for (int i = 0; i < steps; i++) {
+			float x = Target.x * (1.0f - (i * 1.0f / steps)) + mx * i * 1.0f / steps;
+			float z = Target.z * (1.0f - (i * 1.0f / steps)) + mz * i * 1.0f / steps;
+			float Minx = Level.GetMin().x;
+			float Minz = Level.GetMin().z;
+			if (!CheckNode(&SNode((x - Minx) / 5, (z - Minz) / 5)))
+				return false;
+		}
+		return true;
+	}
+	else
+		return false;
 }

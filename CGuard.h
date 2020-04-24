@@ -19,6 +19,10 @@ private:
 		int Dijkstra = 0;	// used in more complex algorithms
 		int score = 0;	// used in more complex algorithms
 		SNode* parent = 0;// note use of raw pointer here
+		SNode(int X = 0, int Y = 0) {
+			x = X;
+			y = Y;
+		}
 	};
 	IMesh* m_Mesh;
 	
@@ -45,9 +49,10 @@ public:
 private:
 	void FindPath(Vector Target, CLevel Level);
 	void GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> closed, int x, int y, int Targetx, int Targety);
-	bool CheckChild(SNode* pChild, deque<SNode*> open, deque<SNode*> closed);
+	bool CheckNode(SNode* pChild, deque<SNode*> open, deque<SNode*> closed);
+	bool CheckNode(SNode* pChild);
 	bool Move(float dt, CLevel Level);
 	float CatMullRom(float p1, float p2, float p3, float p4, float t);
 	void ClearPath();
-	bool InSight(Vector Target);
+	bool InSight(Vector Target, CLevel Level);
 };
