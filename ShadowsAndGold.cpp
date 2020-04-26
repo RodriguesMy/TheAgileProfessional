@@ -334,11 +334,11 @@ void restartGame(int& STATE, bool& keyFound, int& score, CLevel& levels, vector<
 	pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
 	pThief->Scale(5);
 }
-void updateCoins(IModel* pThief, float R1, float R3, CLevel level, vector<IModel*>& coins,int &score) {
+void updateCoins(IModel* pThief, float R1, float R3, CLevel level, vector<IModel*>& coins,int &score,float dt,int coinSpeed) {
 
 	for (int i = 0; i < coins.size(); i++)
 	{
-		coins[i]->RotateY(2); //rotation of all coins
+		coins[i]->RotateY(coinSpeed *dt); //rotation of all coins
 
 		float x = pThief->GetX() - coins[i]->GetX();
 		float y = pThief->GetY() - coins[i]->GetY();
@@ -487,6 +487,7 @@ void main()
 	int score = 0;
 	int coinsMissed=0; //sums up together all coins that are missed when the player goes to the next level
 	string finalRating = "A+";
+	int coinSpeed = 130;
 
 	//Game varaibles
 	bool pause = false;
@@ -569,7 +570,7 @@ void main()
 				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);					
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				updateCoins(pThief, R1, R3, levels, coins,score);				
+				updateCoins(pThief, R1, R3, levels, coins,score,dt,coinSpeed);				
 				updateScore(Score, score);
 				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
 				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
@@ -660,7 +661,7 @@ void main()
 				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);			
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);
 				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins, coinsMissed);
-				updateCoins(pThief, R1, R3, levels, coins, score);
+				updateCoins(pThief, R1, R3, levels, coins, score,dt, coinSpeed);
 
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
