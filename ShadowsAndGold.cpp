@@ -587,6 +587,7 @@ void main()
 				currentRotation += rotationSpeed * dt;
 				if (currentRotation > maxRotation) {
 					STATE = RELOAD_CURRENT_LEVEL;
+					currentRotation = 0;
 				}
 
 			}break;
