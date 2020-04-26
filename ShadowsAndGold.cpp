@@ -432,7 +432,7 @@ void main()
 	
 	IModel* key=0;
 
-	int STATE = DEBUG_MODE;
+	int STATE = MENU;
 	levels.NextLevel(walls, doors,pillars,key,guard,coins);
 
 	//IMPORTANT VARIABLES
@@ -572,7 +572,7 @@ void main()
 				updateCoins(pThief, R1, R3, levels, coins,score);				
 				updateScore(Score, score);
 				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
-				//guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
+				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
 
 				if (myEngine->KeyHit(Key_R)) {
 					STATE = RELOAD_CURRENT_LEVEL;
