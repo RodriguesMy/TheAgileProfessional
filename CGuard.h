@@ -35,6 +35,7 @@ private:
 	float m_HuntingTime;
 
 	//constants
+	const float m_Speed = 4;
 	const float m_HuntingTimeMax = 5;
 	const float m_ViewAngle = 80;
 	const float m_ViewDistance = 40;

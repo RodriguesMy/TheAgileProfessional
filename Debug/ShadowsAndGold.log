@@ -6,12 +6,12 @@ C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(56,34): 
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(57,35): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(80,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(81,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(85,42): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(86,42): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(84,41): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(85,41): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(107,26): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(108,27): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(109,28): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(207,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(215,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(215,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(199,13): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(207,53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\Chris\source\repos\RodriguesMy\TheAgileProfessional\CGuard.cpp(207,37): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   ShadowsAndGold.vcxproj -> C:\Users\Chris\Source\Repos\RodriguesMy\TheAgileProfessional\\ShadowsAndGoldDebug.exe
   Copying DLLs & shaders...

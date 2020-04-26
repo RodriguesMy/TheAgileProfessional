@@ -167,23 +167,17 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 			}
 		}
 		if (InSight(Thief, Level)) {
-			m_HuntingTime = 0;
-			ClearPath();
 			m_State = hunt;
 		}
 		break;
 	case hunt:
 		m_HuntingTime += dt;
-		if (Move(dt, Level)) {
-			m_PathTime = 0;
-			FindPath(Thief, Level);
-			dt = myEngine->Timer();
-		}
-		if (m_HuntingTime > m_HuntingTimeMax) {
-			FindPath(Thief, Level);
-			m_PathTime = 0;
+		m_Model->LookAt(Thief.x, Thief.y, Thief.z);
+		m_Model->Scale(5);
+		m_Model->MoveLocalZ(m_Speed * dt);
+		m_HuntingTime += dt;
+		if (m_HuntingTime > 2) {
 			m_HuntingTime = 0;
-			dt = myEngine->Timer();
 			if (!InSight(Thief, Level)) {
 				ClearPath();
 				m_State = patrol;
