@@ -589,7 +589,6 @@ void main()
 					STATE = RELOAD_CURRENT_LEVEL;
 					currentRotation = 0;
 				}
-
 			}break;
 			case RELOAD_CURRENT_LEVEL:
 			{		
