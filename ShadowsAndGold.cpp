@@ -39,6 +39,7 @@ void ThiefToGuardCD(IModel* model1, IModel* model2,int &STATE,bool &lost) {
 
 	if (CollisionSTS(model1, model2, 3))
 	{
+		//if the thief collides with the guard, the player looses the game and the state game changes
 		lost = true;
 		STATE = THIEF_DIES;	
 	}
@@ -70,8 +71,11 @@ void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed,
 	switch (ThiefState)
 	{
 	case WAITING:
+		//nothing happens here
 		break;
 	case FORWARD:
+		//this happens when the transition of a level to another level happens. Basically moves tha thief forwards 
+		//and sets everything needed for the next level in place
 		pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 		if (CollisionSTS(Vector(pThief->GetX(), pThief->GetY(), pThief->GetZ()), levels.GetPlayerSPos(), 1)) {
 			ThiefState = NORMAL;
@@ -83,6 +87,7 @@ void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed,
 		}
 		break;
 	case NORMAL:
+		/*The thief can move using WASD keys and sprint with shift in this state */
 		if (myEngine->KeyHeld(Key_W)) {
 			pThief->MoveLocalZ(-thiefMovementSpeed * dt);
 		}
@@ -109,6 +114,9 @@ void UpdateModel(I3DEngine* myEngine, IModel* pThief, float& thiefMovementSpeed,
 }
 void UpdateCamera(I3DEngine* myEngine, IModel* pThief, SCameraVariables& CameraV, IModel* pCameraDummy, ICamera* Camera, vector<WallStruct> walls, int ThiefState)
 {
+	/*since the actual thief model is inverted (meaning that in front of him there are negative values instead of positive) 
+	we had do adapt the camera movement in order to create the final result.
+	We attached dummy to the thief and attached the camera to the dummy in order to create a maximum and minimum angle*/
 	if (ThiefState == NORMAL) {
 		float cameraMovementY = myEngine->GetMouseMovementY();
 		float cameraMovementX = myEngine->GetMouseMovementX();
@@ -133,6 +141,7 @@ void UpdateCamera(I3DEngine* myEngine, IModel* pThief, SCameraVariables& CameraV
 }
 void CameraCollisionBehavior(ICamera* Camera, IModel* pThief, I3DEngine* myEngine, vector<WallStruct> walls, vector<PillarStruct> pillars, vector<DoorStruct> doors, SCameraVariables& CameraV, IModel* pCameraDummy, CLevel levels)
 {
+	//Update the camera to check if it collides with objects in the scene. If there is collision, change its local Y axis to get closer to the thief
 	//Movement depends on collision with:
 	//WALLS, DOORS
 	int counter=0;
@@ -164,6 +173,7 @@ void UpdateMessages(bool& keyFound, IFont* DisplayQuest, IFont* InteractionMessa
 	{
 		DisplayQuest->Draw("Quest: Avoid Guards and Find the Key to Unlock Next Floor.\nGather all the gold you can!", 0, 0);
 	}
+
 	//Only display the controls for a few seconds
 	currentTime += dt;
 	if (currentTime < maxTimer)
@@ -204,6 +214,7 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	{
 	case DOOR_CLOSED:
 	{
+		//checking for collision with each door individually and then acts according to the type of the door saved in the Door Struct.type sent as a parameter
 		if (SphereToBoxCD(pThief,door, areaLength)) {
 
 			if (doorType == simple) {
@@ -294,6 +305,8 @@ void UpdateDoor(EDoorState& doorState, IModel* door, int maxLimit, float& curren
 	}
 }
 void CollisionToHandleDoors(IModel* pThief, vector<DoorStruct>& door, IFont* InteractionMessage, I3DEngine* myEngine, float dt, bool& keyFound, CLevel& levels, vector<WallStruct>& walls, vector<DoorStruct>& doors, vector<PillarStruct>& pillars, IModel*& key, int& ThiefState, int& STATE, bool& finished, CGuard& guard, vector<IModel*>& Coins,int &coinsMissed) {
+	//This function works in order to open and close doors. The area for the doors are biggger in 
+	//order to allow the user to get near the door first and not stick to it in order to open it 
 	for (int i = 0; i < door.size(); i++) {
 		UpdateDoor(door[i].state, door[i].model, door[i].MaxDoorLimit, door[i].CurrentDoorLimit, InteractionMessage, myEngine, door[i].movementSpeed, keyFound, door[i].type, pThief, door[i].areaLength, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,Coins,coinsMissed);
 	}
@@ -314,7 +327,6 @@ void KeyCollision(IModel* pThief, float R1, float R2, CLevel level, bool& keyFou
 void reloadLevel(I3DEngine* myEngine,int &STATE,bool &keyFound,int &score,IModel* pThief,CLevel &levels, vector<DoorStruct>& doors,IModel*& key) {
 		STATE = LEVEL;
 		keyFound = false;
-		score = 0;
 		pThief->SetPosition(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z);
 		pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
 		pThief->Scale(5);
@@ -334,11 +346,11 @@ void restartGame(int& STATE, bool& keyFound, int& score, CLevel& levels, vector<
 	pThief->LookAt(levels.GetPlayerSPos().x, levels.GetPlayerSPos().y, levels.GetPlayerSPos().z + 1);
 	pThief->Scale(5);
 }
-void updateCoins(IModel* pThief, float R1, float R3, CLevel level, vector<IModel*>& coins,int &score) {
+void updateCoins(IModel* pThief, float R1, float R3, CLevel level, vector<IModel*>& coins,int &score,float dt,int coinSpeed) {
 
 	for (int i = 0; i < coins.size(); i++)
 	{
-		coins[i]->RotateY(2); //rotation of all coins
+		coins[i]->RotateY(coinSpeed *dt); //rotation of all coins
 
 		float x = pThief->GetX() - coins[i]->GetX();
 		float y = pThief->GetY() - coins[i]->GetY();
@@ -346,8 +358,8 @@ void updateCoins(IModel* pThief, float R1, float R3, CLevel level, vector<IModel
 
 		if (sqrt(x * x + y * y + z * z) < R1 + R3) {
 			level.RemoveCoin(coins[i]);
-			coins.erase(coins.begin() + i);
-			score += 10;
+			coins.erase(coins.begin() + i); //totally  erasing it from the list so we wont try to check for collision with a null after
+			score += 10; //increasing score
 		}
 	}
 	
@@ -487,6 +499,7 @@ void main()
 	int score = 0;
 	int coinsMissed=0; //sums up together all coins that are missed when the player goes to the next level
 	string finalRating = "A+";
+	int coinSpeed = 130;
 
 	//Game varaibles
 	bool pause = false;
@@ -505,34 +518,55 @@ void main()
 		States: MENU, LEVEL, PLAYER_LOST, RELOAD_CURRENT_LEVEL, LOADING_NEXT_LEVEL
 
 		MENU:---------------------------------------------------------
-		1 Stops the mouse capture inserted by the player
-		1 Messages displayed on the screen 
-		2 Transitions to LEVEL after the player has hit Space
+		Messages displayed on the screen 
+		Transitions to LEVEL after the player has hit Space
+		Transition to DEBUG_MODE when the player hits Q
+		Starts mouse capture that disables the mouse of the player to move around and centers it in the middle of the screen
 		END OF MENU:---------------------------------------------------
 
 		LEVEL:---------------------------------------------------------
-		4 Starts mouse capture that disables the mouse of the player to move around 
-			and centers it in the middle of the screen
-		5 Enables Collision between a larger scale of the doors and the player 
+		Enables Collision between a larger scale of the doors and the player 
 			to enable him to open or close a door
-		6 Sphere to sphere collision between the player and the key
-		7 Update the animation of the key
-		8 Updates the movement of the model using WASD keys, also the player has the ability to
+		Sphere to sphere collision between the player and the key
+		Update the animation of the key
+		Updates the movement of the model using WASD keys, also the player has the ability to
 			run faster by holding Left Shift
-		9 Captures the movement of the mouse and set some restrains some of the camera movement
+		Captures the movement of the mouse and set some restrains some of the camera movement
 			by using a dummyCamera attached to the player 
 			(We dont want the camera to rotate without limits)
-		10 Checks for collision detection between the thief and the objects that exists in the level 
+		Checks for collision detection between the thief and the objects that exists in the level 
 			(pillars,walls,doors)
-		11 Displays the Quests on the screen. Also displays the controls for a few seconds after 
+		Displays the Quests on the screen. Also displays the controls for a few seconds after 
 			the player has started playing
+		Updates the animation and collision with coins which update the score of the player
+		Updates guard(more in guard.h)
+		Updates camera and camera collision detection with objects in the scene
 		END OF LEVEL:--------------------------------------------------
 
-		PLAYER_LOST:--------------------------------------------------
-		//must fill later because we will add more things in the previous section
-		PLAYER_LOST:--------------------------------------------------
+		THIEF_DIES:--------------------------------------------------
+		Includes a small animation which looks like the thief is falling on the floor, the moves to the next state
+		END OFTHIEF_DIES:--------------------------------------------------
 
-		//fill the rest when the time comes 
+		RELOAD_CURRENT_LEVEL:--------------------------------------------------
+		Firstly check if the player has come in this state because he lost or if he pressed 'R' and output
+			the appropriate messages
+		Later calls the reloadLevel function(move in function) 
+		END OF RELOAD_CURRENT_LEVEL:--------------------------------------------------
+
+		RELOAD_CURRENT_LEVEL:--------------------------------------------------
+		Firstly check if the player has come in this state because he finished the game or if he pressed 'T' and output
+			the appropriate messages
+		If finished, outputs the score,rating and coins missed.
+		Later calls the restartGame function(move in function) if Space is hit.
+		END OF RELOAD_CURRENT_LEVEL:--------------------------------------------------
+
+		DEBUG_MODE:--------------------------------------------------
+		Disabled:
+		all collisions
+		guards
+		Enabled: 
+		Press Q to load next level instantly without the key
+		END OF DEBUG_MODE:--------------------------------------------------
 		*/
 		if (!pause) {
 			switch (STATE)
@@ -569,7 +603,7 @@ void main()
 				ThiefCollisionBehavior(myEngine, walls, pillars, doors, pThief, thiefMovementSpeed, dt);					
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);//11
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
-				updateCoins(pThief, R1, R3, levels, coins,score);				
+				updateCoins(pThief, R1, R3, levels, coins,score,dt,coinSpeed);				
 				updateScore(Score, score);
 				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
 				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
@@ -587,8 +621,8 @@ void main()
 				currentRotation += rotationSpeed * dt;
 				if (currentRotation > maxRotation) {
 					STATE = RELOAD_CURRENT_LEVEL;
+					currentRotation = 0;
 				}
-
 			}break;
 			case RELOAD_CURRENT_LEVEL:
 			{		
@@ -660,7 +694,7 @@ void main()
 				UpdateCamera(myEngine, pThief, CameraV, pCameraDummy, camera, walls, ThiefState);			
 				UpdateMessages(keyFound, DisplayQuest, InteractionMessage, ControlsMessage, currentTime, maxTimer, dt, levels);
 				CollisionToHandleDoors(pThief, doors, InteractionMessage, myEngine, dt, keyFound, levels, walls, doors, pillars, key, ThiefState, STATE, finished, guard,coins, coinsMissed);
-				updateCoins(pThief, R1, R3, levels, coins, score);
+				updateCoins(pThief, R1, R3, levels, coins, score,dt, coinSpeed);
 
 				//go to the next level after p is hit
 				if (myEngine->KeyHit(Key_Q))
