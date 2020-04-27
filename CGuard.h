@@ -44,6 +44,7 @@ public:
 	void SetPosition();//move the guard to that position
 	void Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief);//Update the guard, meaning decide what behaviour he should have and where to go
 	void SetGrid(vector<vector<int>> grid) { m_Grid = grid; }//setter of the grid
+	IModel* GetModel() { return m_Model; }//getter
 private:
 	void FindPath(Vector Target, CLevel Level);//pathfinding algorithm
 	void GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> closed, int x, int y, int Targetx, int Targety);//adds nodes that are valid to the open list

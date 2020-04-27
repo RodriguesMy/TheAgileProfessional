@@ -22,12 +22,6 @@ CLevel::CLevel(I3DEngine* myEngine)
 
 CLevel::~CLevel()
 {
-	delete m_MWall;
-	delete m_MDoor;
-	delete m_MPillars;
-	delete m_MPedestal;
-	delete m_MKey;
-	delete m_MCoin;
 }
 
 IModel* CLevel::CreateModel(IMesh* mesh, string data, bool Check, float* scale, float* rot) {

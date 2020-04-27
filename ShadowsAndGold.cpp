@@ -605,7 +605,7 @@ void main()
 				CameraCollisionBehavior(camera, pThief, myEngine, walls, pillars, doors, CameraV, pCameraDummy, levels);
 				updateCoins(pThief, R1, R3, levels, coins,score,dt,coinSpeed);				
 				updateScore(Score, score);
-				ThiefToGuardCD(pThief, guard.m_Model, STATE, lost);
+				ThiefToGuardCD(pThief, guard.GetModel(), STATE, lost);
 				guard.Update(dt, levels, myEngine, Vector(pThief->GetX(), 0, pThief->GetZ())); //Should keep guard Update near the end as it changes the dt when pathfinding occurs.
 
 				if (myEngine->KeyHit(Key_R)) {
