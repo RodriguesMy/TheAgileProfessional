@@ -22,21 +22,28 @@ CLevel::CLevel(I3DEngine* myEngine)
 
 CLevel::~CLevel()
 {
+	delete m_MWall;
+	delete m_MDoor;
+	delete m_MPillars;
+	delete m_MPedestal;
+	delete m_MKey;
+	delete m_MCoin;
 }
 
 IModel* CLevel::CreateModel(IMesh* mesh, string data, bool Check, float* scale, float* rot) {
 	IModel* output = mesh->CreateModel();
-	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f };
-	for (int i = 0; i < 5; i++) {
+	float fdata[5] = { 0.0f,0.0f,0.0f,0.0f,1.0f }; // default values if no value was given for position scale or rotation
+	for (int i = 0; i < 5; i++) { //check for 5 values
 		int pos = data.find(",");
 		fdata[i] = stof(data.substr(0, pos));
-		if (data.find(",") == string::npos)
+		if (data.find(",") == string::npos) //if not "," is found then we have reached the end and will get out of the for loop
 			break;
 		data = data.substr(pos + 1);		
 	}
+	//do the changes to the model according to the data provided(move it,scale it, rotate it)
 	output->Scale(fdata[4]);
 	output->SetPosition(fdata[0], fdata[1], fdata[2]);
-	if (Check) {
+	if (Check) { // if check was true then include this model to find the minimum position(bottom left) and the max position(top right)
 		if (fdata[0] < m_Min.x) {
 			m_Min.x = fdata[0];
 		}
@@ -50,10 +57,10 @@ IModel* CLevel::CreateModel(IMesh* mesh, string data, bool Check, float* scale, 
 			m_Max.z = fdata[2];
 		}
 	}
-	if (rot != 0) {
+	if (rot != 0) {// if rot was provided then we want it to get the value of the rotation
 		*rot = fdata[3];
 	}
-	if (scale != 0) {
+	if (scale != 0) {// if scale was provided then we want it to get the value of the scale
 		*scale = fdata[4];
 	}
 	output->RotateY(fdata[3]);
@@ -83,7 +90,9 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 		Coins.pop_back();
 	}
 	RemoveKey(Key);
+	//also clear the guards patrol points
 	Guard.ClearPoints();
+	//reset the variables that need to get new values
 	m_KeyData = "";
 	m_PlayerSPos.x = 0;
 	m_PlayerSPos.y = 0;
@@ -95,11 +104,11 @@ void CLevel::ClearLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vec
 }
 
 void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vector<PillarStruct>& Pillars,IModel*& Key, CGuard& Guard, vector<IModel*>& Coins) {
-	if (IncreaseLevelIt()) {
+	if (IncreaseLevelIt()) {//check if there is a next level if not then dont proceed to generating the level as it doesnt exist
 		ifstream File("./Level/" + m_Levels[m_LevelIt] + ".txt");
-		if (File.is_open()) {
+		if (File.is_open()) { //if the file existed and we were able to open it then continue
 			ClearLevel(Walls, Doors, Pillars, Key, Guard,Coins);
-			enum EModelType {
+			enum EModelType {//enum to help decide which model the file data are refering to
 				wall,
 				door,
 				endingdoor,
@@ -110,11 +119,11 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 				guard,
 				coin
 			};
-			EModelType Current=wall;
+			EModelType Current=wall;//by default the first data will be a wall unless if the file specifies otherwise
 			string input;
 			while (getline(File,input))
 			{
-				input.erase(remove_if(input.begin(), input.end(), isspace));
+				input.erase(remove_if(input.begin(), input.end(), isspace));// remove any spaces
 				if (input[0] == '/'); // if it starts with / then its a comment so they code skips that line
 				else if (!isalpha(input[0])) { // if it doesnt start with a letter it must be the information for the model(x,y,z,scale,rot)
 					float scale;
@@ -122,7 +131,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 					float x;
 					float z;
 					int pos;
-					switch (Current) {
+					switch (Current) {// switch for each type of model we have and different thing we have to do for each model
 					case wall:
 						Walls.push_back(*(new WallStruct));
 						Walls.back().model = CreateModel(m_MWall, input, true, &scale, &rotation);
@@ -161,7 +170,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						}
 						break;
 					case endingdoor:
-						for (int i = 0; i < Doors.size(); i++) {
+						for (int i = 0; i < Doors.size(); i++) {//check if there is another ending door so to delete the one that already exists
 							if (Doors[i].type == ending) {
 								m_MDoor->RemoveModel(Doors.at(i).model);
 								Doors.erase(Doors.begin()+i);
@@ -190,7 +199,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						}
 						break;
 					case startingdoor:
-						for (int i = 0; i < Doors.size(); i++) {
+						for (int i = 0; i < Doors.size(); i++) {//check if there is another starting door so to delete the one that already exists
 							if (Doors[i].type == starting) {
 								m_MDoor->RemoveModel(Doors.at(i).model);
 								Doors.erase(Doors.begin() + i);
@@ -238,13 +247,13 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Pillars.back().length.z = 2 * scale;
 						break;
 					case key:
-						if (Key != NULL)
+						if (Key != NULL)//if there is a key already delete it and then create the new key
 							m_MKey->RemoveModel(Key);
 						Key = CreateModel(m_MKey, input, false);
 						Key->RotateX(90);
 						m_KeyData = input;
 						break;
-					case guard:
+					case guard://creates points for the guard to go for his patrol
 						pos = input.find(",");
 						x = stof(input.substr(0, pos));
 						input = input.substr(pos + 1);
@@ -259,10 +268,11 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						break;
 					}
 				}
-				else {//if it starts with a character then change
-					for (int i = 0; i < input.size(); i++) {
+				else {//if it starts with a character then it means that we have a keyword to change the models we create
+					for (int i = 0; i < input.size(); i++) {//convert all letters to lower case
 						input[i] = tolower(input[i]);
 					}
+					//change the current to the one that the input corresponds to
 					if (input == "wall")
 						Current = wall;
 					else if (input == "door")
@@ -283,6 +293,7 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 						Current = coin;
 				}
 			}
+			//Create the grid and then set the position of the guard
 			CreateGrid(Walls, Pillars, Guard);
 			Guard.SetPosition();
 		}
@@ -290,12 +301,10 @@ void CLevel::NextLevel(vector<WallStruct>& Walls, vector<DoorStruct>& Doors,vect
 			cout << "File not found" << endl;
 		}
 	}
-	else {
-	}
 }
 
 void CLevel::ReloadKey(IModel*& Key) {
-	if (Key == NULL) {
+	if (Key == NULL) {//if the key was deleted then recreate it
 		Key = CreateModel(m_MKey, m_KeyData, false);
 		Key->RotateX(90);
 	}
@@ -305,12 +314,13 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, 
 	vector<vector<int>> Grid;
 	int heightofgrid = (m_Max.z - m_Min.z) / 5;
 	int widthofgrid = (m_Max.x - m_Min.x) / 5;
+	//create the grid to the size specifid above and fill it with 1(meaning no obstacle)
 	vector<int> line;
 	line.resize(widthofgrid);
 	fill(line.begin(), line.end(), 1);
 	Grid.resize(heightofgrid);
 	fill(Grid.begin(), Grid.end(), line);
-	for (int i = 0; i < Walls.size(); i++) {
+	for (int i = 0; i < Walls.size(); i++) {// where there is a wall in the grid set it to 0
 		int maxX = (Walls[i].model->GetX() + Walls[i].length.x - m_Min.x) / 5;
 		int maxZ = (Walls[i].model->GetZ() + Walls[i].length.z - m_Min.z) / 5;
 		int minX = (Walls[i].model->GetX() - Walls[i].length.x - m_Min.x) / 5;
@@ -323,7 +333,7 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, 
 			}
 		}
 	}
-	for (int i = 0; i < Pillars.size(); i++) {
+	for (int i = 0; i < Pillars.size(); i++) {// where tehre is a pillar in the grid set it to 0
 		int maxX = (Pillars[i].model->GetX() + Pillars[i].length.x - m_Min.x) / 5;
 		int maxZ = (Pillars[i].model->GetZ() + Pillars[i].length.z - m_Min.z) / 5;
 		int minX = (Pillars[i].model->GetX() - Pillars[i].length.x - m_Min.x) / 5;
@@ -336,26 +346,27 @@ void CLevel::CreateGrid(vector<WallStruct> Walls, vector<PillarStruct> Pillars, 
 			}
 		}
 	}
+	//sent the grid to the guard class
 	Guard.SetGrid(Grid);
 }
 
 bool CLevel::IncreaseLevelIt() {
 	m_LevelIt++;
-	if (m_LevelIt < m_Levels.size())
+	if (m_LevelIt < m_Levels.size())//if the iterator is in the range of the levels then return true else return false
 		return true;
 	else
 		return false;
 }
 
 void CLevel::RemoveKey(IModel*& Key) {
-	if (Key != NULL) {
+	if (Key != NULL) {//if the key exists delete it
 		m_MKey->RemoveModel(Key);
 		Key = NULL;
 	}
 }
 
 void CLevel::RemoveCoin(IModel*& Coin) {
-	if(Coin != NULL) {
+	if(Coin != NULL) {//if the coin exists delete it
 		m_MCoin->RemoveModel(Coin);
 	}
 }

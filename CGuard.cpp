@@ -17,6 +17,7 @@ void CGuard::CreatePoint(Vector point) {
 void CGuard::ClearPoints() {
 	while (!m_Patrol.empty())
 		m_Patrol.pop_back();
+	//when we clear the points of the guard patrol we want to also clear the path as it wont valid anymore
 	ClearPath();
 }
 
@@ -28,14 +29,14 @@ void CGuard::ClearPath() {
 }
 
 void CGuard::SetPosition() {
-	if (!m_Patrol.empty()) {
+	if (!m_Patrol.empty()) {//check that there is a point in the guards patrol
 		int num = rand() % m_Patrol.size();
-		m_Model->SetPosition(m_Patrol[num].x, 0, m_Patrol[num].z);
+		m_Model->SetPosition(m_Patrol[num].x, 0, m_Patrol[num].z);//set the position of the guard to a random point of the guards patrol
 	}
 }
 
 bool CGuard::CheckNode(SNode* pChild, deque<SNode*> open, deque<SNode*> closed) {
-	if (CheckNode(pChild))
+	if (CheckNode(pChild))//check if it is valid(no obstacle there)
 	{
 		//checks if the node exists either in the closed or in the open containers
 		for (int i = 0; i < closed.size(); i++)
@@ -55,7 +56,7 @@ bool CGuard::CheckNode(SNode* pChild) {
 	//The first two if check if the node is in the bounds of the grid
 	if (pChild->y >= 0 && pChild->y < m_Grid.size())
 		if (pChild->x >= 0 && pChild->x < m_Grid.at(pChild->y).size())
-			if (m_Grid.at(pChild->y).at(pChild->x) != 0)//checks if the node is valid (not 0)
+			if (m_Grid.at(pChild->y).at(pChild->x) != 0)//checks if the node is valid (not an obstacle)
 				return true;
 	return false;
 }
@@ -64,8 +65,9 @@ void CGuard::GetChildNode(SNode* pCurrent, deque<SNode*>& open, deque<SNode*> cl
 	SNode* pChild = new SNode;
 	pChild->x = x;
 	pChild->y = y;
-	if (CheckNode(pChild, open, closed)) {
+	if (CheckNode(pChild, open, closed)) {//check teh node before adding it
 		pChild->parent = pCurrent;
+		//calculate the score as we decided to use the A* algorithm
 		pChild->Dijkstra = pCurrent->Dijkstra + 1;
 		pChild->score = pChild->Dijkstra + (Targetx - x + Targety - y);
 		open.push_back(pChild);
@@ -81,6 +83,7 @@ void CGuard::FindPath(Vector Target, CLevel Level) {
 	int NormalisedTargetz = (Target.z - Minz) / 5;
 	deque<SNode*> open;
 	deque<SNode*> closed;
+	//get the starting node
 	pCurrent->x = (m_Model->GetX() - Minx) / 5;
 	pCurrent->y = (m_Model->GetZ() - Minz) / 5;
 	open.push_front(pCurrent);
@@ -119,10 +122,11 @@ void CGuard::FindPath(Vector Target, CLevel Level) {
 
 bool CGuard::Move(float dt, CLevel Level) {
 	m_PathTime += dt;
-	if (m_PathTime + 1.0f >= m_Path.size()) {
+	if (m_PathTime + 1.0f >= m_Path.size()) {//check if we completed the path
 		return true;
 	}
 	else {
+		//use the CatMullRom to find the next position of the guard
 		int p2 = static_cast<int>(m_PathTime);
 		int p3 = p2 + 1;
 		int p4 = p3 + 1;
@@ -139,9 +143,10 @@ bool CGuard::Move(float dt, CLevel Level) {
 		float x = CatMullRom((m_Path[p1]->x * 5.0f) + Minx, (m_Path[p2]->x * 5.0f) + Minx, (m_Path[p3]->x * 5.0f) + Minx, (m_Path[p4]->x * 5.0f) + Minx, t);
 		float y = CatMullRom((m_Path[p1]->y * 5.0f) + Minz, (m_Path[p2]->y * 5.0f) + Minz, (m_Path[p3]->y * 5.0f) + Minz, (m_Path[p4]->y * 5.0f) + Minz, t);
 
+		//look at that position and then move to that position so to have the correct orientation
 		m_Model->LookAt(x, 0, y);
 		m_Model->SetPosition(x, 0, y);
-		m_Model->Scale(5);
+		m_Model->Scale(5);//rescale the guard as look at resets the scale to 0
 		return false;
 	}
 }
@@ -159,26 +164,27 @@ void CGuard::Update(float& dt, CLevel Level, I3DEngine*& myEngine, Vector Thief)
 	switch (m_State)
 	{
 	case patrol:
-		if (Move(dt, Level)) {
+		if (Move(dt, Level)) {//check if the path is completed and if it is find a new path to a random point of the guads patrol
 			if (!m_Patrol.empty()) {
 				m_PathTime = 0;
 				FindPath(m_Patrol.at(rand() % m_Patrol.size()), Level);
 				dt = myEngine->Timer();
 			}
 		}
-		if (InSight(Thief, Level)) {
+		if (InSight(Thief, Level)) {//check if the thief is visible if so change states to hunting the player
 			m_State = hunt;
 		}
 		break;
 	case hunt:
 		m_HuntingTime += dt;
+		//look at the player and move towards them(as we check for any obstacles between them we dont need to use the pathfinding algorithm
 		m_Model->LookAt(Thief.x, Thief.y, Thief.z);
 		m_Model->Scale(5);
 		m_Model->MoveLocalZ(m_Speed * dt);
 		m_HuntingTime += dt;
-		if (m_HuntingTime > 2) {
+		if (m_HuntingTime > 2) {//every 2 seconds check if the thief is out of sight(as checking for it every frame causes some frame drops
 			m_HuntingTime = 0;
-			if (!InSight(Thief, Level)) {
+			if (!InSight(Thief, Level)) {//if the thief is out of sight go back to patrolling
 				ClearPath();
 				m_State = patrol;
 			}
@@ -195,11 +201,11 @@ bool CGuard::InSight(Vector Target,CLevel Level) {
 	Vector Forward = Vector(matrix[8], matrix[9], matrix[10]);
 	float crossProd = Forward.x * guardToTarget.x + Forward.z * guardToTarget.z;
 	crossProd /= (sqrt(Forward.x * Forward.x + Forward.z * Forward.z) * distance);
-	if (acos(crossProd) * 180 / 3.142 <= m_ViewAngle && distance < m_ViewDistance) {
+	if (acos(crossProd) * 180 / 3.142 <= m_ViewAngle && distance < m_ViewDistance) {//check if the angle and the distance are in the ranges we set
 		int steps = m_ViewDistance / 5;
 		float mx = m_Model->GetX();
 		float mz = m_Model->GetZ();
-		for (int i = 0; i < steps; i++) {
+		for (int i = 0; i < steps; i++) {//check if there arent any obstacles between the guard and the thief
 			float x = Target.x * (1.0f - (i * 1.0f / steps)) + mx * i * 1.0f / steps;
 			float z = Target.z * (1.0f - (i * 1.0f / steps)) + mz * i * 1.0f / steps;
 			float Minx = Level.GetMin().x;
